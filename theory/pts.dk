@@ -1,0 +1,59 @@
+
+(; natural numbers ;)
+Nat : Type.
+0_N : Nat.
+S_N : Nat -> Nat.
+def 1_N := S_N 0_N.
+
+(; max and plus ;)
+def max : Nat -> Nat -> Nat.
+[y]   max 0_N     y       --> y.
+[x]   max x       0_N     --> x.
+[x,y] max (S_N x) (S_N y) --> S_N (max x y).
+def plus : Nat -> Nat -> Nat.
+[y]   plus 0_N     y --> y.
+[x,y] plus (S_N x) y --> S_N (plus x y).
+
+Lvl : Type.
+LvlSet : Type.
+
+def M : Nat -> LvlSet -> Lvl.
+
+Empty : LvlSet.
+S : Nat -> Lvl -> LvlSet.
+defac Union [LvlSet].
+
+[x]     Union x          Empty      --> x.
+[i,j,l] Union (S i l) (S j l)       --> S (max i j) l.
+
+def mapPlus : Nat -> LvlSet -> LvlSet.
+[i]       mapPlus i Empty         --> Empty.
+[i,j,l]   mapPlus i (S j l)       --> S (plus i j) l.
+[i,l1,l2] mapPlus i (Union l1 l2) --> Union (mapPlus i l1) (mapPlus i l2).
+
+[i,j,k,l]    M i   (S j (M k l))            --> M (max i (plus j k)) (mapPlus j l).
+[i,j,k,l,tl] M i   (Union (S j (M k l)) tl) --> M (max i (plus j k)) (Union (mapPlus j l) tl).
+
+
+(; the following are the more concrete representations ;)
+def lzero : Lvl.
+def lsucc : Lvl -> Lvl.
+def lmax : Lvl -> Lvl -> Lvl.
+
+[]    lzero       --> M 0_N Empty.
+[x]   lsucc x     --> M 1_N (S 1_N x).
+[x,y] lmax x y    --> M 0_N (Union (S 0_N x) (S 0_N y)).
+
+
+
+(; Predicative pts encoding ;)
+
+U : s : Lvl -> Type.
+
+def El : s : Lvl -> a : U s -> Type.
+
+u : s : Lvl -> U (lsucc s).
+Prod : s1 : Lvl -> s2 : Lvl -> A : U s1 -> B : (El s1 A -> U s2) -> U (lmax s1 s2).
+
+[s] El _ (u s) --> U s.
+[a, b, A, B] El _ (Prod a b A B) --> x : El a A -> El b (B x).

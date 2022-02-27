@@ -1,0 +1,4 @@
+(library
+ (public_name predicativize)
+ (name predicativize)
+ (libraries dedukti.api dedukti.kernel str))
