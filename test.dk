@@ -1,3 +1,13 @@
 test_def1 : pts.El var (pts.Prod var var (pts.u var) (_ => pts.u var)).
 
-(;test_det2 : pts.El (M (S_N 0_N) (Union Empty (S 0_N test.?111))) (pts.Prod var var (u var) (_ => u var)).;)
+test_def2 : pts.El var (pts.u var).
+(;
+def test_def3 : pts.El var (pts.u var) := test_def2.
+
+def test_def4 : pts.El var (pts.u var) := test_def1 test_def2.;)
+
+test_def5 : pts.El var (pts.Prod var var (pts.u var) (_ => pts.Prod var var (pts.u var) (_ => pts.u var))).
+
+
+(;def test_det3 : pts.El var (pts.Prod var var (pts.u var) (_ => pts.Prod var var (pts.u var) (_ => pts.u var))).;)
+(;    := s1 => s2 => pts.Prod var var s1 (_ => s2).;)

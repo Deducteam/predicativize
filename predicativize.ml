@@ -11,7 +11,7 @@ let predicativize input_file =
   let entries = P.(parse (input_from_file input_file)) in
 
   let name = Filename.(chop_suffix (basename input_file) ".dk") in
-  let output_file = open_out (name ^ "__out.dk") in
+  let output_file = open_out ("out/" ^ name ^ ".dk") in
   let out_fmt = Format.formatter_of_out_channel output_file in
   List.iter (E.predicativize_entry env out_fmt) entries;
   close_out

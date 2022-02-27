@@ -94,6 +94,7 @@ let rec unify subst s =
 
 let solve_cstr () =
   let new_cstr = List.map (fun c -> minimize (nf_of_cstr c)) !cstr_eq in
+  cstr_eq := [];
   let empty_subst _ = None in
   unify empty_subst new_cstr
               
