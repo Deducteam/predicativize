@@ -93,6 +93,8 @@ let rec unify subst s =
 let solve_cstr () =
   let new_cstr = List.map (fun c -> minimize (nf_of_cstr c)) !cstr_eq in
   cstr_eq := [];
+  let new_cstr = List.fold_left (fun acc x -> if List.mem x acc then acc else x :: acc) [] new_cstr in
+  Format.printf "Reduced to %n constraints. " (List.length new_cstr); Format.print_flush ();       
   let empty_subst _ = None in
   unify empty_subst new_cstr
               

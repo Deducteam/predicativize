@@ -86,6 +86,7 @@ let rec replace_arity te =
      T.mk_Pi l id (replace_arity a) (replace_arity b)
   | _ -> te
 
+       
 (*let processed_entries = ref []
 
 
