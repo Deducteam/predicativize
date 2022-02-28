@@ -8,48 +8,6 @@ module S = Kernel.Signature
 let counter = ref 0
 
 let reset_counter () = counter := 0
-            
-(*let metavar_oc : out_channel option ref = ref None
-            
-let uvar_name = "var"
-
-
-              
-let open_metavar_oc_and_reset_counter () =
-  counter := 0;
-  metavar_oc := Some (open_out "metavar.dk")
-
-exception Metavar_oc_not_set
-        
-let close_metavar_oc () =
-  match !metavar_oc with
-    | Some x -> close_out x; metavar_oc := None
-    | None -> raise Metavar_oc_not_set
-  
-let add_metavar_to_file id =
-  let fmt = match !metavar_oc with
-    | Some x -> Format.formatter_of_out_channel x
-    | None -> raise Metavar_oc_not_set in
-  Format.fprintf fmt "%a@." Api.Pp.Default.print_entry
-    (Parsers.Entry.Decl
-       ( B.dloc,
-         id,
-         Kernel.Signature.Public,
-         Kernel.Signature.Definable T.Free,
-         D.sort_ty))
-
-let dkcheck_metavar () =
-  let open Api in
-  let open Processor in
-  let hook_after env exn =
-    match exn with
-    | None              -> Env.export env
-    | Some (env, lc, e) -> Env.fail_env_error env lc e
-  in
-  let hook =
-    {before = (fun _ -> ()); after = hook_after}
-  in
-  Processor.handle_files ["metavar.dk"] ~hook TypeChecker*)
 
 let add_metavar_to_env env id =
   try
