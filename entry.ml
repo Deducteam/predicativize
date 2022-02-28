@@ -85,78 +85,107 @@ let rec replace_arity te =
   | T.Pi (l, id, a, b) ->
      T.mk_Pi l id (replace_arity a) (replace_arity b)
   | _ -> te
-                 
+
+(*let processed_entries = ref []
+
+
+let reset_processed_entries () = processed_entries := []                      *)
+                      
+
+(*let add_processed_entries_to_sig sg =
+  List.iter
+    (fun (l, id, sc, opq, ty) ->
+      S.add_declaration sg l id sc opq ty)
+    (List.rev !processed_entries)*)
+(*  List.iter
+    (fun (name,te) ->
+      let cst = B.mk_name (B.string_of_mident md) id in
+      let rule = {name = Delta *)
+
+exception Def_without_type
+
+let colored n s =
+  "\027[3" ^ string_of_int n ^ "m" ^ s ^ "\027[m"
+
+let green = colored 2
+
+let blue = colored 6
+
+let red = colored 1
+
+let violet = colored 5
+
+        
 let predicativize_entry env out_fmt e =
   let open Parsers.Entry in
-  Format.printf "here@.";
-  (* ATTENTION here i have to reload the env in order to have the metavariables, but
-     then i lose the other things i added to the signature. we thus need to keep them in
-     a separate list and add them each time *)
-  let env = Env.init (Parsers.Parser.input_from_file "test.dk") in
   let sg = Api.Env.get_signature env in
-  M.open_metavar_oc_and_reset_counter ();  
+  M.reset_counter ();
+  (* add_processed_entries_to_sig sg;*)
   match e with
   | Def(l, id, sc, opq, ty_op, te) ->
      begin
-       Format.printf "test1@.";       
+       Format.printf "[ %s.%s ] "
+         (blue (B.string_of_mident (Env.get_name env)))
+         (blue (B.string_of_ident id)); Format.print_flush ();
+
        let ty = match ty_op with
          | Some x -> x
-         | None -> C.Typing.inference sg te in
-       Format.printf "test2@.";
+         | None ->
+            let name = B.string_of_ident id in
+            Printf.printf "Error : all Defs need to have their type, but %s has no type\n" name;
+            raise Def_without_type in
        let te = replace_arity te in
        let ty = replace_arity ty in
-       let te = M.insert_lvl_metas te in
-       let ty = M.insert_lvl_metas ty in       
-       T.pp_term Format.std_formatter te;
+
+       let te = M.insert_lvl_metas env te in
+       let ty = M.insert_lvl_metas env ty in 
+
+(*       T.pp_term Format.std_formatter te;
        Format.printf "@.";       
        T.pp_term Format.std_formatter ty;
-       Format.printf "@.";       
-       
-
-       M.dkcheck_metavar ();       
+       Format.printf "@.";       *)
+       (*       M.dkcheck_metavar ();*)
        let _ = C.Typing.checking sg te ty in
-       List.iter (fun x -> Printf.printf "%s " (U.string_of_cstr x)) !U.cstr_eq;
+       Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();       
+       (*       List.iter (fun x -> Printf.printf "%s " (U.string_of_cstr x)) !U.cstr_eq;*)
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
          | Some subst -> subst in
+
        let te, _ = D.apply_subst_to_term subst te in
        let ty, ty_fv = D.apply_subst_to_term subst ty in
        let ty = mk_ty_univ_poly ty ty_fv in
        let te = mk_term_univ_poly te ty_fv in
+
+       Format.printf "%s@." @@ green @@
+         "Solution found with " ^ (string_of_int (List.length ty_fv)) ^ " up vars.";
+       
        let new_entry = Def (l, id, sc, opq, Some ty, te) in
+       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
-       (* TODO: if a symbol is not opaque the we also need to add a rewriting rule *)       
-       S.add_declaration sg l id sc (S.Definable T.Free) ty;
-       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry       
-            
-         
+       Env.define env l id sc opq te (Some ty)
        
-       
-(*       let te = apply_lvl_subst subst te in
-       let res_ty = apply_lvl_subst subst res_ty in
-       let lvl_fv = get_lvl_free_vars te res_ty in
-       let te = set_vars_not_in_ty_to_zero lvl_fv te in
-       let te = mk_term_univ_poly te lvl_fv in
-       let res_ty = mk_ty_univ_poly res_ty lvl_fv in
-       let new_entry = Def(l, id, sc, opq, res_ty, te) in
-       try
-         Env.define env l id sc opq res_ty te
-       with _ -> raise Error_while_def_or_decl*)
      end
   | Decl(l, id, sc, opq, ty) ->
      begin
-       let ty = replace_arity ty in      
-       let ty = M.insert_lvl_metas ty in
-       M.dkcheck_metavar ();
-       T.pp_term Format.std_formatter ty;
-(*       let _ = try let _ = C.Typing.inference sg ty in () with s -> let (_, _, s) = Api.Errors.string_of_exception (fun x -> x) B.dloc s in
-                                                      Printf.printf "error was %s\n" s in*)
+       Format.printf "[ %s.%s ] "
+         (blue (B.string_of_mident (Env.get_name env)))
+         (blue (B.string_of_ident id)); Format.print_flush ();         
+
+       let ty = replace_arity ty in
+       let ty = M.insert_lvl_metas env ty in
+       (*       M.dkcheck_metavar ();*)
        let _ = C.Typing.inference sg ty in
+       Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
          | Some subst -> subst in
        let ty, ty_fv = D.apply_subst_to_term subst ty in
+
+       Format.printf "%s@." @@ green @@
+         "Solution found with " ^ (string_of_int (List.length ty_fv)) ^ " up vars.";
+       
 (*       T.pp_term Format.std_formatter ty;
        Format.printf "@.";*)
        let ty = mk_ty_univ_poly ty ty_fv in
@@ -166,21 +195,9 @@ let predicativize_entry env out_fmt e =
        Format.printf "@.";       
        List.iter (Printf.printf "%s ") ty_fv;*)
        let new_entry = Decl (l, id, sc, opq, ty) in
+       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;       
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
-       S.add_declaration sg l id sc opq ty;
-       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry
-
-       
-(*       let te = apply_lvl_subst subst te in
-       let res_ty = apply_lvl_subst subst res_ty in
-       let lvl_fv = get_lvl_free_vars te res_ty in
-       let te = set_vars_not_in_ty_to_zero lvl_fv te in
-       let te = mk_term_univ_poly te lvl_fv in
-       let res_ty = mk_ty_univ_poly res_ty lvl_fv in
-       let new_entry = Def(l, id, sc, opq, res_ty, te) in
-       try
-         Env.define env l id sc opq res_ty te
-       with _ -> raise Error_while_def_or_decl*)
+       Env.declare env l id sc opq ty
      end    
   | _ -> ()

@@ -4,44 +4,64 @@ module Env = Api.Env
 module P = Parsers.Parser
 module E = Entry         
 module Files = Api.Files
-             
-let predicativize input_file =
-  Files.add_path "theory";  
-  let env = Env.init (P.input_from_file input_file) in
-  let entries = P.(parse (input_from_file input_file)) in
+module M = Api.Meta
 
-  let name = Filename.(chop_suffix (basename input_file) ".dk") in
+let sttfa_to_pts_mode = ref false
+
+let sttfa_to_pts inputfile entries =
+  let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
+  let cfg = M.default_config () in
+  let meta_rules = M.parse_meta_files ["metas/sttfa_to_pts.dk"] in
+  M.add_rules cfg meta_rules;
+  List.map (M.mk_entry cfg env) entries
+
+let dkcheck file =
+  let open Api in
+  let open Processor in
+  let hook_after env exn =
+    match exn with
+    | None              -> Env.export env
+    | Some (env, lc, e) -> Env.fail_env_error env lc e
+  in
+  let hook =
+    {before = (fun _ -> ()); after = hook_after}
+  in
+  Processor.handle_files [file] ~hook TypeChecker
+
+  
+let predicativize inputfile =
+  Files.add_path "theory";
+  Files.add_path "out";  
+  Format.printf "ola1@.";  
+  let entries = P.(parse (input_from_file inputfile)) in
+
+  let entries = if !sttfa_to_pts_mode then sttfa_to_pts inputfile entries else entries in
+
+  let env = Env.init (Parsers.Parser.input_from_file inputfile) in
+  
+  let name = Filename.(chop_suffix (basename inputfile) ".dk") in
   let output_file = open_out ("out/" ^ name ^ ".dk") in
   let out_fmt = Format.formatter_of_out_channel output_file in
-  List.iter (E.predicativize_entry env out_fmt) entries;
-  close_out
+  try
+    List.iter (E.predicativize_entry env out_fmt) entries; flush output_file   
+  with | e -> begin
+             let _, _, s = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
+             Printf.printf "Error : %s" s end;
+  Format.printf "ola2@."            
+  (*  close_out output_file*)
 
-let _ = predicativize "test.dk"
   
-(*let input_file = ref "test.dk"               
+let input_files = ref []  
+  
 let _ =
-  (* Add theory to file paths *)
-  (*  Files.add_path "theory";*)
-  Arg.parse [] (fun s -> input_file := s) "";
-  let env = Env.init (P.input_from_file !input_file) in
-  Vars.md_univ := (P.md_of_input (Env.get_input env));
-  let output_file = open_out "final.dk" in
-  let out_fmt = Format.formatter_of_out_channel output_file in
-  let in_fmt = Format.std_formatter in
-  (*  predicativize env in_fmt out_fmt entries;*)
-  close_out output_file
- 
-   
-let _ = Files.add_path "theory"
-let input_file = ref "test.dk"         
-let env = Env.init (P.input_from_file !input_file)
+  let options =
+    Arg.align
+      [
+        ( "-s", Arg.Unit (fun () -> sttfa_to_pts_mode := true),
+          " Automatically translates sttfa files to the pts encoding")
+      ]
+  in
+  let usage = "Usage: " ^ Sys.argv.(0) ^ " [OPTION]... [FILE]...\nAvailable options:" in
+  Arg.parse options (fun s -> input_files := s :: !input_files) usage;
+  List.iter (fun s -> predicativize s; dkcheck @@ "out/" ^ (Filename.basename s)) (List.rev !input_files)
 
-let _ = Metavars.open_metavar_oc_and_reset_counter ()
-  
-let entries = Parser.(parse (input_from_file !input_file))
-let te = match entries with | Decl(l,id,sc,opq,ty)::_ -> ty;;
-let te' = Metavars.insert_lvl_metas te
-let _ = dkcheck_metavar ()        
-let sg = Api.Env.get_signature env
-
- *)

@@ -21,10 +21,10 @@ struct
   let rec are_convertible_lst sg : (T.term * T.term) list -> bool = function
   | [] -> true
   | (l, r) :: lst ->
-    T.pp_term Format.std_formatter l;
+(*    T.pp_term Format.std_formatter l;
     Format.printf " = ";    
     T.pp_term Format.std_formatter r;
-    Format.printf "\n";
+    Format.printf "\n";*)
      
     if T.term_eq l r then are_convertible_lst sg lst
     else

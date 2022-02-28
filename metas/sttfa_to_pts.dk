@@ -1,0 +1,17 @@
+[] sttfa.type --> pts.El pts.var (pts.u pts.var).
+[] sttfa.ptype --> pts.El pts.var (pts.u pts.var).
+[] sttfa.bool --> pts.u pts.var.
+
+[A] sttfa.etap A --> pts.El pts.var A.
+[A] sttfa.eps A --> pts.El pts.var A.
+[A] sttfa.eta A --> pts.El pts.var A.
+
+[A,B] sttfa.arrow A B --> pts.Prod pts.var pts.var A (x => B).
+[A,B] sttfa.impl A B --> pts.Prod pts.var pts.var A (x => B).
+
+[A,B] sttfa.forall A (x => B x) --> pts.Prod pts.var pts.var A (x => B x).
+
+[B] sttfa.forallP (x => B x) --> pts.Prod pts.var pts.var (pts.u pts.var) (x => B x).
+[B] sttfa.forallK (x => B x) --> pts.Prod pts.var pts.var (pts.u pts.var) (x => B x).
+
+[x] sttfa.p x --> x.

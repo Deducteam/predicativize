@@ -1,6 +1,4 @@
-open Format
 open Lvl
-   
 
 type cstr = Eq of level * level | Deq of level * level
 
@@ -59,7 +57,7 @@ let rec unify subst s =
   match s with
   | [] -> Some subst
   | c :: s ->
-     printf "%s@." (string_of_cstr c);     
+     (*     Format.printf "%s@." (string_of_cstr c);     *)
      match c with
 
      | Eq (t1, t2) when t1 = t2 -> unify subst s

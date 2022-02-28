@@ -1,0 +1,35 @@
+def type : Type.
+
+def arrow : type -> type -> type.
+
+def bool : type.
+
+def eta : type -> Type.
+
+def ptype : Type.
+
+def p : type -> ptype.
+
+def etap : ptype -> Type.
+
+def forallK : (type -> ptype) -> ptype.
+
+def eps : eta bool -> Type.
+
+def impl : eta bool -> eta bool -> eta bool.
+
+def forall : t:type -> (eta t -> eta bool) -> eta bool.
+
+def forallP : (type -> eta bool) -> eta bool.
+
+[] eta --> t => etap (p t).
+
+[l,r] etap (p (arrow l r)) --> eta l -> eta r.
+
+[f] etap (forallK f) --> x : type -> etap (f x).
+
+[t,f] eps (forall t f) --> x:eta t -> eps (f x).
+
+[l,r] eps (impl l r) --> eps l -> eps r.
+
+[f] eps (forallP f) --> x:type -> eps (f x).

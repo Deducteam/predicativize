@@ -1,4 +1,5 @@
-(library
- (public_name predicativize)
+(executable
+ (package predicativize) 
  (name predicativize)
+ (public_name predicativize) 
  (libraries dedukti.api dedukti.kernel str))
