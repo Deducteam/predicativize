@@ -85,16 +85,63 @@ let rec unify subst s =
           let s' = List.map (fun (S(_, x)) -> Eq (M(0, []), M(0, [S(0,x)]))) l in
           unify subst (s' @ s)
 
+
      | Eq(t1, t2) -> unify subst (s @ [Deq(t1,t2)])
 
      | _ -> raise Test
 
 
+        
+let rec unify_opt subst s =
+  match s with
+  | [] -> Some subst
+  | c :: s ->
+     let c = match c with
+       | Eq(t1, t2) -> Eq(apply_subst subst t1, apply_subst subst t2)
+       | Deq(t1, t2) -> Deq(apply_subst subst t1, apply_subst subst t2)
+     in
+     let c = minimize c in     
+     (*     Format.printf "%s@." (string_of_cstr c);     *)
+     match c with
+
+     | Eq (t1, t2) when t1 = t2 -> unify_opt subst s
+
+     | Eq (M (0, [S (0, x)]), t) | Eq (t, M (0, [S(0, x)])) ->
+        (* we check if x occurs in t, and how *)        
+        begin match get_occ x t with
+        (* positive occurence, thus there is no solution *)
+        | Pos_occ -> None
+        (* zero occurence, thus there is still hope but we still cannot infer
+           a substitution from this constraint, thus we delay it *)
+        | Zero_occ -> unify_opt subst (s @ [Deq (M (0, [S (0, x)]), t)])
+        (* no occurence, thus we can infer a substitution *)
+        | No_occ ->
+           let new_subst var =
+             if var = x then Some t
+             (* we also need to apply the new substitution to the image of the old one *)
+             else Option.map (apply_subst (fun v -> if v = x then Some t else None)) (subst var) in
+           let new_s = reset_delay s in
+           unify_opt new_subst new_s end
+
+     | Eq (M (0, []), M(n, l)) | Eq (M(n, l), M (0, [])) ->
+        if n != 0 then None
+        else
+          let s' = List.map (fun (S(_, x)) -> Eq (M(0, []), M(0, [S(0,x)]))) l in
+          unify_opt subst (s' @ s)
+
+
+     | Eq(t1, t2) -> unify_opt subst (s @ [Deq(t1,t2)])
+
+     | _ -> raise Test
+
+          
+
+          
 let solve_cstr () =
   let new_cstr = List.map (fun c -> minimize (nf_of_cstr c)) !cstr_eq in
   cstr_eq := [];
   let new_cstr = List.fold_left (fun acc x -> if List.mem x acc then acc else x :: acc) [] new_cstr in
   Format.printf "Reduced to %n constraints. " (List.length new_cstr); Format.print_flush ();       
   let empty_subst _ = None in
-  unify empty_subst new_cstr
+  unify_opt empty_subst new_cstr
               

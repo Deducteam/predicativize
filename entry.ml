@@ -127,7 +127,7 @@ let predicativize_entry env optim out_fmt e =
 
        let _ = C.Typing.checking sg te ty in
        Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();       
-       (*       List.iter (fun x -> Printf.printf "%s " (U.string_of_cstr x)) !U.cstr_eq;*)
+
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
          | Some subst -> subst in

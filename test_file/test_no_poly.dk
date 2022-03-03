@@ -1,0 +1,25 @@
+def l_0 := pts.M pts.0_N pts.Empty.
+def set0 := pts.u l_0.
+def l_1 := pts.M (pts.S_N pts.0_N) pts.Empty.
+def set1 := pts.u l_1.
+def l_2 := pts.M (pts.S_N (pts.S_N pts.0_N)) pts.Empty.
+def set2 := pts.u l_2.
+def l_3 := pts.M (pts.S_N (pts.S_N (pts.S_N pts.0_N))) pts.Empty.
+def set3 := pts.u l_3.
+def l_4 := pts.M (pts.S_N (pts.S_N (pts.S_N (pts.S_N pts.0_N)))) pts.Empty.
+
+(; D : Set_2 = Set_1 ;)
+def D : pts.El l_3 set2 := set1.
+
+(; c : D = Set_0 -> Set_0 ;)
+def c : pts.El l_2 D := pts.Prod l_1 l_1 set0 (x => set0).
+
+(; eq : (A : Set_2) -> A -> A -> D -> D ;)
+def eq : pts.El l_3 (pts.Prod l_3 l_2 set2 (A => pts.Prod l_2 l_2 A (a => pts.Prod l_2 l_2 A (b => pts.Prod l_2 l_2 D (_ => D)))))
+   := A => a => b => d => d.
+
+(; F : D -> D = fun z : D => eq Set_2 c z ;)
+def F : pts.El l_2 (pts.Prod l_2 l_2 D (y => D)) := z => eq set1 c z set0.
+
+(; problem : Set_1 = F c ;)
+def problem : pts.El l_2 set1 := F c.

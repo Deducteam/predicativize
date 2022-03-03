@@ -1,0 +1,10 @@
+
+def problem : pts.El pts.var (pts.u pts.var) :=
+(z : pts.El pts.var (pts.u pts.var) =>
+   (A : pts.El pts.var (pts.u pts.var) => a : pts.El pts.var A => b : pts.El pts.var A => d : pts.El pts.var (pts.u pts.var) => d)
+        (pts.u pts.var)
+        (pts.Prod pts.var pts.var (pts.u pts.var) (x => pts.u pts.var))
+        z
+        (pts.u pts.var))
+(pts.Prod pts.var pts.var (pts.u pts.var) (x => pts.u pts.var)).
+(; (\z : Set1. (\A : Set2, a b : A, d : Set1. d) Set1 (Set0 -> Set0) z Set0) (Set0 -> Set0) ;)
