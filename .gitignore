@@ -3,6 +3,7 @@ opentheory_stdlib
 out
 arith_fermat_working
 arith_fermat_pts
+results
 *~
 *.dko
 _build
