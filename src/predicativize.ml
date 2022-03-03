@@ -65,6 +65,8 @@ let _ =
   let optim_enabled = ref false in
   let sttfa_to_pts_mode = ref false in
   dkcheck "theory/pts.dk";
+  dkcheck "theory/sttfa.dk";
+  (try ignore (Unix.stat "out") with _ -> Unix.mkdir "out" 0o755);  
   let options =
     Arg.align
       [
