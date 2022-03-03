@@ -8,11 +8,11 @@ module D = Lvldk
 module S = Kernel.Signature         
 
 exception No_solution
-exception Todo
-exception Error_while_def_or_decl                       
 
 let pts_empty_set = T.mk_App D.pts_m D.pts_0_n [D.pts_empty]
 
+(* [pos x l] returns Some n if [x] appears in position n of [l],
+   else None. *)                  
 let rec pos x l =
   match l with
   | [] -> None

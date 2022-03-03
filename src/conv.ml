@@ -15,17 +15,12 @@ struct
     if T.term_eq l r then 
       true
     else match (D.extract_lvl l, D.extract_lvl r) with
-         | Some l', Some r' -> U.cstr_eq := U.Eq(l',r') :: !U.cstr_eq; true
+         | Some l', Some r' -> U.cstr_eq := (l',r') :: !U.cstr_eq; true
          | _ -> false
 
   let rec are_convertible_lst sg : (T.term * T.term) list -> bool = function
   | [] -> true
   | (l, r) :: lst ->
-(*    T.pp_term Format.std_formatter l;
-    Format.printf " = ";    
-    T.pp_term Format.std_formatter r;
-    Format.printf "\n";*)
-     
     if T.term_eq l r then are_convertible_lst sg lst
     else
       let l', r' = (snf sg l, snf sg r) in
