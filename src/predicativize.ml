@@ -88,7 +88,7 @@ let _ =
     Arg.align
       [
         ( "-s", Arg.Unit (fun () -> sttfa_to_pts_mode := true),
-          " Automatically translates sttfa files to the pts encoding") ;
+          " Handles files in the sttfa syntax, else it expects files in the pts syntax (see theory/pts.dk)") ;
         ( "-o", Arg.Unit (fun () -> optim_enabled := true),
           " Enables optmizations to make the result depend on less universe variables (might render the level constraints unsolvable)") ;
         ( "-a", Arg.Unit (fun () -> agda_mode := true),
