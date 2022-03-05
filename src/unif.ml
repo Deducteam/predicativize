@@ -68,6 +68,6 @@ let rec unify subst s delayed_s =
      | (t1, t2) -> unify subst s ((t1,t2) :: delayed_s)
           
 let solve_cstr () =
-  let new_cstr = List.map (fun c -> minimize (nf_of_cstr c)) !cstr_eq in
+  let new_cstr = !cstr_eq in
   cstr_eq := [];
   unify (fun _ -> None) new_cstr []              
