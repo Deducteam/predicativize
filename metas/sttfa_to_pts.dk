@@ -6,8 +6,8 @@
 [A] sttfa.eps A --> pts.El pts.var A.
 [A] sttfa.eta A --> pts.El pts.var A.
 
-[A,B] sttfa.arrow A B --> pts.Prod pts.var pts.var A (x => B).
-[A,B] sttfa.impl A B --> pts.Prod pts.var pts.var A (x => B).
+[A,B] sttfa.arrow A B --> pts.Prod pts.var pts.var A (x_free => B).
+[A,B] sttfa.impl A B --> pts.Prod pts.var pts.var A (x_free => B).
 
 [A,B] sttfa.forall A (x => B x) --> pts.Prod pts.var pts.var A (x => B x).
 

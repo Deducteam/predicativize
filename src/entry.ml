@@ -1,23 +1,15 @@
 module Env = Api.Env
 module T = Kernel.Term
 module B = Kernel.Basic
+module A = Agda
 module M = Metavars
 module C = Conv
 module U = Unif
 module D = Lvldk
 module S = Kernel.Signature         
-
-exception No_solution
+open Common
 
 let pts_empty_set = T.mk_App D.pts_m D.pts_0_n [D.pts_empty]
-
-(* [pos x l] returns Some n if [x] appears in position n of [l],
-   else None. *)                  
-let rec pos x l =
-  match l with
-  | [] -> None
-  | y :: l -> if y = x then Some 0
-              else Option.map (fun a -> 1 + a) (pos x l)
             
 let rec cons_to_vars lvars depth te =
   match te with
@@ -86,20 +78,8 @@ let rec replace_arity te =
      T.mk_Pi l id (replace_arity a) (replace_arity b)
   | _ -> te
 
-       
+exception No_solution       
 exception Def_without_type
-
-let colored n s =
-  "\027[3" ^ string_of_int n ^ "m" ^ s ^ "\027[m"
-
-let green = colored 2
-
-let blue = colored 6
-
-let red = colored 1
-
-let violet = colored 5
-
         
 let predicativize_entry env optim out_fmt e =
   let open Parsers.Entry in
@@ -149,7 +129,8 @@ let predicativize_entry env optim out_fmt e =
        Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
-       Env.define env l id sc opq te (Some ty)
+       Env.define env l id sc opq te (Some ty);
+       Some new_entry
        
      end
   | Decl(l, id, sc, opq, ty) ->
@@ -179,9 +160,12 @@ let predicativize_entry env optim out_fmt e =
        let ty = mk_ty_univ_poly ty ty_fv in
 
        let new_entry = Decl (l, id, sc, opq, ty) in
+
        Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;       
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
-       Env.declare env l id sc opq ty
+       Env.declare env l id sc opq ty;
+       Some new_entry
+       
      end    
-  | _ -> ()
+  | _ -> None

@@ -3,7 +3,8 @@ module B = Kernel.Basic
 module Env = Api.Env
 module U = Unif
 module L = Lvl                    
-
+open Common
+         
 let pts_m = T.mk_Const (B.dloc) (B.mk_name (B.mk_mident "pts") (B.mk_ident "M"))
 let pts_0_n = T.mk_Const (B.dloc) (B.mk_name (B.mk_mident "pts") (B.mk_ident "0_N"))
 let pts_s = T.mk_Const (B.dloc) (B.mk_name (B.mk_mident "pts") (B.mk_ident "S"))
@@ -14,11 +15,6 @@ let pts_empty = T.mk_Const (B.dloc) (B.mk_name (B.mk_mident "pts") (B.mk_ident "
 let sort_ty = T.mk_Const (B.dloc) (B.mk_name (B.mk_mident "pts") (B.mk_ident "Lvl"))
 
 let metavar_te = T.mk_Const B.dloc (B.mk_name (B.mk_mident "") (B.mk_ident "var"))
-              
-let ( let* ) o f =
-  match o with
-  | None -> None
-  | Some x -> f x
 
 exception Nested_apps       
 
