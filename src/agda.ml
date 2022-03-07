@@ -110,6 +110,8 @@ type agda_te =
   | A_Var of string
   | A_Cst of string option * string
 
+exception Impossible
+           
 let rec pp_agda_te fmt t =
   let open Format in
   match t with
@@ -119,9 +121,11 @@ let rec pp_agda_te fmt t =
      fprintf fmt "%a %a" pp_agda_te_par t1 pp_agda_te_par t2
   | A_App (t1, t2, tl) ->
      fprintf fmt "%a %a " pp_agda_te_par t1 pp_agda_te_par t2;
-     pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt " ") pp_agda_te_par fmt tl
+     pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt " ") pp_agda_te_par fmt tl 
+  | A_Lam (_, Some A_Lty, _) -> fprintf fmt "λ (%a" pp_agda_te_lvl t    
   | A_Lam (n, None, t) -> fprintf fmt "λ %s -> %a" n pp_agda_te t
   | A_Lam (n, Some ty, t) -> fprintf fmt "λ (%s : %a) -> %a" n pp_agda_te ty pp_agda_te t
+  | A_Pi (A_Lty, _, _) -> fprintf fmt "(%a" pp_agda_te_lvl t
   | A_Pi (t1, n, t2) -> fprintf fmt "(%s : %a) -> %a" n pp_agda_te t1 pp_agda_te t2
   | A_Arr (t1, t2) -> fprintf fmt "%a -> %a" pp_agda_te_par t1 pp_agda_te t2
   | A_Lvl t -> fprintf fmt "%a" pp_agda_lvl t
@@ -135,6 +139,15 @@ and pp_agda_te_par fmt t =
   | A_Cst _ | A_Var _ -> fprintf fmt "%a" pp_agda_te t
   | A_Lvl t -> pp_agda_lvl_par fmt t
   | _ -> fprintf fmt "(%a)" pp_agda_te t
+and pp_agda_te_lvl fmt t =
+  let open Format in
+  match t with
+  | A_Pi(A_Lty, n, (A_Pi(A_Lty,_,_) as t)) | A_Lam(n, Some A_Lty, (A_Lam(_,Some A_Lty,_) as t)) ->
+     fprintf fmt "%s %a" n pp_agda_te_lvl t
+  | A_Pi(A_Lty, n, t) | A_Lam(n, Some A_Lty, t) ->
+     fprintf fmt "%s : Level) -> %a" n pp_agda_te t
+  | _ -> raise Impossible
+       
     
 
 let md_name = ref ""
