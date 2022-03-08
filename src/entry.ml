@@ -84,6 +84,9 @@ exception Def_without_type
 let predicativize_entry env optim out_fmt e =
   let open Parsers.Entry in
   let sg = Api.Env.get_signature env in
+  let module Pp = Api.Pp.Make (struct
+               let get_name () = Env.get_name env
+             end) in
   M.reset_counter ();
 
   match e with
@@ -126,7 +129,7 @@ let predicativize_entry env optim out_fmt e =
          "Solution found with " ^ (string_of_int (List.length ty_fv)) ^ " up vars.";
        
        let new_entry = Def (l, id, sc, opq, Some ty, te) in
-       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;
+       Format.fprintf out_fmt "%a@." Pp.print_entry new_entry;
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
        Env.define env l id sc opq te (Some ty);
@@ -161,7 +164,7 @@ let predicativize_entry env optim out_fmt e =
 
        let new_entry = Decl (l, id, sc, opq, ty) in
 
-       Format.fprintf out_fmt "%a@." Api.Pp.Default.print_entry new_entry;       
+       Format.fprintf out_fmt "%a@." Pp.print_entry new_entry;       
        up_def_arity := (B.string_of_mident (Env.get_name env), B.string_of_ident id, List.length ty_fv)
                        :: !up_def_arity;
        Env.declare env l id sc opq ty;
