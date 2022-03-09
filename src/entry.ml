@@ -95,13 +95,17 @@ let predicativize_entry env optim out_fmt e =
        Format.printf "[ %s.%s ] "
          (blue (B.string_of_mident (Env.get_name env)))
          (blue (B.string_of_ident id)); Format.print_flush ();
-
+       
        let ty = match ty_op with
          | Some x -> x
          | None ->
             let name = B.string_of_ident id in
             Printf.printf "Error : all Defs need to have their type, but %s has no type\n" name;
             raise Def_without_type in
+
+(*       Format.printf "%a@." T.pp_term ty;
+       Format.printf "%a@." T.pp_term te;       *)
+       
        let te = replace_arity te in
        let ty = replace_arity ty in
 
@@ -144,6 +148,8 @@ let predicativize_entry env optim out_fmt e =
 
        let ty = replace_arity ty in
        let ty = M.insert_lvl_metas env ty in
+
+       (*       Format.printf "%a@." T.pp_term ty;*)
 
        let _ = C.Typing.inference sg ty in
        Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();

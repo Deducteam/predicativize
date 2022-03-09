@@ -166,7 +166,7 @@ let rec dkterm_to_term n te =
      if ident = "x_free"
      then Some (A_Arr (ta, tb))
      else
-       let ident = ident ^ "-" ^ string_of_int n in
+       let ident = sanitize @@ ident ^ "-" ^ string_of_int n in
        Some (A_Pi (ta, ident, tb))
 
   (* te = pts.u lvl_exp *)
@@ -240,6 +240,13 @@ and dkty_to_ty n te =
      let* t2 = dkty_to_ty (n + 1) t2 in
      Some (A_Pi (A_Lty, ident, t2))
 
+  (* te = (ident : t1) -> t2 *)
+  (* should not happen in the good cases *)
+  | Pi(_, ident, t1, t2) ->
+     let ident = sanitize @@ B.string_of_ident ident in
+     let* t2 = dkty_to_ty (n + 1) t2 in
+     let* t1 = dkty_to_ty n t1 in     
+     Some (A_Pi (t1, ident, t2))   
   | _ -> None
 
 type agda_entry =

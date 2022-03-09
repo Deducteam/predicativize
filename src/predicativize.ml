@@ -46,7 +46,7 @@ let predicativize optim sttfa_mode agda_mode inputfile =
           | Some x -> ok_entries := 1 + !ok_entries; Some x
         with e -> begin
           let _, _, s = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
-            Printf.printf "%s%s" (red "ERROR : ") s;
+            Format.printf "%s%s@." (red "ERROR : ") s;
             ko_entries := 1 + !ko_entries; no_errors := false; None end)
       entries in
 
@@ -79,7 +79,8 @@ let input_files = ref []
 let _ =
   let optim_enabled = ref false in
   let sttfa_to_pts_mode = ref false in
-  let agda_mode = ref false in  
+  let agda_mode = ref false in
+  let eta_mode = ref false in    
   dkcheck "theory/pts.dk";
   dkcheck "theory/sttfa.dk";
   (try ignore (Unix.stat "out") with _ -> Unix.mkdir "out" 0o755);
@@ -93,11 +94,15 @@ let _ =
           " Enables optmizations to make the result depend on less universe variables (might render the level constraints unsolvable)") ;
         ( "-a", Arg.Unit (fun () -> agda_mode := true),
           " Automatically translates the output to agda files and typechecks them") ;
+        ( "--eta", Arg.Unit (fun () -> eta_mode := true),
+          " Uses eta equality") ;        
       ]
   in
   let usage = "A tool for making definitions predicative\nUsage: " ^ Sys.argv.(0) ^ " [OPTION]... [FILE]...\nAvailable options:" in
   Arg.parse options (fun s -> input_files := s :: !input_files) usage;
 
+  (if !eta_mode = true then Kernel.Reduction.eta := true);
+  
   let files_with_problems = ref 0 in
   
   List.iter
