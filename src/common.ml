@@ -45,6 +45,9 @@ let dkcheck file =
   Processor.handle_files [file] ~hook TypeChecker
     
 let sanitize s =
-  let s = String.map (fun c -> if c = '_' then '-' else c) s in
+  let s = String.map (fun c -> if c = '_' then '-'
+                               else if c = '{' || c = '}' then '|'
+                               else if c = '.' then '-'
+                               else if c = '(' || c = ')' then '-' else c) s in
   if String.get s 0 = '-' then "X" ^ s else s
 

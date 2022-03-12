@@ -45,8 +45,9 @@ let predicativize optim sttfa_mode agda_mode inputfile =
           | None -> None
           | Some x -> ok_entries := 1 + !ok_entries; Some x
         with e -> begin
-          let _, _, s = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
-            Format.printf "%s%s@." (red "ERROR : ") s;
+            (* REMOVE ME *)
+            let _, _, (*s*)_ = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
+          Format.printf "%s%s@." (red "ERROR : ")  (*s*) ""; (* REMOVE ME *)
             ko_entries := 1 + !ko_entries; no_errors := false; None end)
       entries in
 

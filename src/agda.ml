@@ -152,6 +152,9 @@ and pp_agda_te_lvl fmt t =
 
 let md_name = ref ""
 let import_list = ref []
+
+let fresh_var = ref 0
+              
   
 let rec dkterm_to_term n te =
   let open T in
@@ -215,6 +218,17 @@ let rec dkterm_to_term n te =
      let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in 
      Some (A_Var ident)
 
+  | Const(_, cst) when
+         (B.string_of_mident (B.md cst) = "pts" && B.string_of_ident (B.id cst) = "Prod") ->
+     let n = string_of_int !fresh_var in
+     fresh_var := 1 + !fresh_var;
+     Some(A_Lam("sA",Some A_Lty,
+                A_Lam("sB",Some A_Lty,
+                      A_Lam("A",Some (A_Set (Lvar "sA")),
+                            A_Lam("B", Some ( A_Pi(A_Var "A", "NotImportant", A_Set (Lvar "sB"))),
+                                  A_Pi(A_Var "A", "VAR" ^ n,
+                                       A_App(A_Var "B", A_Var ("VAR" ^ n), [])))))))
+     
   | Const(_, cst) ->
      let name = sanitize @@ B.string_of_ident (B.id cst) in
      let modu = sanitize @@ B.string_of_mident (B.md cst) in
@@ -243,7 +257,7 @@ and dkty_to_ty n te =
   (* te = (ident : t1) -> t2 *)
   (* should not happen in the good cases *)
   | Pi(_, ident, t1, t2) ->
-     let ident = sanitize @@ B.string_of_ident ident in
+     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in
      let* t2 = dkty_to_ty (n + 1) t2 in
      let* t1 = dkty_to_ty n t1 in     
      Some (A_Pi (t1, ident, t2))   
