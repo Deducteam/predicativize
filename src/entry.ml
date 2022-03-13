@@ -6,7 +6,8 @@ module M = Metavars
 module C = Conv
 module U = Unif
 module D = Lvldk
-module S = Kernel.Signature         
+module S = Kernel.Signature
+module R = Kernel.Rule
 open Common
 
 let pts_empty_set = T.mk_App D.pts_m D.pts_0_n [D.pts_empty]
@@ -78,8 +79,24 @@ let rec replace_arity te =
      T.mk_Pi l id (replace_arity a) (replace_arity b)
   | _ -> te
 
+exception Not_a_patt
+       
+let rec term_to_pattern t =
+  let open T in
+  let open R in
+  match t with
+  | App(Const(l, c), t1, tl) -> Pattern(l, c, List.map term_to_pattern (t1 :: tl))
+  | App(DB(l, id, n), t1, tl) -> Var(l, id, n, List.map term_to_pattern (t1 :: tl))
+  | Lam(l, id, _, body) -> Lambda(l, id, term_to_pattern body)
+  | Const(l, c) -> Pattern(l, c, [])
+  | DB(l, id, n) -> Var(l, id, n, [])
+  | _ -> raise Not_a_patt
+
+
 exception No_solution       
 exception Def_without_type
+exception Impossible
+        
         
 let predicativize_entry env optim out_fmt e =
   let open Parsers.Entry in
@@ -176,5 +193,57 @@ let predicativize_entry env optim out_fmt e =
        Env.declare env l id sc opq ty;
        Some new_entry
        
-     end    
+     end
+  | Rules(l, [r]) ->
+     Format.printf "[ Rewrite rule ] ";
+     let lhs = R.pattern_to_term r.pat in
+     let lhs = replace_arity lhs in
+     let lhs = M.insert_lvl_metas env lhs in
+     let lhspt = term_to_pattern lhs in
+
+     let rhs = replace_arity r.rhs in
+     let rhs = M.insert_lvl_metas env rhs in
+     Format.printf "oi1@.";
+
+     let _ = List.map (C.Typing.check_rule sg) [{name = r.name; ctx = r.ctx; pat = lhspt; rhs = rhs}] in
+     Format.printf "oi2@.";
+     
+     (*     List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)
+     Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
+     let subst = match U.solve_cstr () with
+       | None -> raise No_solution
+       | Some subst -> subst in
+
+     let lhs, lvl_vars = D.apply_subst_to_term subst lhs in
+     let lhs = cons_to_vars lvl_vars (List.length r.ctx) lhs in
+     let rhs, _ = D.apply_subst_to_term subst rhs in
+     let rhs = cons_to_vars lvl_vars (List.length r.ctx) rhs in     
+
+     let cfg = Api.Meta.default_config () in
+     let meta_rules = Api.Meta.parse_meta_files ["metas/remove_vars.dk"] in
+     Api.Meta.add_rules cfg meta_rules;
+
+     let lhs = Api.Meta.mk_term cfg lhs in
+     let rhs = Api.Meta.mk_term cfg rhs in     
+     
+     let lhspt = term_to_pattern lhs in     
+
+     let lvl_vars_ctx = List.map (fun s -> B.dloc, B.mk_ident s, None) lvl_vars in
+
+     let new_entry = Rules(l, [{name = r.name; ctx = lvl_vars_ctx @ r.ctx; pat = lhspt; rhs = rhs}]) in
+     Format.fprintf out_fmt "%a@." Pp.print_entry new_entry;       
+
+     Api.Files.add_path "theory2";
+     Format.printf "oi3@.";
+     let _ = Env.add_rules env [{name = r.name; ctx = lvl_vars_ctx @ r.ctx; pat = lhspt; rhs = rhs}] in
+     Format.printf "oi4@.";     
+     Api.Files.add_path "theory";
+     Some new_entry
+     
+(*     Format.printf "We have the following constrains: @.";
+     List.iter (fun (x, y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y))
+       !U.cstr_eq;
+     U.cstr_eq := [];*)
+
+  | Rules(_, _) -> Format.printf "TODO@."; None
   | _ -> None

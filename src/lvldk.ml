@@ -57,6 +57,9 @@ let extract_lvl t =
      let* m = extract_int t1 in
      let* s = extract_lvl_set t2 in
      Some (L.M(m, s))
+(*  | Const(_, n) when (String.get (B.string_of_ident (B.id n)) 0 = '?') ->
+     let n = B.string_of_ident (B.id n) in
+     Some (L.M(0,[L.S(0,n)]))*)
   | App(App(_,_,_),_,_) -> raise Nested_apps     
   | _ -> None
 
@@ -94,6 +97,11 @@ let apply_subst_to_term subst te =
        begin match subst @@ B.string_of_ident @@ B.id var_name with
        | Some t -> fv := (L.get_fv t) @ !fv; lvl_to_term t
        | None -> fv := (B.string_of_ident @@ B.id var_name) :: !fv; te end
+
+(*    | Const(_,var_name) ->
+       begin match subst @@ B.string_of_ident @@ B.id var_name with
+       | Some t -> fv := (L.get_fv t) @ !fv; lvl_to_term t
+       | None -> fv := (B.string_of_ident @@ B.id var_name) :: !fv; te end*)
 
     | T.App (f, a1, al) -> T.mk_App (aux f) (aux a1) (List.map aux al)
     | T.Lam (l, id, t, body) -> T.mk_Lam l id (Option.map aux t) (aux body)

@@ -34,6 +34,8 @@ def mapPlus : Nat -> LvlSet -> LvlSet.
 [i,j,k,l]    M i   (S j (M k l))            --> M (max i (plus j k)) (mapPlus j l).
 [i,j,k,l,tl] M i   (Union (S j (M k l)) tl) --> M (max i (plus j k)) (Union (mapPlus j l) tl).
 
+(; TODO: should we have the following rule? ;)
+(; [x] M 0_N (S 0_N x) --> x. ;)
 
 (; the following are the more concrete representations ;)
 def lzero : Lvl.

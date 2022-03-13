@@ -25,6 +25,7 @@ let fresh env () =
   counter := 1 + !counter;
   (*  let cons = T.mk_Const (B.dloc) name in*)
   T.mk_App D.pts_m D.pts_0_n [T.mk_App D.pts_s D.pts_0_n [metavar]]
+  (*  metavar*)
 
 (* [insert_lvl_metas env t] replaces each concrete level in [t] by a fresh 
    level metavariable, for which it adds a declaration in the enviroment. *)  
