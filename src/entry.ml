@@ -92,10 +92,77 @@ let rec term_to_pattern t =
   | DB(l, id, n) -> Var(l, id, n, [])
   | _ -> raise Not_a_patt
 
+exception Todo
+exception Impossible
+        
+let rec get_poly_vars t =
+  let open T in
+  (*  Format.printf "term %a@." pp_term t;*)
+  match t with
+  | App(_, t1, tl) ->
+     let l1 = get_poly_vars t1 in
+     let l2 = List.fold_left (fun acc x -> acc @ (get_poly_vars x)) [] tl in
+     l1 @ l2
+  | Const(_, id) when (String.get (B.string_of_ident (B.id id)) 0 = '?') ->
+     [B.string_of_ident (B.id id)]
+  | DB(_,_,_) -> []
+  | Const(_,_) -> []
+  | _ -> raise Todo
+
+let linearize lhs rhs =
+  let open T in
+  let ctx = ref [] in
+  let add_var loc id n depth =
+    if n < depth
+    then mk_DB loc id n
+    else 
+      let s_id = B.string_of_ident id in
+      let k = List.length !ctx in
+      if List.mem s_id !ctx
+      then let new_s_id = s_id ^ "_" ^ (string_of_int k) in
+           ctx := new_s_id :: !ctx; mk_DB loc (B.mk_ident new_s_id) (k + depth)
+      else begin ctx := s_id :: !ctx; mk_DB loc id (k + depth) end in
+  let rec aux depth t =
+    match t with
+    | App(head, t1, tl) ->
+       (* We do it in reverse order so the indices grow from right to left *)
+       let tl = List.rev @@ List.map (aux depth) @@ List.rev tl in
+       let t1 = aux depth t1 in
+       let head = match head with
+         | DB(loc, id, n) -> add_var loc id n depth
+         | _ -> head in
+       mk_App head t1 tl
+    | DB(loc, id, n) -> add_var loc id n depth
+    | Const(_,_) -> t
+    | Lam(l, id, ty_op, body) ->
+       let body = aux (depth + 1) body in
+       let ty_op = Option.map (aux depth) ty_op in
+       mk_Lam l id ty_op body
+    | _ -> raise Todo in
+  let rec aux2 depth t =
+    match t with
+    | App(head, t1, tl) ->
+       mk_App (aux2 depth head) (aux2 depth t1) (List.map (aux2 depth) tl)
+    | DB(loc, id, n) ->
+       if n < depth
+       then t
+       else begin match pos (B.string_of_ident id) (List.rev !ctx) with
+            | Some x -> mk_DB loc id (x + depth)
+            | None -> raise Impossible end
+    | Lam(loc, id, ty_op, body) ->
+       mk_Lam loc id (Option.map (aux2 depth) ty_op) (aux2 (depth + 1) body)
+    | Pi (loc, id, ty, body) ->
+       mk_Pi loc id (aux2 depth ty) (aux2 (depth + 1) body)
+    | _ -> t in
+  let lhs = aux 0 lhs in
+  let rhs = aux2 0 rhs in
+  (lhs, rhs, !ctx)
+
+  
 
 exception No_solution       
 exception Def_without_type
-exception Impossible
+
         
         
 let predicativize_entry env optim out_fmt e =
@@ -109,9 +176,9 @@ let predicativize_entry env optim out_fmt e =
   match e with
   | Def(l, id, sc, opq, ty_op, te) ->
      begin
-       Format.printf "[ %s.%s ] "
-         (blue (B.string_of_mident (Env.get_name env)))
-         (blue (B.string_of_ident id)); Format.print_flush ();
+       let md_name = B.string_of_mident (Env.get_name env) in
+       let id_name = B.string_of_ident id in
+       Format.printf "[ %s.%s ] " (blue md_name) (blue id_name); Format.print_flush ();
        
        let ty = match ty_op with
          | Some x -> x
@@ -129,9 +196,11 @@ let predicativize_entry env optim out_fmt e =
        let te = M.insert_lvl_metas env te in
        let ty = M.insert_lvl_metas env ty in 
 
+       U.cstr_eq := !Cstr.extra_cstr (md_name, id_name);
+
        let _ = C.Typing.checking sg te ty in
        Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();       
-
+       
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
          | Some subst -> subst in
@@ -159,16 +228,20 @@ let predicativize_entry env optim out_fmt e =
      end
   | Decl(l, id, sc, opq, ty) ->
      begin
-       Format.printf "[ %s.%s ] "
-         (blue (B.string_of_mident (Env.get_name env)))
-         (blue (B.string_of_ident id)); Format.print_flush ();         
+       let md_name = B.string_of_mident (Env.get_name env) in
+       let id_name = B.string_of_ident id in
+       Format.printf "[ %s.%s ] " (blue md_name) (blue id_name); Format.print_flush ();
 
        let ty = replace_arity ty in
        let ty = M.insert_lvl_metas env ty in
 
        (*       Format.printf "%a@." T.pp_term ty;*)
 
+       U.cstr_eq := !Cstr.extra_cstr (md_name, id_name);
+(*       List.iter (fun (t1,t2) -> Format.printf "%s = %s ;" (Lvl.string_of_lvl t1) (Lvl.string_of_lvl t2)) !U.cstr_eq;
+       Format.printf "@.oi %d@." (List.length !U.cstr_eq);       *)
        let _ = C.Typing.inference sg ty in
+
        Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
@@ -203,41 +276,51 @@ let predicativize_entry env optim out_fmt e =
 
      let rhs = replace_arity r.rhs in
      let rhs = M.insert_lvl_metas env rhs in
-     Format.printf "oi1@.";
+     (*     Format.printf "oi1@.";*)
 
      let _ = List.map (C.Typing.check_rule sg) [{name = r.name; ctx = r.ctx; pat = lhspt; rhs = rhs}] in
-     Format.printf "oi2@.";
+(*     let lhs_ty = C.Typing.infer sg lhs in
+     C.Typing.checking sg rhs lhs_ty;*)
+     (*     Format.printf "oi2@.";*)
      
-     (*     List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)
+     (*     List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)     
+     
      Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
      let subst = match U.solve_cstr () with
        | None -> raise No_solution
        | Some subst -> subst in
 
-     let lhs, lvl_vars = D.apply_subst_to_term subst lhs in
-     let lhs = cons_to_vars lvl_vars (List.length r.ctx) lhs in
+     let lhs, _ = D.apply_subst_to_term subst lhs in
+
      let rhs, _ = D.apply_subst_to_term subst rhs in
-     let rhs = cons_to_vars lvl_vars (List.length r.ctx) rhs in     
+
 
      let cfg = Api.Meta.default_config () in
      let meta_rules = Api.Meta.parse_meta_files ["metas/remove_vars.dk"] in
      Api.Meta.add_rules cfg meta_rules;
 
      let lhs = Api.Meta.mk_term cfg lhs in
-     let rhs = Api.Meta.mk_term cfg rhs in     
+     let rhs = Api.Meta.mk_term cfg rhs in
+
+     let vars = List.rev @@ remove_duplicates @@ get_poly_vars lhs in
      
+     let lhs = cons_to_vars (List.rev vars) (List.length r.ctx) lhs in
+     let rhs = cons_to_vars (List.rev vars) (List.length r.ctx) rhs in     
+
+     let lhs, rhs, ctx = linearize lhs rhs in
+     (*     Format.printf "%a --> %a@." T.pp_term lhs T.pp_term rhs;*)
      let lhspt = term_to_pattern lhs in     
 
-     let lvl_vars_ctx = List.map (fun s -> B.dloc, B.mk_ident s, None) lvl_vars in
+     let ctx = List.map (fun s -> B.dloc, B.mk_ident s, None) (List.rev ctx) in
 
-     let new_entry = Rules(l, [{name = r.name; ctx = lvl_vars_ctx @ r.ctx; pat = lhspt; rhs = rhs}]) in
+     let new_entry = Rules(l, [{name = r.name; ctx = ctx; pat = lhspt; rhs = rhs}]) in
      Format.fprintf out_fmt "%a@." Pp.print_entry new_entry;       
 
-     Api.Files.add_path "theory2";
-     Format.printf "oi3@.";
-     let _ = Env.add_rules env [{name = r.name; ctx = lvl_vars_ctx @ r.ctx; pat = lhspt; rhs = rhs}] in
-     Format.printf "oi4@.";     
-     Api.Files.add_path "theory";
+     List.iter (fun (_,s,_) -> Format.printf "%s " (B.string_of_ident s)) r.ctx;
+     (*     Format.printf "@.oi3@.";*)
+     let _ = Env.add_rules env [{name = r.name; ctx = ctx; pat = lhspt; rhs = rhs}] in
+     (*     Format.printf "oi4@.";     *)
+
      Some new_entry
      
 (*     Format.printf "We have the following constrains: @.";

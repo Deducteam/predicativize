@@ -104,6 +104,8 @@ let _ =
   (if !eta_mode = true then Kernel.Reduction.eta := true);
   
   let files_with_problems = ref 0 in
+
+  Cstr.read_extra_cstr (); (* SHOULD YOU KEEP ME? *)
   
   List.iter
     (fun s ->

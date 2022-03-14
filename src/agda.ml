@@ -75,6 +75,8 @@ let rec extract_lvl_set t =
 and dklvl_to_agda_lvl t =
   let open T in
   match t with
+  | DB(_, var, _) when (String.get (B.string_of_ident var) 0 = '?') ->
+     Some (Lvar (B.string_of_ident var))
   | Const(_, lzero) when
          (B.string_of_mident (B.md lzero) = "pts" && B.string_of_ident (B.id lzero) = "lzero") ->
      Some Lzero
@@ -215,7 +217,9 @@ let rec dkterm_to_term n te =
      Some (A_Lam(ident, ty_op, te))
 
   | DB(_, ident, num) ->
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in 
+     if String.get (B.string_of_ident ident) 0 = '?'
+     then Some (A_Lvl (Lvar (B.string_of_ident ident)))
+     else let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in 
      Some (A_Var ident)
 
   | Const(_, cst) when

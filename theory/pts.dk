@@ -35,7 +35,7 @@ def mapPlus : Nat -> LvlSet -> LvlSet.
 [i,j,k,l,tl] M i   (Union (S j (M k l)) tl) --> M (max i (plus j k)) (Union (mapPlus j l) tl).
 
 (; TODO: should we have the following rule? ;)
-(; [x] M 0_N (S 0_N x) --> x. ;)
+[x] M 0_N (S 0_N x) --> x. 
 
 (; the following are the more concrete representations ;)
 def lzero : Lvl.
@@ -52,7 +52,7 @@ def lmax : Lvl -> Lvl -> Lvl.
 
 U : s : Lvl -> Type.
 
-def El : s : Lvl -> a : U s -> Type.
+injective El : s : Lvl -> a : U s -> Type.
 
 u : s : Lvl -> U (lsucc s).
 Prod : s1 : Lvl -> s2 : Lvl -> A : U s1 -> B : (El s1 A -> U s2) -> U (lmax s1 s2).
