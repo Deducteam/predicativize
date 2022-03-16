@@ -132,6 +132,10 @@ let get_vars_in_u subst te =
        begin match subst @@ B.string_of_ident @@ B.id var_name with
        | Some t -> fv := (L.get_fv t) @ !fv
        | None -> fv := (B.string_of_ident @@ B.id var_name) :: !fv end
+    | T.Const(_, var_name) when (String.get (B.string_of_ident (B.id var_name)) 0 = '?') ->
+       begin match subst @@ B.string_of_ident @@ B.id var_name with
+       | Some t -> fv := (L.get_fv t) @ !fv
+       | None -> fv := (B.string_of_ident @@ B.id var_name) :: !fv end
     | T.App (f, a1, al) -> aux f; aux a1; List.iter aux al
     | T.Lam (_, _, t, body) -> Option.iter aux t; aux body
     | T.Pi (_, _, a, b) -> aux a; aux b

@@ -109,6 +109,8 @@ let rec get_poly_vars t =
   | Const(_,_) -> []
   | _ -> raise Todo
 
+exception Non_atomic_lvl_in_lhs
+       
 let linearize lhs rhs =
   let open T in
   let ctx = ref [] in
@@ -130,6 +132,9 @@ let linearize lhs rhs =
        let t1 = aux depth t1 in
        let head = match head with
          | DB(loc, id, n) -> add_var loc id n depth
+         | Const(_, name) when (B.string_of_ident (B.id name) = "M" &&
+                                  B.string_of_mident (B.md name) = "pts") ->
+            raise Non_atomic_lvl_in_lhs
          | _ -> head in
        mk_App head t1 tl
     | DB(loc, id, n) -> add_var loc id n depth
@@ -157,7 +162,6 @@ let linearize lhs rhs =
   let lhs = aux 0 lhs in
   let rhs = aux2 0 rhs in
   (lhs, rhs, !ctx)
-
   
 
 exception No_solution       
@@ -187,8 +191,6 @@ let predicativize_entry env optim out_fmt e =
             Printf.printf "Error : all Defs need to have their type, but %s has no type\n" name;
             raise Def_without_type in
 
-(*       Format.printf "%a@." T.pp_term ty;
-       Format.printf "%a@." T.pp_term te;       *)
        
        let te = replace_arity te in
        let ty = replace_arity ty in
@@ -196,11 +198,15 @@ let predicativize_entry env optim out_fmt e =
        let te = M.insert_lvl_metas env te in
        let ty = M.insert_lvl_metas env ty in 
 
+(*       Format.printf "%a@." T.pp_term ty;
+       Format.printf "%a@." T.pp_term te;       *)
+       
        U.cstr_eq := !Cstr.extra_cstr (md_name, id_name);
 
+       
        let _ = C.Typing.checking sg te ty in
        Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();       
-       
+       (*       List.iter (fun (t1,t2) -> Format.printf "%s = %s @." (Lvl.string_of_lvl t1) (Lvl.string_of_lvl t2)) !U.cstr_eq;       *)
        let subst = match U.solve_cstr () with
          | None -> raise No_solution
          | Some subst -> subst in
@@ -278,12 +284,19 @@ let predicativize_entry env optim out_fmt e =
      let rhs = M.insert_lvl_metas env rhs in
      (*     Format.printf "oi1@.";*)
 
+     (* We use the check_rule to try to check that the rule satisfies sr. In the process, constraints 
+        are generated to assure that this is indeed the case. Note that infering the type of the lhs 
+        and then checking that the rhs has the same type would not work, as we do not know the types
+        of the variables in the rule context. I see no clear way of infering them, thus this seems to
+        be the only option to me. *)
      let _ = List.map (C.Typing.check_rule sg) [{name = r.name; ctx = r.ctx; pat = lhspt; rhs = rhs}] in
 (*     let lhs_ty = C.Typing.infer sg lhs in
-     C.Typing.checking sg rhs lhs_ty;*)
+     C.Typing.checking sg rhs lhs_ty; *)
      (*     Format.printf "oi2@.";*)
      
      (*     List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)     
+
+     Format.printf "cstr@. "; List.iter (fun (x, y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;
      
      Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
      let subst = match U.solve_cstr () with
@@ -320,7 +333,7 @@ let predicativize_entry env optim out_fmt e =
      (*     Format.printf "@.oi3@.";*)
      let _ = Env.add_rules env [{name = r.name; ctx = ctx; pat = lhspt; rhs = rhs}] in
      (*     Format.printf "oi4@.";     *)
-
+     Format.printf "%s@." (green "Ok");
      Some new_entry
      
 (*     Format.printf "We have the following constrains: @.";

@@ -64,7 +64,8 @@ let rec unify subst s delayed_s =
      (* We delay the application of the substitution to the constraint to the moment
         we need to consider it, which makes the algorithm much more efficient. Moreover,
         substitution must always be followed by minimization. *)
-     let c = minimize @@ simplify (apply_subst subst t1, apply_subst subst t2) in     
+     let c = minimize @@ simplify (apply_subst subst t1, apply_subst subst t2) in
+     (*     Format.printf "%s = %s@." (Lvl.string_of_lvl (fst c)) (Lvl.string_of_lvl (snd c));     *)
      match c with
 
      | (t1, t2) when t1 = t2 -> unify subst s delayed_s

@@ -26,6 +26,7 @@ let predicativize optim sttfa_mode agda_mode inputfile =
   let entries = if sttfa_mode then sttfa_to_pts inputfile entries else entries in
 
   let env = Env.init (Parsers.Parser.input_from_file inputfile) in
+  Env.errors_in_snf := true;
   
   let name = Filename.(chop_suffix (basename inputfile) ".dk") in
 
@@ -46,7 +47,7 @@ let predicativize optim sttfa_mode agda_mode inputfile =
           | Some x -> ok_entries := 1 + !ok_entries; Some x
         with e -> begin
             let _, _, s = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
-          Format.printf "%s%s@." (red "ERROR : ")  s;
+            Format.printf "%s%s@." (red "ERROR : ")  s;
             ko_entries := 1 + !ko_entries; no_errors := false; None end)
       entries in
 

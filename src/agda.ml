@@ -70,13 +70,13 @@ let rec extract_lvl_set t =
      let* t2 = extract_lvl_set t2 in
      Some (Lmax (t1, t2))
      
-  | _ -> pp_term Format.std_formatter t; None 
+  | _ -> None 
   
 and dklvl_to_agda_lvl t =
   let open T in
   match t with
-  | DB(_, var, _) when (String.get (B.string_of_ident var) 0 = '?') ->
-     Some (Lvar (B.string_of_ident var))
+  | DB(_, var, _) ->
+     Some (Lvar (sanitize @@ B.string_of_ident var))
   | Const(_, lzero) when
          (B.string_of_mident (B.md lzero) = "pts" && B.string_of_ident (B.id lzero) = "lzero") ->
      Some Lzero
@@ -264,7 +264,12 @@ and dkty_to_ty n te =
      let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in
      let* t2 = dkty_to_ty (n + 1) t2 in
      let* t1 = dkty_to_ty n t1 in     
-     Some (A_Pi (t1, ident, t2))   
+     Some (A_Pi (t1, ident, t2))
+
+  | App(Const(_,u), t, []) when
+         (B.string_of_mident (B.md u) = "pts" && B.string_of_ident (B.id u) = "U") ->
+     let* l = dklvl_to_agda_lvl t in
+     Some (A_Set l)
   | _ -> None
 
 type agda_entry =
@@ -283,12 +288,12 @@ let pp_entry fmt e =
 let dkentry_to_entry e =
   let open Parsers.Entry in
   match e with
-  | Def(_, id, _, _, Some ty, te) ->    
+  | Def(_, id, _, _, Some ty, te) ->
      let* ty = dkty_to_ty 0 ty in
      let* te = dkterm_to_term 0 te in
      let id = sanitize @@ B.string_of_ident id in
      Some (A_Def (id, ty, te))
-  | Decl(_, id, _, _, ty) ->    
+  | Decl(_, id, _, _, ty) ->
      let* ty = dkty_to_ty 0 ty in
      let id = sanitize @@ B.string_of_ident id in
      Some (A_Decl (id, ty))
