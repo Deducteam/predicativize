@@ -8,6 +8,7 @@ module U = Unif
 module D = Lvldk
 module S = Kernel.Signature
 module R = Kernel.Rule
+module L = Lvl
 open Common
 
 let pts_empty_set = T.mk_App D.pts_m D.pts_0_n [D.pts_empty]
@@ -162,6 +163,33 @@ let linearize lhs rhs =
   let lhs = aux 0 lhs in
   let rhs = aux2 0 rhs in
   (lhs, rhs, !ctx)
+
+let rec remove_non_atomic_lvls_in_lhs t =
+  let open T in
+  match t with
+  | App(Const(_, n1), _, [t2]) when (B.string_of_ident (B.id n1) = "M") ->
+     begin
+       match D.extract_lvl_set t2 with
+       | None -> raise Impossible
+       | Some lvl_set ->
+          let t1 = L.M(0, [List.hd lvl_set]) in
+          List.map (fun x -> (t1, L.M(0, [x]))) (List.tl lvl_set)
+     end
+  | App(_, t1, tl) ->
+     let c1 = remove_non_atomic_lvls_in_lhs t1 in
+     let cl = List.map remove_non_atomic_lvls_in_lhs tl in     
+     List.fold_left (fun acc x -> x @ acc) c1 cl
+  | DB(_, _, _) -> []
+  | Const(_,_) -> []
+  | Lam(_, _, ty_op, body) ->
+     let body_c = remove_non_atomic_lvls_in_lhs body in
+     begin
+       match ty_op with
+       | None -> body_c
+       | Some x -> body_c @ (remove_non_atomic_lvls_in_lhs x)
+     end
+  | _ -> raise Not_a_patt
+
   
 
 exception No_solution       
@@ -296,7 +324,7 @@ let predicativize_entry env optim out_fmt e =
      
      (*     List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)     
 
-     Format.printf "cstr@. "; List.iter (fun (x, y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;
+     (*     Format.printf "cstr@. "; List.iter (fun (x, y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;*)
      
      Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
      let subst = match U.solve_cstr () with
@@ -314,6 +342,22 @@ let predicativize_entry env optim out_fmt e =
 
      let lhs = Api.Meta.mk_term cfg lhs in
      let rhs = Api.Meta.mk_term cfg rhs in
+     
+     U.cstr_eq := remove_non_atomic_lvls_in_lhs lhs;
+                  Format.printf "%a@." T.pp_term lhs;
+          List.iter (fun (x,y) -> Format.printf "%s = %s@." (Lvl.string_of_lvl x) (Lvl.string_of_lvl y)) !U.cstr_eq;
+     let remove_non_alvl_subst = match U.solve_cstr () with
+       | None -> raise No_solution
+       | Some subst -> subst in
+
+     let lhs, _ = D.apply_subst_to_term remove_non_alvl_subst lhs in
+                  Format.printf "%a@." T.pp_term lhs;
+     let rhs, _ = D.apply_subst_to_term remove_non_alvl_subst rhs in
+
+     let lhs = Api.Meta.mk_term cfg lhs in
+     let rhs = Api.Meta.mk_term cfg rhs in
+                  Format.printf "%a@." T.pp_term lhs;
+     
 
      let vars = List.rev @@ remove_duplicates @@ get_poly_vars lhs in
      

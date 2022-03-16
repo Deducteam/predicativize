@@ -78,15 +78,15 @@ let rec unify subst s delayed_s =
         (* zero occurence, thus there is still hope but now we cannot infer
            a substitution from this constraint, thus we delay it *)
         (* !! is it a good idea to do this here? *)
-        | Zero_occ -> (*unify subst s ((M (0, [S (0, x)]), t) :: delayed_s)*)
-           let fresh_x = "??" ^ (string_of_int !fresh_var) in
+        | Zero_occ -> unify subst s ((M (0, [S (0, x)]), t) :: delayed_s) 
+(*           let fresh_x = "??" ^ (string_of_int !fresh_var) in
            fresh_var := 1 + !fresh_var;
            let t = apply_subst (fun v -> if v = x then Some (M(0,[S(0,fresh_x)])) else None) t in
            let new_subst var =
              if var = x then Some t
              (* we also need to apply the new substitution to the image of the old one *)
              else Option.map (apply_subst (fun v -> if v = x then Some t else None)) (subst var) in
-           unify new_subst (s @ delayed_s) []           
+           unify new_subst (s @ delayed_s) []           *)
            
         (* no occurence, thus we can infer a substitution *)
         | No_occ ->
@@ -106,6 +106,29 @@ let rec unify subst s delayed_s =
 and apply_heuristic subst delayed_s s2 =
   let diff l1 l2 = (List.filter (fun x -> not (List.mem x l2)) l1,
                     List.filter (fun x -> not (List.mem x l1)) l2) in
+
+
+  let solve_zero_occ (t1, t2) =
+    match t1, t2 with
+    | (M (0, [S (0, x)]), t) | (t, M (0, [S(0, x)])) ->
+       (* we check if x occurs in t, and how *)        
+       begin match get_occ x t with
+       | Zero_occ ->
+          let fresh_x = "??" ^ (string_of_int !fresh_var) in
+          fresh_var := 1 + !fresh_var;
+          let t = apply_subst (fun v -> if v = x then Some (M(0,[S(0,fresh_x)])) else None) t in
+          Some (M (0, [S (0, x)]), t)          
+       | _ -> None end
+    | _ -> None in
+
+
+  let get_first_some l =
+    List.fold_left (fun acc x -> if acc = None && x != None then x else acc) None l in
+
+  match get_first_some @@ List.map solve_zero_occ delayed_s with
+  | Some c -> unify subst (c :: delayed_s) []
+  | None -> begin
+  
   match delayed_s with
   | [] -> begin
       match List.hd s2 with
@@ -150,7 +173,7 @@ and apply_heuristic subst delayed_s s2 =
         rep_cnt := 1 + !rep_cnt;
         unify subst (delayed_s @ s2) []
         
-     | _ -> apply_heuristic subst delayed_s' (c :: s2)
+     | _ -> apply_heuristic subst delayed_s' (c :: s2) end
 (*     | (M (1, [S(1, _)]), M(_, at_l)) | (M(_, at_l), M (1, [S(1, _)])) ->
         let vars_at_zero =
           List.fold_left (fun acc (S(n,y)) -> if n = 0 then y :: acc else acc) [] at_l in

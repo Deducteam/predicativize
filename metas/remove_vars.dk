@@ -1,1 +1,28 @@
 [x] pts.M pts.0_N (pts.S pts.0_N x) --> x.
+
+
+[y]   pts.max pts.0_N     y       --> y.
+[x]   pts.max x       pts.0_N     --> x.
+[x,y] pts.max (pts.S_N x) (pts.S_N y) --> pts.S_N (pts.max x y).
+
+[y]   pts.plus pts.0_N     y --> y.
+[x,y] pts.plus (pts.S_N x) y --> pts.S_N (pts.plus x y).
+
+
+[x]     pts.Union x          pts.Empty      --> x.
+[i,j,l] pts.Union (pts.S i l) (pts.S j l)       --> pts.S (pts.max i j) l.
+
+[i]       pts.mapPlus i pts.Empty         --> pts.Empty.
+[i,j,l]   pts.mapPlus i (pts.S j l)       --> pts.S (pts.plus i j) l.
+[i,l1,l2] pts.mapPlus i (pts.Union l1 l2) --> pts.Union (pts.mapPlus i l1) (pts.mapPlus i l2).
+
+
+
+[i,j,k,l]    pts.M i   (pts.S j (pts.M k l))            --> pts.M (pts.max i (pts.plus j k)) (pts.mapPlus j l).
+[i,j,k,l,tl] pts.M i   (pts.Union (pts.S j (pts.M k l)) tl) --> pts.M (pts.max i (pts.plus j k)) (pts.Union (pts.mapPlus j l) tl).
+
+[]    pts.lzero       --> pts.M pts.0_N pts.Empty.
+[x]   pts.lsucc x     --> pts.M pts.1_N (pts.S pts.1_N x).
+[x,y] pts.lmax x y    --> pts.M pts.0_N (pts.Union (pts.S pts.0_N x) (pts.S pts.0_N y)).
+
+
