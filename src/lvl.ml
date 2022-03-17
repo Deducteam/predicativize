@@ -78,8 +78,4 @@ let get_min (M(n,at_l)) =
        
 (* [get_fv t] returns the free variables of [t]. *)
 let get_fv (M(_,at_l)) =
-  List.fold_left (fun acc (S(_,var)) -> var :: acc) [] at_l
-
-let minus_lvl var (M(n,at_l)) =
-  M(n, List.filter (fun e -> not (e = S(0, var))) at_l)
-  
+  List.fold_left (fun acc (S(_,var)) -> var :: acc) [] at_l  

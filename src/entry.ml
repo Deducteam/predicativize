@@ -43,21 +43,19 @@ let predicativize_entry env optim out_fmt e =
 
      let te = M.insert_lvl_metas env te in
      let ty = M.insert_lvl_metas env ty in 
-
-     (*       Format.printf "%a@." T.pp_term ty;
-       Format.printf "%a@." T.pp_term te;       *)
      
      U.cstr_eq := !Extra_cstr.extra_cstr (md_name, id_name);
-     
      let _ = C.Typing.checking sg te ty in
+     
      Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();       
-     (*       List.iter (fun (t1,t2) -> Format.printf "%s = %s @." (Lvl.string_of_lvl t1) (Lvl.string_of_lvl t2)) !U.cstr_eq;       *)
      let subst = match U.solve_cstr () with
        | None -> raise No_solution
        | Some subst -> subst in
 
      let ty, ty_fv =
-       if optim then
+       (* if optim = true, we only take as free lvl vars the ones which appears in the
+          the argument of a Set in the type *)
+       if optim then 
          let new_ty, _ = D.apply_subst_to_term subst ty in
          (new_ty, D.get_vars_in_u subst ty)
        else D.apply_subst_to_term subst ty in
@@ -86,11 +84,7 @@ let predicativize_entry env optim out_fmt e =
      let ty = EA.replace_arity ty in
      let ty = M.insert_lvl_metas env ty in
 
-     (*       Format.printf "%a@." T.pp_term ty;*)
-
      U.cstr_eq := !Extra_cstr.extra_cstr (md_name, id_name);
-     (*       List.iter (fun (t1,t2) -> Format.printf "%s = %s ;" (Lvl.string_of_lvl t1) (Lvl.string_of_lvl t2)) !U.cstr_eq;
-       Format.printf "@.oi %d@." (List.length !U.cstr_eq);       *)
      let _ = C.Typing.inference sg ty in
 
      Format.printf "Solving %n constraints. " (List.length !U.cstr_eq); Format.print_flush ();
@@ -99,6 +93,8 @@ let predicativize_entry env optim out_fmt e =
        | Some subst -> subst in
 
      let ty, ty_fv =
+       (* if optim = true, we only take as free lvl vars the ones which appears in the
+          the argument of a Set in the type *)
        if optim then
          let new_ty, _ = D.apply_subst_to_term subst ty in
          (new_ty, D.get_vars_in_u subst ty)
