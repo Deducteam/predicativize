@@ -81,7 +81,8 @@ let _ =
   let optim_enabled = ref false in
   let sttfa_to_pts_mode = ref false in
   let agda_mode = ref false in
-  let eta_mode = ref false in    
+  let eta_mode = ref false in
+  let extra_cstrs_file = ref None in
   dkcheck "theory/pts.dk";
   dkcheck "theory/sttfa.dk";
   (try ignore (Unix.stat "out") with _ -> Unix.mkdir "out" 0o755);
@@ -97,6 +98,8 @@ let _ =
           " Automatically translates the output to agda files and typechecks them") ;
         ( "--eta", Arg.Unit (fun () -> eta_mode := true),
           " Uses eta equality") ;        
+        ( "--cstr", Arg.String (fun s -> extra_cstrs_file := Some s),
+          " A file containing extra constraints to be taken into account") ;        
       ]
   in
   let usage = "A tool for making definitions predicative\nUsage: " ^ Sys.argv.(0) ^ " [OPTION]... [FILE]...\nAvailable options:" in
@@ -106,7 +109,9 @@ let _ =
   
   let files_with_problems = ref 0 in
 
-  Cstr.read_extra_cstr (); (* SHOULD YOU KEEP ME? *)
+  begin match !extra_cstrs_file with
+  | Some s -> Extra_cstr.read_extra_cstr s
+  | None -> () end;
   
   List.iter
     (fun s ->

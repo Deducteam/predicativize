@@ -7,9 +7,9 @@ exception Not_a_lvl
 
 let extra_cstr = ref (fun _ -> [])
         
-let read_extra_cstr () =
+let read_extra_cstr s =
   Format.printf "Reading extra cstr@.";
-  let entries = P.(parse (input_from_file "extra_cstr.dk")) in
+  let entries = P.(parse (input_from_file s)) in
   let read_extra_cstr' extra_cstr md_name id_name e =
     let open Parsers.Entry in
     match e with

@@ -54,8 +54,8 @@ let rec unify subst s delayed_s =
      infer a most general solution. *)
   | [] -> if delayed_s = [] then Some subst else begin
               Format.printf "%s " (yellow "Cannot infer solution, trying heuristic.");
-              Format.printf "State:@.";
-              List.iter (fun c -> Format.printf "%s@." (string_of_cstr c)) delayed_s;
+(*              Format.printf "State:@.";
+              List.iter (fun c -> Format.printf "%s@." (string_of_cstr c)) delayed_s;*)
               apply_heuristic subst delayed_s [] end (*begin
               Format.printf "State:@.";
               List.iter (fun c -> Format.printf "%s@." (string_of_cstr c)) delayed_s;
