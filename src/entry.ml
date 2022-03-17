@@ -171,6 +171,7 @@ let rec remove_non_atomic_lvls_in_lhs t =
      begin
        match D.extract_lvl_set t2 with
        | None -> raise Impossible
+       | Some [] -> []
        | Some lvl_set ->
           let t1 = L.M(0, [List.hd lvl_set]) in
           List.map (fun x -> (t1, L.M(0, [x]))) (List.tl lvl_set)

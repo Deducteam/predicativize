@@ -32,7 +32,7 @@ def matita_arithmetics_nat : Type.
 
 nat : Type.
 
-(;[] ?0 --> M 0_N Empty.;)
+[] ?0 --> M 0_N Empty.
 
 S : Type.
 
@@ -187,6 +187,10 @@ gcd_aux_body : Type.
 
 def matita_arithmetics_bigops : Type.
 
+range : Type.
+
+[] ?1 --> M 0_N Empty.
+
 bigop : Type.
 
 [] ?7 --> ?3.
@@ -309,6 +313,7 @@ def matita_arithmetics_lstar : Type.
 lstar : Type.
 
 [] ?4 --> ?0.
+(;
 [] ?5 --> ?0.
 [] ?6 --> ?0.
 
@@ -324,10 +329,11 @@ lstar_S : Type.
 [] ?16 --> ?7.
 [] ?9 --> ?7.
 [] ?12 --> ?7.
-
+;)
 lstar_r : Type.
 
 [] ?4 --> ?0.
+(;
 [] ?5 --> ?0.
 [] ?6 --> ?0.
 
@@ -342,7 +348,35 @@ lstar_r_S : Type.
 [] ?13 --> ?7.
 [] ?10 --> ?7.
 [] ?11 --> ?7.
-[] ?14 --> ?7.
+[] ?14 --> ?7.;)
+
+def matita_basics_types : Type.
+
+option_discr : Type.
+
+[] ?133 --> M 0_N Empty.
+
+option : Type.
+
+[] ?0 --> ?1.
+(;[] ?0 --> M 0_N Empty.;)
+
+Sum : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+DPair : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+Sig : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+Prod : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
 
 def matita_basics_lists_list : Type.
 
@@ -359,7 +393,7 @@ cons : Type.
 [] ?2 --> ?5.
 [] ?6 --> ?5.
 
-append : Type.
+(;append : Type.
 
 [] ?2 --> ?5.
 [] ?8 --> ?5.
@@ -382,27 +416,26 @@ rev_append_body : Type.
 [] ?2 --> ?5.
 [] ?8 --> ?5.
 [] ?7 --> ?5.
-
+;)
 mem : Type.
 
 [] ?3 --> ?0.
-[] ?4 --> ?0.
 
 mem_body : Type.
 
 [] ?3 --> ?0.
-[] ?4 --> ?0.
+
 
 unique : Type.
 
 [] ?0 --> ?2.
-[] ?3 --> ?2.
+
 
 unique_body : Type.
 
 [] ?0 --> ?2.
-[] ?3 --> ?2.
 
+(;
 split_rev : Type.
 
 [] ?6 --> ?0.
@@ -442,27 +475,35 @@ nth_opt_body : Type.
 [] ?2 --> ?7.
 [] ?5 --> ?7.
 [] ?4 --> ?7.
-
+;)
 All : Type.
 
-[] ?3 --> ?0.
-[] ?4 --> ?0.
-[] ?5 --> ?0.
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
 
 All_body : Type.
 
-[] ?3 --> ?0.
-[] ?4 --> ?0.
-[] ?5 --> ?0.
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
 
 Allr : Type.
 
-[] ?3 --> ?0.
-(;
-[] ?4 --> ?0.
-[] ?5 --> ?0.;)
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
 
 Allr_body : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+
+Exists : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+Exists_body : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+
+(;
 
 [] ?3 --> ?0.
 (;
@@ -508,3 +549,4 @@ position_of_aux_body : Type.
 [] ?8 --> ?2.
 [] ?10 --> ?2.
 [] ?11 --> ?2.
+;)

@@ -152,25 +152,25 @@ and apply_heuristic subst delayed_s s2 =
         unify subst (c :: delayed_s' @ s2) []
        
      | (M (n, [S(m, x)]), M(_, at_l)) | (M(_, at_l), M (n, [S(m, x)])) ->
+        let count_fresh = rep_cnt := 1 + !rep_cnt; !rep_cnt in
         let subst_lift_var =
           List.fold_left
             (fun acc (S(k,v)) ->
               if n > k
               then (fun var -> if var = v
-                               then Some (M(n-k,[S(n-k,"?" ^ (string_of_int !rep_cnt) ^ v)]))
+                               then Some (M(n-k,[S(n-k,"?" ^ (string_of_int count_fresh) ^ v)]))
                                else acc var)
               else acc) (fun _ -> None) at_l in
         let subst_lift_var = if n = m
                              then subst_lift_var
                              else (fun var -> if var = x
-                                              then Some (M(n-m,[S(n-m,"?" ^ (string_of_int !rep_cnt) ^ x)]))
+                                              then Some (M(n-m,[S(n-m,"?" ^ (string_of_int count_fresh) ^ x)]))
                                               else subst_lift_var var) in
         let subst var =
           match subst_lift_var var with
           | Some t -> Some t
           | None -> Option.map (apply_subst subst_lift_var) (subst var) in
         
-        rep_cnt := 1 + !rep_cnt;
         unify subst (delayed_s @ s2) []
         
      | _ -> apply_heuristic subst delayed_s' (c :: s2) end
