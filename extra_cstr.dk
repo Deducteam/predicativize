@@ -5,7 +5,6 @@ eq : Type.
 
 [] ?2 --> ?0.
 
-
 Not : Type.
 
 [] ?1 --> ?0.
@@ -22,11 +21,18 @@ And : Type.
 Or : Type.
 
 [] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
-(;
+
 ex : Type.
 
 [] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
-;)
+
+ex2 : Type.
+
+[] ?0 --> M 0_N (Union (Union (S 0_N ?1) (S 0_N ?3)) (S 0_N ?4)).
+
+def matita_arithmetics_bool : Type.
+
+[] ?0 --> M 0_N Empty.
 
 def matita_arithmetics_nat : Type.
 
@@ -85,6 +91,10 @@ minus_body : Type.
 
 def matita_arithmetics_div_and_mod : Type.
 
+div_mod_spec : Type.
+
+[] ?0 --> M 0_N Empty.
+
 mod_aux : Type.
 
 [] ?5 --> ?3.
@@ -134,6 +144,10 @@ fact_body : Type.
 
 def matita_arithmetics_minimization : Type.
 
+max_spec : Type.
+
+[] ?0 --> M 0_N Empty.
+
 max' : Type.
 
 [] ?5 --> ?3.
@@ -171,6 +185,12 @@ min_spec : Type.
 [] ?8 --> ?0.
 [] ?10 --> ?0.
 
+def matita_arithmetics_primes : Type.
+
+divides : Type.
+
+[] ?0 --> M 0_N Empty.
+
 def matita_arithmetics_gcd : Type.
 
 gcd_aux : Type.
@@ -186,6 +206,14 @@ gcd_aux_body : Type.
 [] ?7 --> ?3.
 
 def matita_arithmetics_bigops : Type.
+
+Aop : Type.
+
+[] ?0 --> ?1.
+
+Aop : Type.
+
+[] ?0 --> ?1.
 
 range : Type.
 
@@ -352,6 +380,14 @@ lstar_r_S : Type.
 
 def matita_basics_types : Type.
 
+void : Type.
+
+[] ?0 --> M 0_N Empty.
+
+unit : Type.
+
+[] ?0 --> M 0_N Empty.
+
 option_discr : Type.
 
 [] ?133 --> M 0_N Empty.
@@ -379,6 +415,10 @@ Prod : Type.
 
 
 def matita_basics_lists_list : Type.
+
+Aop : Type.
+
+[] ?0 --> ?1.
 
 list : Type.
 
