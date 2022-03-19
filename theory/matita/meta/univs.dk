@@ -1,0 +1,15 @@
+(; This file was automatically generated from Matita. ;)
+
+
+def Type0 : cic.Sort.
+
+def Type1 : cic.Sort.
+
+def Type2 : cic.Sort.
+
+def Type3 : cic.Sort.
+
+def Type4 : cic.Sort.
+
+def Type5 : cic.Sort.
+

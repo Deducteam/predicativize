@@ -1,0 +1,23 @@
+[] cic.Sort --> pts.Lvl.
+[] cic.prop --> pts.var.
+[] cic.type --> x => pts.var.
+
+[] cic.max --> x => y => pts.var.
+[] cic.rule --> x => y => pts.var.
+[] cic.succ --> x => pts.var.
+[] cic.next --> x => pts.var.
+
+[] cic.lift --> s1 => s2 => a => a.
+[] cic.Univ --> pts.U.
+[] cic.Term --> pts.El.
+
+[] cic.univ --> pts.u.
+
+[] cic.prod --> pts.Prod.
+
+[] univs.Type0 --> pts.var.
+[] univs.Type1 --> pts.var.
+[] univs.Type2 --> pts.var.
+[] univs.Type3 --> pts.var.
+[] univs.Type4 --> pts.var.
+[] univs.Type5 --> pts.var.

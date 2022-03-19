@@ -1,0 +1,592 @@
+
+def matita_basics_logic : Type.
+
+eq : Type.
+
+[] ?2 --> ?0.
+
+Not : Type.
+
+[] ?1 --> ?0.
+
+nmk : Type.
+
+[] ?5 --> ?4.
+[] ?5 --> ?2.
+
+And : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+Or : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+ex : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+ex2 : Type.
+
+[] ?0 --> M 0_N (Union (Union (S 0_N ?1) (S 0_N ?3)) (S 0_N ?4)).
+
+def matita_basics_bool : Type.
+
+[] ?0 --> M 0_N Empty.
+
+def matita_arithmetics_nat : Type.
+
+nat : Type.
+
+[] ?0 --> M 0_N Empty.
+
+S : Type.
+
+[] ?3 --> ?1.
+
+le : Type.
+
+[] ?0 --> ?4.
+[] ?0 --> ?2.
+
+le_n : Type.
+
+[] ?2 --> ?3.
+
+le_S : Type.
+
+[] ?7 --> ?5.
+[] ?8 --> ?5.
+[] ?4 --> ?5.
+
+plus : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+plus_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+times : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+times_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+minus : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+minus_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+def matita_arithmetics_div_and_mod : Type.
+
+div_mod_spec : Type.
+
+[] ?0 --> M 0_N Empty.
+
+mod_aux : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+mod_aux_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+
+div_aux : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+div_aux_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+def matita_arithmetics_exp : Type.
+
+exp : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+exp_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+
+def matita_arithmetics_factorial : Type.
+
+fact : Type.
+
+[] ?1 --> ?3.
+
+fact_body : Type.
+
+[] ?1 --> ?3.
+
+def matita_arithmetics_minimization : Type.
+
+max_spec : Type.
+
+[] ?0 --> M 0_N Empty.
+
+max' : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+max'_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+min : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+min_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+
+min_spec : Type.
+
+[] ?2 --> ?0.
+[] ?4 --> ?0.
+[] ?6 --> ?0.
+[] ?8 --> ?0.
+[] ?10 --> ?0.
+
+def matita_arithmetics_primes : Type.
+
+divides : Type.
+
+[] ?0 --> M 0_N Empty.
+
+def matita_arithmetics_gcd : Type.
+
+gcd_aux : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+gcd_aux_body : Type.
+
+[] ?5 --> ?3.
+[] ?1 --> ?3.
+[] ?7 --> ?3.
+
+def matita_arithmetics_bigops : Type.
+
+Aop : Type.
+
+[] ?0 --> ?1.
+
+Aop : Type.
+
+[] ?0 --> ?1.
+
+range : Type.
+
+[] ?1 --> M 0_N Empty.
+
+bigop : Type.
+
+[] ?7 --> ?3.
+[] ?10 --> ?3.
+[] ?12 --> ?3.
+[] ?14 --> ?3.
+
+bigop_body : Type.
+
+[] ?7 --> ?3.
+[] ?10 --> ?3.
+[] ?12 --> ?3.
+[] ?14 --> ?3.
+
+ACop : Type.
+
+[] ?1 --> ?0.
+
+mk_ACop : Type.
+
+[] ?2 --> ?3.
+[] ?8 --> ?3.
+
+comm : Type.
+
+[] ?5 --> ?0.
+[] ?1 --> ?0.
+[] ?11 --> ?0.
+
+comm_body : Type.
+
+[] ?5 --> ?0.
+[] ?1 --> ?0.
+[] ?11 --> ?0.
+
+aop : Type.
+
+[] ?2 --> ?4.
+
+aop_body : Type.
+
+[] ?2 --> ?4.
+
+range : Type.
+
+[] ?0 --> ?1.
+
+mk_range : Type.
+
+[] ?2 --> ?4.
+[] ?6 --> ?4.
+[] ?9 --> ?4.
+[] ?11 --> ?4.
+[] ?8 --> ?4.
+
+enum : Type.
+
+[] ?2 --> ?4.
+
+enum_body : Type.
+
+[] ?2 --> ?4.
+
+upto : Type.
+
+[] ?1 --> ?3.
+
+upto_body : Type.
+
+[] ?1 --> ?3.
+
+filter : Type.
+
+[] ?1 --> ?3.
+[] ?5 --> ?3.
+
+filter_body : Type.
+
+[] ?1 --> ?3.
+[] ?5 --> ?3.
+
+def matita_arithmetics_ord : Type.
+
+p_ord_aux : Type.
+
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+[] ?7 --> ?0.
+[] ?9 --> ?0.
+[] ?11 --> ?0.
+
+p_ord_aux_body : Type.
+
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+[] ?7 --> ?0.
+[] ?9 --> ?0.
+[] ?11 --> ?0.
+
+
+def matita_arithmetics_permutation : Type.
+
+invert_permut : Type.
+
+[] ?1 --> ?3.
+[] ?5 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+
+invert_permut_body : Type.
+
+[] ?1 --> ?3.
+[] ?5 --> ?3.
+[] ?7 --> ?3.
+[] ?9 --> ?3.
+
+def matita_arithmetics_lstar : Type.
+
+lstar : Type.
+
+[] ?4 --> ?0.
+(;
+[] ?5 --> ?0.
+[] ?6 --> ?0.
+
+lstar_O : Type.
+
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+[] ?1 --> ?0.
+
+lstar_S : Type.
+
+[] ?11 --> ?7.
+[] ?16 --> ?7.
+[] ?9 --> ?7.
+[] ?12 --> ?7.
+;)
+lstar_r : Type.
+
+[] ?4 --> ?0.
+(;
+[] ?5 --> ?0.
+[] ?6 --> ?0.
+
+lstar_r_O : Type.
+
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+[] ?1 --> ?0.
+
+lstar_r_S : Type.
+
+[] ?13 --> ?7.
+[] ?10 --> ?7.
+[] ?11 --> ?7.
+[] ?14 --> ?7.;)
+
+def matita_basics_types : Type.
+
+void : Type.
+
+[] ?0 --> M 0_N Empty.
+
+unit : Type.
+
+[] ?0 --> M 0_N Empty.
+
+option_discr : Type.
+
+[] ?133 --> M 0_N Empty.
+
+option : Type.
+
+[] ?0 --> ?1.
+(;[] ?0 --> M 0_N Empty.;)
+
+Sum : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+DPair : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+Sig : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+Prod : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?1) (S 0_N ?2)).
+
+
+def matita_basics_lists_list : Type.
+
+Aop : Type.
+
+[] ?0 --> ?1.
+
+list : Type.
+
+[] ?0 --> ?1.
+
+nil : Type.
+
+[] ?2 --> ?1.
+
+cons : Type.
+
+[] ?2 --> ?5.
+[] ?6 --> ?5.
+
+(;append : Type.
+
+[] ?2 --> ?5.
+[] ?8 --> ?5.
+[] ?7 --> ?5.
+
+append_body : Type.
+
+[] ?2 --> ?5.
+[] ?8 --> ?5.
+[] ?7 --> ?5.
+
+rev_append : Type.
+
+[] ?2 --> ?5.
+[] ?8 --> ?5.
+[] ?7 --> ?5.
+
+rev_append_body : Type.
+
+[] ?2 --> ?5.
+[] ?8 --> ?5.
+[] ?7 --> ?5.
+;)
+mem : Type.
+
+[] ?3 --> ?0.
+
+mem_body : Type.
+
+[] ?3 --> ?0.
+
+
+unique : Type.
+
+[] ?0 --> ?2.
+
+
+unique_body : Type.
+
+[] ?0 --> ?2.
+
+(;
+split_rev : Type.
+
+[] ?6 --> ?0.
+[] ?7 --> ?0.
+[] ?9 --> ?0.
+[] ?12 --> ?0.
+[] ?14 --> ?0.
+[] ?15 --> ?0.
+
+split_rev_body : Type.
+
+[] ?6 --> ?0.
+[] ?7 --> ?0.
+[] ?9 --> ?0.
+[] ?12 --> ?0.
+[] ?14 --> ?0.
+[] ?15 --> ?0.
+
+nth : Type.
+
+[] ?3 --> ?7.
+[] ?4 --> ?7.
+
+nth_body : Type.
+
+[] ?3 --> ?7.
+[] ?4 --> ?7.
+
+nth_opt : Type.
+
+[] ?2 --> ?7.
+[] ?5 --> ?7.
+[] ?4 --> ?7.
+
+nth_opt_body : Type.
+
+[] ?2 --> ?7.
+[] ?5 --> ?7.
+[] ?4 --> ?7.
+;)
+All : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+All_body : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+
+Allr : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+Allr_body : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+
+Exists : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+Exists_body : Type.
+
+[] ?0 --> M 0_N (Union (S 0_N ?3) (S 0_N ?4)).
+
+
+(;
+
+[] ?3 --> ?0.
+(;
+[] ?4 --> ?0.
+[] ?5 --> ?0.;)
+
+Exists : Type.
+
+[] ?3 --> ?0.
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+
+Exists_body : Type.
+
+[] ?3 --> ?0.
+[] ?4 --> ?0.
+[] ?5 --> ?0.
+
+ltl : Type.
+
+[] ?4 --> ?2.
+[] ?7 --> ?2.
+[] ?6 --> ?2.
+
+ltl_body : Type.
+
+[] ?4 --> ?2.
+[] ?7 --> ?2.
+[] ?6 --> ?2.
+
+position_of_aux : Type.
+
+[] ?3 --> ?2.
+[] ?5 --> ?2.
+[] ?8 --> ?2.
+[] ?10 --> ?2.
+[] ?11 --> ?2.
+
+position_of_aux_body : Type.
+
+[] ?3 --> ?2.
+[] ?5 --> ?2.
+[] ?8 --> ?2.
+[] ?10 --> ?2.
+[] ?11 --> ?2.
+;)

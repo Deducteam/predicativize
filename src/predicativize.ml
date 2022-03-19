@@ -15,15 +15,27 @@ let sttfa_to_pts inputfile entries =
   M.add_rules cfg meta_rules;
   List.map (M.mk_entry cfg env) entries
 
+let apply_meta meta inputfile entries =
+  let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
+  let cfg = M.default_config () in
+  let meta_rules = M.parse_meta_files [meta] in
+  M.add_rules cfg meta_rules;
+  List.map (M.mk_entry cfg env) entries
+
+  
 exception Exit_p
         
-let predicativize optim sttfa_mode agda_mode inputfile =
+let predicativize meta optim _ agda_mode inputfile =
   Files.add_path "theory";
   Files.add_path "out";  
 
   let entries = P.(parse (input_from_file inputfile)) in
 
-  let entries = if sttfa_mode then sttfa_to_pts inputfile entries else entries in
+  (*  let entries = if sttfa_mode then sttfa_to_pts inputfile entries else entries in*)
+  let entries =
+    match meta with
+    | None -> entries
+    | Some meta -> apply_meta meta inputfile entries in
 
   let env = Env.init (Parsers.Parser.input_from_file inputfile) in
   Env.errors_in_snf := true;
@@ -83,6 +95,8 @@ let _ =
   let agda_mode = ref false in
   let eta_mode = ref false in
   let extra_cstrs_file = ref None in
+  let add_to_path = ref None in
+  let meta_file = ref None in  
   dkcheck "theory/pts.dk";
   dkcheck "theory/sttfa.dk";
   (try ignore (Unix.stat "out") with _ -> Unix.mkdir "out" 0o755);
@@ -99,13 +113,20 @@ let _ =
         ( "--eta", Arg.Unit (fun () -> eta_mode := true),
           " Uses eta equality") ;        
         ( "--cstr", Arg.String (fun s -> extra_cstrs_file := Some s),
-          " A file containing extra constraints to be taken into account") ;        
+          " A file containing extra constraints to be taken into account") ;
+        ( "--meta", Arg.String (fun s -> meta_file := Some s),
+          " A file containing metarules to be applied to the files") ; 
+        ( "--path", Arg.String (fun s -> add_to_path := Some s),
+          " Adds to path") ;        
       ]
   in
   let usage = "A tool for making definitions predicative\nUsage: " ^ Sys.argv.(0) ^ " [OPTION]... [FILE]...\nAvailable options:" in
   Arg.parse options (fun s -> input_files := s :: !input_files) usage;
 
   (if !eta_mode = true then Kernel.Reduction.eta := true);
+  begin match !add_to_path with
+  | None -> ()
+  | Some path -> Files.add_path path end;
   
   let files_with_problems = ref 0 in
 
@@ -115,7 +136,7 @@ let _ =
   
   List.iter
     (fun s ->
-      let error_in_file = predicativize !optim_enabled !sttfa_to_pts_mode !agda_mode s in
+      let error_in_file = predicativize !meta_file !optim_enabled !sttfa_to_pts_mode !agda_mode s in
       if not error_in_file then files_with_problems := 1 + !files_with_problems else ();
       dkcheck @@ "out/" ^ (Filename.basename s))
     (List.rev !input_files);
