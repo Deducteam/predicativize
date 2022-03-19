@@ -25,6 +25,10 @@ let predicativize_entry env optim out_fmt e =
              end) in
   M.reset_counter ();
 
+  let cfg = Api.Meta.default_config () in
+  let meta_rules = Api.Meta.parse_meta_files ["metas/compute_lvl_nf.dk"] in
+  Api.Meta.add_rules cfg meta_rules;
+
   match e with
   | Def(l, id, sc, opq, ty_op, te) ->
      let md_name = B.string_of_mident (Env.get_name env) in
@@ -63,6 +67,11 @@ let predicativize_entry env optim out_fmt e =
      let te, _ = D.apply_subst_to_term subst te in
      let ty = EA.mk_ty_univ_poly ty ty_fv in
      let te = EA.mk_term_univ_poly te ty_fv in
+
+     (* we use dkmeta to simplify the M 0 (S 0 x) to x. this is not required,
+        but makes files more readable*)
+     let ty = Api.Meta.mk_term cfg ty in
+     let te = Api.Meta.mk_term cfg te in     
 
      Format.printf "%s@." @@ green @@
        "Solution found with " ^ (string_of_int (List.length ty_fv)) ^ " up vars.";
@@ -105,6 +114,10 @@ let predicativize_entry env optim out_fmt e =
      
      let ty = EA.mk_ty_univ_poly ty ty_fv in
 
+     (* we use dkmeta to simplify the M 0 (S 0 x) to x. this is not required,
+        but makes files more readable*)
+     let ty = Api.Meta.mk_term cfg ty in
+     
      let new_entry = Decl (l, id, sc, opq, ty) in
 
      Format.fprintf out_fmt "%a@." Pp.print_entry new_entry;       

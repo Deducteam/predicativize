@@ -1,0 +1,1396 @@
+bool : pts.U pts.var.
+
+true : pts.El pts.var bool.
+
+false : pts.El pts.var bool.
+
+def match_bool :
+  return_sort:pts.Lvl ->
+  return_type:(z:(pts.El pts.var bool) -> pts.U return_sort) ->
+  case_true:(pts.El return_sort (return_type true)) ->
+  case_false:(pts.El return_sort (return_type false)) ->
+  z:(pts.El pts.var bool) -> pts.El return_sort (return_type z).
+
+[case_false, case_true, return_type, return_sort]
+  match_bool return_sort return_type case_true case_false (true)
+  -->
+  case_true.
+
+[case_false, case_true, return_type, return_sort]
+  match_bool return_sort return_type case_true case_false (false)
+  -->
+  case_false.
+
+def filter_bool :
+  return_sort:pts.Lvl ->
+  return_type:(z:(pts.El pts.var bool) -> pts.U return_sort) ->
+  return:(z:(pts.El pts.var bool) -> pts.El return_sort (return_type z)) ->
+  z:(pts.El pts.var bool) -> pts.El return_sort (return_type z).
+
+[return, return_type, return_sort]
+  filter_bool return_sort return_type return (true) --> return true.
+
+[return, return_type, return_sort]
+  filter_bool return_sort return_type return (false) --> return false.
+
+def bool_ind :
+  Q_:(_x_326:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_326:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_326).
+
+def bool_ind_body :
+  Q_:(_x_326:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_326:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_326).
+
+[x_326, _H_false, _H_true, Q_]
+  bool_ind Q_ _H_true _H_false x_326
+  -->
+  filter_bool
+    pts.var
+    (x_326:(pts.El pts.var bool) => Q_ x_326)
+    (bool_ind_body Q_ _H_true _H_false)
+    x_326.
+
+[x_326, _H_false, _H_true, Q_]
+  bool_ind_body Q_ _H_true _H_false x_326
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_326.
+
+def bool_rect_Type4 :
+  Q_:(_x_329:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_329:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_329).
+
+def bool_rect_Type4_body :
+  Q_:(_x_329:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_329:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_329).
+
+[x_329, _H_false, _H_true, Q_]
+  bool_rect_Type4 Q_ _H_true _H_false x_329
+  -->
+  filter_bool
+    pts.var
+    (x_329:(pts.El pts.var bool) => Q_ x_329)
+    (bool_rect_Type4_body Q_ _H_true _H_false)
+    x_329.
+
+[x_329, _H_false, _H_true, Q_]
+  bool_rect_Type4_body Q_ _H_true _H_false x_329
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_329.
+
+def bool_rect_Type5 :
+  Q_:(_x_332:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_332:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_332).
+
+def bool_rect_Type5_body :
+  Q_:(_x_332:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_332:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_332).
+
+[x_332, _H_false, _H_true, Q_]
+  bool_rect_Type5 Q_ _H_true _H_false x_332
+  -->
+  filter_bool
+    pts.var
+    (x_332:(pts.El pts.var bool) => Q_ x_332)
+    (bool_rect_Type5_body Q_ _H_true _H_false)
+    x_332.
+
+[x_332, _H_false, _H_true, Q_]
+  bool_rect_Type5_body Q_ _H_true _H_false x_332
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_332.
+
+def bool_rect_Type3 :
+  Q_:(_x_335:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_335:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_335).
+
+def bool_rect_Type3_body :
+  Q_:(_x_335:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_335:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_335).
+
+[x_335, _H_false, _H_true, Q_]
+  bool_rect_Type3 Q_ _H_true _H_false x_335
+  -->
+  filter_bool
+    pts.var
+    (x_335:(pts.El pts.var bool) => Q_ x_335)
+    (bool_rect_Type3_body Q_ _H_true _H_false)
+    x_335.
+
+[x_335, _H_false, _H_true, Q_]
+  bool_rect_Type3_body Q_ _H_true _H_false x_335
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_335.
+
+def bool_rect_Type2 :
+  Q_:(_x_338:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_338:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_338).
+
+def bool_rect_Type2_body :
+  Q_:(_x_338:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_338:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_338).
+
+[x_338, _H_false, _H_true, Q_]
+  bool_rect_Type2 Q_ _H_true _H_false x_338
+  -->
+  filter_bool
+    pts.var
+    (x_338:(pts.El pts.var bool) => Q_ x_338)
+    (bool_rect_Type2_body Q_ _H_true _H_false)
+    x_338.
+
+[x_338, _H_false, _H_true, Q_]
+  bool_rect_Type2_body Q_ _H_true _H_false x_338
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_338.
+
+def bool_rect_Type1 :
+  Q_:(_x_341:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_341:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_341).
+
+def bool_rect_Type1_body :
+  Q_:(_x_341:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_341:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_341).
+
+[x_341, _H_false, _H_true, Q_]
+  bool_rect_Type1 Q_ _H_true _H_false x_341
+  -->
+  filter_bool
+    pts.var
+    (x_341:(pts.El pts.var bool) => Q_ x_341)
+    (bool_rect_Type1_body Q_ _H_true _H_false)
+    x_341.
+
+[x_341, _H_false, _H_true, Q_]
+  bool_rect_Type1_body Q_ _H_true _H_false x_341
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_341.
+
+def bool_rect_Type0 :
+  Q_:(_x_344:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_344:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_344).
+
+def bool_rect_Type0_body :
+  Q_:(_x_344:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_344:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_344).
+
+[x_344, _H_false, _H_true, Q_]
+  bool_rect_Type0 Q_ _H_true _H_false x_344
+  -->
+  filter_bool
+    pts.var
+    (x_344:(pts.El pts.var bool) => Q_ x_344)
+    (bool_rect_Type0_body Q_ _H_true _H_false)
+    x_344.
+
+[x_344, _H_false, _H_true, Q_]
+  bool_rect_Type0_body Q_ _H_true _H_false x_344
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_344.
+
+def bool_rect_CProp4 :
+  Q_:(_x_347:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_347:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_347).
+
+def bool_rect_CProp4_body :
+  Q_:(_x_347:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_347:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_347).
+
+[x_347, _H_false, _H_true, Q_]
+  bool_rect_CProp4 Q_ _H_true _H_false x_347
+  -->
+  filter_bool
+    pts.var
+    (x_347:(pts.El pts.var bool) => Q_ x_347)
+    (bool_rect_CProp4_body Q_ _H_true _H_false)
+    x_347.
+
+[x_347, _H_false, _H_true, Q_]
+  bool_rect_CProp4_body Q_ _H_true _H_false x_347
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_347.
+
+def bool_rect_CProp5 :
+  Q_:(_x_350:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_350:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_350).
+
+def bool_rect_CProp5_body :
+  Q_:(_x_350:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_350:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_350).
+
+[x_350, _H_false, _H_true, Q_]
+  bool_rect_CProp5 Q_ _H_true _H_false x_350
+  -->
+  filter_bool
+    pts.var
+    (x_350:(pts.El pts.var bool) => Q_ x_350)
+    (bool_rect_CProp5_body Q_ _H_true _H_false)
+    x_350.
+
+[x_350, _H_false, _H_true, Q_]
+  bool_rect_CProp5_body Q_ _H_true _H_false x_350
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_350.
+
+def bool_rect_CProp3 :
+  Q_:(_x_353:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_353:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_353).
+
+def bool_rect_CProp3_body :
+  Q_:(_x_353:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_353:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_353).
+
+[x_353, _H_false, _H_true, Q_]
+  bool_rect_CProp3 Q_ _H_true _H_false x_353
+  -->
+  filter_bool
+    pts.var
+    (x_353:(pts.El pts.var bool) => Q_ x_353)
+    (bool_rect_CProp3_body Q_ _H_true _H_false)
+    x_353.
+
+[x_353, _H_false, _H_true, Q_]
+  bool_rect_CProp3_body Q_ _H_true _H_false x_353
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_353.
+
+def bool_rect_CProp2 :
+  Q_:(_x_356:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_356:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_356).
+
+def bool_rect_CProp2_body :
+  Q_:(_x_356:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_356:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_356).
+
+[x_356, _H_false, _H_true, Q_]
+  bool_rect_CProp2 Q_ _H_true _H_false x_356
+  -->
+  filter_bool
+    pts.var
+    (x_356:(pts.El pts.var bool) => Q_ x_356)
+    (bool_rect_CProp2_body Q_ _H_true _H_false)
+    x_356.
+
+[x_356, _H_false, _H_true, Q_]
+  bool_rect_CProp2_body Q_ _H_true _H_false x_356
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_356.
+
+def bool_rect_CProp1 :
+  Q_:(_x_359:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_359:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_359).
+
+def bool_rect_CProp1_body :
+  Q_:(_x_359:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_359:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_359).
+
+[x_359, _H_false, _H_true, Q_]
+  bool_rect_CProp1 Q_ _H_true _H_false x_359
+  -->
+  filter_bool
+    pts.var
+    (x_359:(pts.El pts.var bool) => Q_ x_359)
+    (bool_rect_CProp1_body Q_ _H_true _H_false)
+    x_359.
+
+[x_359, _H_false, _H_true, Q_]
+  bool_rect_CProp1_body Q_ _H_true _H_false x_359
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_359.
+
+def bool_rect_CProp0 :
+  Q_:(_x_362:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_362:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_362).
+
+def bool_rect_CProp0_body :
+  Q_:(_x_362:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H_true:(pts.El pts.var (Q_ true)) ->
+  _H_false:(pts.El pts.var (Q_ false)) -> x_362:(pts.El pts.var bool) -> pts.El pts.var (Q_ x_362).
+
+[x_362, _H_false, _H_true, Q_]
+  bool_rect_CProp0 Q_ _H_true _H_false x_362
+  -->
+  filter_bool
+    pts.var
+    (x_362:(pts.El pts.var bool) => Q_ x_362)
+    (bool_rect_CProp0_body Q_ _H_true _H_false)
+    x_362.
+
+[x_362, _H_false, _H_true, Q_]
+  bool_rect_CProp0_body Q_ _H_true _H_false x_362
+  -->
+  match_bool pts.var Q_ _H_true _H_false x_362.
+
+def bool_inv_ind :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z587:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z588:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z588:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z587:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z588:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z588:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_ind
+    (_x_326:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_326)
+       (_z588:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_326)) => P _x_326))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_Type4 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z593:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z594:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z594:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z593:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z594:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z594:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_Type4
+    (_x_329:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_329)
+       (_z594:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_329)) => P _x_329))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_Type3 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z599:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z600:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z600:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z599:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z600:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z600:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_Type3
+    (_x_335:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_335)
+       (_z600:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_335)) => P _x_335))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_Type2 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z605:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z606:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z606:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z605:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z606:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z606:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_Type2
+    (_x_338:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_338)
+       (_z606:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_338)) => P _x_338))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_Type1 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z611:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z612:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z612:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z611:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z612:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z612:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_Type1
+    (_x_341:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_341)
+       (_z612:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_341)) => P _x_341))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_Type0 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z617:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z618:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z618:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z617:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z618:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z618:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_Type0
+    (_x_344:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_344)
+       (_z618:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_344)) => P _x_344))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_CProp4 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z623:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z624:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z624:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z623:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z624:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z624:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_CProp4
+    (_x_347:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_347)
+       (_z624:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_347)) => P _x_347))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_CProp3 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z629:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z630:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z630:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z629:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z630:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z630:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_CProp3
+    (_x_353:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_353)
+       (_z630:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_353)) => P _x_353))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_CProp2 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z635:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z636:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z636:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z635:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z636:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z636:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_CProp2
+    (_x_356:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_356)
+       (_z636:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_356)) => P _x_356))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_CProp1 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z641:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z642:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z642:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z641:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z642:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z642:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_CProp1
+    (_x_359:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_359)
+       (_z642:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_359)) => P _x_359))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_inv_rect_CProp0 :
+  Hterm:(pts.El pts.var bool) ->
+  P:(_z647:(pts.El pts.var bool) -> pts.U pts.var) ->
+  _H1:(_z648:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) ->
+  _H2:(_z648:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) ->
+  pts.El pts.var (P Hterm)
+  :=
+  Hterm:(pts.El pts.var bool) =>
+  P:(_z647:(pts.El pts.var bool) -> pts.U pts.var) =>
+  H1:(_z648:(pts.El pts.var (matita_basics_logic.eq bool Hterm true)) -> pts.El pts.var (P true)) =>
+  H2:(_z648:(pts.El pts.var (matita_basics_logic.eq bool Hterm false)) -> pts.El pts.var (P false)) =>
+  bool_rect_CProp0
+    (_x_362:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool Hterm _x_362)
+       (_z648:(pts.El pts.var (matita_basics_logic.eq bool Hterm _x_362)) => P _x_362))
+    H1
+    H2
+    Hterm
+    (matita_basics_logic.refl bool Hterm).
+
+def bool_discr :
+  x:(pts.El pts.var bool) ->
+  y:(pts.El pts.var bool) ->
+  _e:(pts.El pts.var (matita_basics_logic.eq bool x y)) ->
+  pts.El
+    pts.var
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) => pts.u pts.var)
+       (match_bool
+          pts.var
+          (__:(pts.El pts.var bool) => pts.u pts.var)
+          (pts.Prod
+             pts.var
+             pts.var
+             (pts.u pts.var)
+             (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z19:(pts.El pts.var P) => P)))
+          (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+          y)
+       (match_bool
+          pts.var
+          (__:(pts.El pts.var bool) => pts.u pts.var)
+          (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+          (pts.Prod
+             pts.var
+             pts.var
+             (pts.u pts.var)
+             (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z20:(pts.El pts.var P) => P)))
+          y)
+       x)
+  :=
+  x:(pts.El pts.var bool) =>
+  y:(pts.El pts.var bool) =>
+  Deq:(pts.El pts.var (matita_basics_logic.eq bool x y)) =>
+  matita_basics_logic.eq_rect_Type2
+    bool
+    x
+    (x_13:(pts.El pts.var bool) =>
+     _x_14:(pts.El pts.var (matita_basics_logic.eq bool x x_13)) =>
+     match_bool
+       pts.var
+       (__:(pts.El pts.var bool) => pts.u pts.var)
+       (match_bool
+          pts.var
+          (__:(pts.El pts.var bool) => pts.u pts.var)
+          (pts.Prod
+             pts.var
+             pts.var
+             (pts.u pts.var)
+             (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z19:(pts.El pts.var P) => P)))
+          (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+          x_13)
+       (match_bool
+          pts.var
+          (__:(pts.El pts.var bool) => pts.u pts.var)
+          (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+          (pts.Prod
+             pts.var
+             pts.var
+             (pts.u pts.var)
+             (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z20:(pts.El pts.var P) => P)))
+          x_13)
+       x)
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        match_bool
+          pts.var
+          (_0:(pts.El pts.var bool) => pts.u pts.var)
+          (match_bool
+             pts.var
+             (_0:(pts.El pts.var bool) => pts.u pts.var)
+             (pts.Prod
+                pts.var
+                pts.var
+                (pts.u pts.var)
+                (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z19:(pts.El pts.var P) => P)))
+             (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+             __)
+          (match_bool
+             pts.var
+             (_0:(pts.El pts.var bool) => pts.u pts.var)
+             (pts.Prod pts.var pts.var (pts.u pts.var) (P:(pts.U pts.var) => P))
+             (pts.Prod
+                pts.var
+                pts.var
+                (pts.u pts.var)
+                (P:(pts.U pts.var) => pts.Prod pts.var pts.var P (_z20:(pts.El pts.var P) => P)))
+             __)
+          __)
+       (P:(pts.U pts.var) => DH:(pts.El pts.var P) => DH)
+       (P:(pts.U pts.var) => DH:(pts.El pts.var P) => DH)
+       x)
+    y
+    Deq.
+
+def not_eq_true_false :
+  pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool true false))
+  :=
+  matita_basics_logic.nmk
+    (matita_basics_logic.eq bool true false)
+    (Heq:(pts.El pts.var (matita_basics_logic.eq bool true false)) =>
+     bool_discr true false Heq matita_basics_logic.False).
+
+def notb :
+  __:(pts.El pts.var bool) -> pts.El pts.var bool
+  :=
+  b:(pts.El pts.var bool) => match_bool pts.var (__:(pts.El pts.var bool) => bool) false true b.
+
+def notb_elim :
+  b:(pts.El pts.var bool) ->
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) ->
+  __:(pts.El
+        pts.var
+        (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P false) (P true) b)) ->
+  pts.El pts.var (P (notb b))
+  :=
+  b:(pts.El pts.var bool) =>
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) =>
+  bool_ind
+    (_x_326:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P false) (P true) _x_326)
+       (__:(pts.El
+              pts.var
+              (match_bool
+                 pts.var
+                 (__:(pts.El pts.var bool) => pts.u pts.var)
+                 (P false)
+                 (P true)
+                 _x_326)) =>
+        P (notb _x_326)))
+    (auto:(pts.El pts.var (P false)) => auto)
+    (auto:(pts.El pts.var (P true)) => auto)
+    b.
+
+def notb_notb :
+  b:(pts.El pts.var bool) -> pts.El pts.var (matita_basics_logic.eq bool (notb (notb b)) b)
+  :=
+  b:(pts.El pts.var bool) =>
+  bool_ind
+    (_x_326:(pts.El pts.var bool) => matita_basics_logic.eq bool (notb (notb _x_326)) _x_326)
+    (matita_basics_logic.refl bool (notb (notb true)))
+    (matita_basics_logic.refl bool (notb (notb false)))
+    b.
+
+def injective_notb :
+  pts.El pts.var (matita_basics_relations.{|injective|} bool bool notb)
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  H:(pts.El pts.var (matita_basics_logic.eq bool (notb b1) (notb b2))) =>
+  matita_basics_logic.rewrite_r
+    bool
+    b2
+    (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ b2)
+    (matita_basics_logic.refl bool b2)
+    b1
+    (matita_basics_logic.rewrite_l
+       bool
+       (notb (notb b1))
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ b2)
+       (matita_basics_logic.rewrite_r
+          bool
+          (notb b2)
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool (notb __) b2)
+          (notb_notb b2)
+          (notb b1)
+          H)
+       b1
+       (notb_notb b1)).
+
+def noteq_to_eqnot :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool b1 b2))) ->
+  pts.El pts.var (matita_basics_logic.eq bool b1 (notb b2))
+  :=
+  _clearme:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       bool
+       (b2:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.Not (matita_basics_logic.eq bool __ b2))
+          (__1:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool __ b2))) =>
+           matita_basics_logic.eq bool __ (notb b2))))
+    (_clearme0:(pts.El pts.var bool) =>
+     match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true __))
+          (__1:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool true __))) =>
+           matita_basics_logic.eq bool true (notb __)))
+       (H:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool true true))) =>
+        matita_basics_logic.False_ind
+          (_x_66:(pts.El pts.var matita_basics_logic.False) =>
+           matita_basics_logic.eq bool true (notb true))
+          (matita_basics_logic.absurd
+             (matita_basics_logic.eq bool true true)
+             (matita_basics_logic.refl bool true)
+             H))
+       (auto:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool true false))) =>
+        matita_basics_logic.refl bool true)
+       _clearme0)
+    (_clearme0:(pts.El pts.var bool) =>
+     match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.Not (matita_basics_logic.eq bool false __))
+          (__1:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool false __))) =>
+           matita_basics_logic.eq bool false (notb __)))
+       (auto:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool false true))) =>
+        matita_basics_logic.refl bool false)
+       (H:(pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool false false))) =>
+        matita_basics_logic.False_ind
+          (_x_66:(pts.El pts.var matita_basics_logic.False) =>
+           matita_basics_logic.eq bool false (notb false))
+          (matita_basics_logic.absurd
+             (matita_basics_logic.eq bool false false)
+             (matita_basics_logic.refl bool false)
+             H))
+       _clearme0)
+    _clearme.
+
+def eqnot_to_noteq :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool b1 (notb b2))) ->
+  pts.El pts.var (matita_basics_logic.Not (matita_basics_logic.eq bool b1 b2))
+  :=
+  _clearme:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       bool
+       (b2:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool __ (notb b2))
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool __ (notb b2))) =>
+           matita_basics_logic.Not (matita_basics_logic.eq bool __ b2))))
+    (_clearme0:(pts.El pts.var bool) =>
+     match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool true (notb __))
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool true (notb __))) =>
+           matita_basics_logic.Not (matita_basics_logic.eq bool true __)))
+       (auto:(pts.El pts.var (matita_basics_logic.eq bool true false)) =>
+        matita_basics_logic.eq_coerc
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true false))
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true true))
+          not_eq_true_false
+          (matita_basics_logic.rewrite_l
+             bool
+             true
+             (__:(pts.El pts.var bool) =>
+              matita_basics_logic.eq
+                (pts.u pts.var)
+                (matita_basics_logic.Not (matita_basics_logic.eq bool true __))
+                (matita_basics_logic.Not (matita_basics_logic.eq bool true true)))
+             (matita_basics_logic.refl
+                (pts.u pts.var)
+                (matita_basics_logic.Not (matita_basics_logic.eq bool true true)))
+             false
+             auto))
+       (auto:(pts.El pts.var (matita_basics_logic.eq bool true true)) => not_eq_true_false)
+       _clearme0)
+    (_clearme0:(pts.El pts.var bool) =>
+     match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool false (notb __))
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool false (notb __))) =>
+           matita_basics_logic.Not (matita_basics_logic.eq bool false __)))
+       (__:(pts.El pts.var (matita_basics_logic.eq bool false false)) =>
+        matita_basics_logic.not_to_not
+          (matita_basics_logic.eq bool false true)
+          (matita_basics_logic.eq bool true false)
+          (auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+           matita_basics_logic.rewrite_r
+             bool
+             true
+             (__1:(pts.El pts.var bool) => matita_basics_logic.eq bool true __1)
+             (matita_basics_logic.refl bool true)
+             false
+             auto)
+          not_eq_true_false)
+       (auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+        matita_basics_logic.eq_coerc
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true false))
+          (matita_basics_logic.Not (matita_basics_logic.eq bool false false))
+          not_eq_true_false
+          (matita_basics_logic.rewrite_r
+             bool
+             true
+             (__:(pts.El pts.var bool) =>
+              matita_basics_logic.eq
+                (pts.u pts.var)
+                (matita_basics_logic.Not (matita_basics_logic.eq bool true __))
+                (matita_basics_logic.Not (matita_basics_logic.eq bool false false)))
+             (matita_basics_logic.rewrite_r
+                bool
+                true
+                (__:(pts.El pts.var bool) =>
+                 matita_basics_logic.eq
+                   (pts.u pts.var)
+                   (matita_basics_logic.Not (matita_basics_logic.eq bool true true))
+                   (matita_basics_logic.Not (matita_basics_logic.eq bool __ false)))
+                (matita_basics_logic.rewrite_r
+                   bool
+                   true
+                   (__:(pts.El pts.var bool) =>
+                    matita_basics_logic.eq
+                      (pts.u pts.var)
+                      (matita_basics_logic.Not (matita_basics_logic.eq bool true true))
+                      (matita_basics_logic.Not (matita_basics_logic.eq bool true __)))
+                   (matita_basics_logic.refl
+                      (pts.u pts.var)
+                      (matita_basics_logic.Not (matita_basics_logic.eq bool true true)))
+                   false
+                   auto)
+                false
+                auto)
+             false
+             auto))
+       _clearme0)
+    _clearme.
+
+def andb :
+  __:(pts.El pts.var bool) -> __1:(pts.El pts.var bool) -> pts.El pts.var bool
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) => match_bool pts.var (__:(pts.El pts.var bool) => bool) b2 false b1.
+
+def andb_elim :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) ->
+  __:(pts.El
+        pts.var
+        (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P b2) (P false) b1)) ->
+  pts.El pts.var (P (andb b1 b2))
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) =>
+  bool_ind
+    (_x_326:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P b2) (P false) _x_326)
+       (__:(pts.El
+              pts.var
+              (match_bool
+                 pts.var
+                 (__:(pts.El pts.var bool) => pts.u pts.var)
+                 (P b2)
+                 (P false)
+                 _x_326)) =>
+        P (andb _x_326 b2)))
+    (auto:(pts.El pts.var (P b2)) => auto)
+    (auto:(pts.El pts.var (P false)) => auto)
+    b1.
+
+def true_to_andb_true :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool b1 true)) ->
+  __1:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) ->
+  pts.El pts.var (matita_basics_logic.eq bool (andb b1 b2) true)
+  :=
+  b1:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       bool
+       (b2:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool __ true)
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool __ true)) =>
+           pts.Prod
+             pts.var
+             pts.var
+             (matita_basics_logic.eq bool b2 true)
+             (__2:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+              matita_basics_logic.eq bool (andb __ b2) true))))
+    (b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool true true)) =>
+     auto':(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+     matita_basics_logic.rewrite_l
+       bool
+       b2
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool b2 __)
+       (matita_basics_logic.refl bool b2)
+       true
+       auto')
+    (b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+     auto':(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+     matita_basics_logic.rewrite_r
+       bool
+       b2
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+       (matita_basics_logic.rewrite_l
+          bool
+          b2
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool b2 __)
+          (matita_basics_logic.refl bool b2)
+          true
+          auto')
+       false
+       (matita_basics_logic.rewrite_r
+          bool
+          true
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool false __)
+          auto
+          b2
+          auto'))
+    b1.
+
+def andb_true_l :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool (andb b1 b2) true)) ->
+  pts.El pts.var (matita_basics_logic.eq bool b1 true)
+  :=
+  b1:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       bool
+       (b2:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool (andb __ b2) true)
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool (andb __ b2) true)) =>
+           matita_basics_logic.eq bool __ true)))
+    (b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+     matita_basics_logic.rewrite_l
+       bool
+       b2
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+       (matita_basics_logic.rewrite_l
+          bool
+          b2
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool b2 __)
+          (matita_basics_logic.refl bool b2)
+          true
+          auto)
+       true
+       auto)
+    (_b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+     matita_basics_logic.rewrite_r
+       bool
+       true
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+       (matita_basics_logic.refl bool true)
+       false
+       auto)
+    b1.
+
+def andb_true_r :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool (andb b1 b2) true)) ->
+  pts.El pts.var (matita_basics_logic.eq bool b2 true)
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq bool (andb __ b2) true)
+       (__1:(pts.El pts.var (matita_basics_logic.eq bool (andb __ b2) true)) =>
+        matita_basics_logic.eq bool b2 true))
+    (auto:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+     matita_basics_logic.rewrite_l
+       bool
+       b2
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool b2 __)
+       (matita_basics_logic.refl bool b2)
+       true
+       auto)
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool false true)
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+           matita_basics_logic.eq bool __ true))
+       (auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+        matita_basics_logic.refl bool true)
+       (auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+        matita_basics_logic.rewrite_r
+          bool
+          true
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+          (matita_basics_logic.refl bool true)
+          false
+          auto)
+       b2)
+    b1.
+
+def andb_true :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool (andb b1 b2) true)) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.And
+       (matita_basics_logic.eq bool b1 true)
+       (matita_basics_logic.eq bool b2 true))
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  auto:(pts.El pts.var (matita_basics_logic.eq bool (andb b1 b2) true)) =>
+  matita_basics_logic.conj
+    (matita_basics_logic.eq bool b1 true)
+    (matita_basics_logic.eq bool b2 true)
+    (andb_true_l
+       b1
+       b2
+       (matita_basics_logic.rewrite_r
+          bool
+          true
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+          (matita_basics_logic.refl bool true)
+          (andb b1 b2)
+          auto))
+    (andb_true_r
+       b1
+       b2
+       (matita_basics_logic.rewrite_r
+          bool
+          true
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool __ true)
+          (matita_basics_logic.refl bool true)
+          (andb b1 b2)
+          auto)).
+
+def orb :
+  __:(pts.El pts.var bool) -> __1:(pts.El pts.var bool) -> pts.El pts.var bool
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) => match_bool pts.var (__:(pts.El pts.var bool) => bool) true b2 b1.
+
+def orb_elim :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) ->
+  __:(pts.El pts.var (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P true) (P b2) b1)) ->
+  pts.El pts.var (P (orb b1 b2))
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  P:(__:(pts.El pts.var bool) -> pts.U pts.var) =>
+  bool_ind
+    (_x_326:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (match_bool pts.var (__:(pts.El pts.var bool) => pts.u pts.var) (P true) (P b2) _x_326)
+       (__:(pts.El
+              pts.var
+              (match_bool
+                 pts.var
+                 (__:(pts.El pts.var bool) => pts.u pts.var)
+                 (P true)
+                 (P b2)
+                 _x_326)) =>
+        P (orb _x_326 b2)))
+    (auto:(pts.El pts.var (P true)) => auto)
+    (auto:(pts.El pts.var (P b2)) => auto)
+    b1.
+
+def orb_true_r1 :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool b1 true)) ->
+  pts.El pts.var (matita_basics_logic.eq bool (orb b1 b2) true)
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  H:(pts.El pts.var (matita_basics_logic.eq bool b1 true)) =>
+  matita_basics_logic.eq_ind_r
+    bool
+    true
+    (x:(pts.El pts.var bool) =>
+     __:(pts.El pts.var (matita_basics_logic.eq bool x true)) =>
+     matita_basics_logic.eq bool (orb x b2) true)
+    (matita_basics_logic.refl bool (orb true b2))
+    b1
+    H.
+
+def orb_true_r2 :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) ->
+  pts.El pts.var (matita_basics_logic.eq bool (orb b1 b2) true)
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  H:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+  matita_basics_logic.eq_ind_r
+    bool
+    true
+    (x:(pts.El pts.var bool) =>
+     __:(pts.El pts.var (matita_basics_logic.eq bool x true)) =>
+     matita_basics_logic.eq bool (orb b1 x) true)
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) => matita_basics_logic.eq bool (orb __ true) true)
+       (matita_basics_logic.refl bool (orb true true))
+       (matita_basics_logic.refl bool (orb false true))
+       b1)
+    b2
+    H.
+
+def orb_true_l :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  __:(pts.El pts.var (matita_basics_logic.eq bool (orb b1 b2) true)) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.Or
+       (matita_basics_logic.eq bool b1 true)
+       (matita_basics_logic.eq bool b2 true))
+  :=
+  _clearme:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     pts.Prod
+       pts.var
+       pts.var
+       bool
+       (b2:(pts.El pts.var bool) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq bool (orb __ b2) true)
+          (__1:(pts.El pts.var (matita_basics_logic.eq bool (orb __ b2) true)) =>
+           matita_basics_logic.Or
+             (matita_basics_logic.eq bool __ true)
+             (matita_basics_logic.eq bool b2 true))))
+    (b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool true true)) =>
+     matita_basics_logic.or_introl
+       (matita_basics_logic.eq bool true true)
+       (matita_basics_logic.eq bool b2 true)
+       (matita_basics_logic.refl bool true))
+    (b2:(pts.El pts.var bool) =>
+     auto:(pts.El pts.var (matita_basics_logic.eq bool b2 true)) =>
+     matita_basics_logic.or_intror
+       (matita_basics_logic.eq bool false true)
+       (matita_basics_logic.eq bool b2 true)
+       (matita_basics_logic.rewrite_l
+          bool
+          b2
+          (__:(pts.El pts.var bool) => matita_basics_logic.eq bool b2 __)
+          (matita_basics_logic.refl bool b2)
+          true
+          auto))
+    _clearme.
+
+def xorb :
+  __:(pts.El pts.var bool) -> __1:(pts.El pts.var bool) -> pts.El pts.var bool
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) => bool)
+    (match_bool pts.var (__:(pts.El pts.var bool) => bool) false true b2)
+    (match_bool pts.var (__:(pts.El pts.var bool) => bool) true false b2)
+    b1.
+
+def bool_to_decidable_eq :
+  b1:(pts.El pts.var bool) ->
+  b2:(pts.El pts.var bool) ->
+  pts.El pts.var (matita_basics_logic.decidable (matita_basics_logic.eq bool b1 b2))
+  :=
+  b1:(pts.El pts.var bool) =>
+  b2:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) => matita_basics_logic.decidable (matita_basics_logic.eq bool __ b2))
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        matita_basics_logic.decidable (matita_basics_logic.eq bool true __))
+       (matita_basics_logic.or_introl
+          (matita_basics_logic.eq bool true true)
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true true))
+          (matita_basics_logic.refl bool true))
+       (matita_basics_logic.or_intror
+          (matita_basics_logic.eq bool true false)
+          (matita_basics_logic.Not (matita_basics_logic.eq bool true false))
+          not_eq_true_false)
+       b2)
+    (match_bool
+       pts.var
+       (__:(pts.El pts.var bool) =>
+        matita_basics_logic.decidable (matita_basics_logic.eq bool false __))
+       (matita_basics_logic.or_intror
+          (matita_basics_logic.eq bool false true)
+          (matita_basics_logic.Not (matita_basics_logic.eq bool false true))
+          (matita_basics_logic.nmk
+             (matita_basics_logic.eq bool false true)
+             (auto:(pts.El pts.var (matita_basics_logic.eq bool false true)) =>
+              matita_basics_logic.absurd
+                (matita_basics_logic.eq bool true false)
+                (matita_basics_logic.rewrite_r
+                   bool
+                   true
+                   (__:(pts.El pts.var bool) => matita_basics_logic.eq bool true __)
+                   (matita_basics_logic.refl bool true)
+                   false
+                   auto)
+                not_eq_true_false)))
+       (matita_basics_logic.or_introl
+          (matita_basics_logic.eq bool false false)
+          (matita_basics_logic.Not (matita_basics_logic.eq bool false false))
+          (matita_basics_logic.refl bool false))
+       b2)
+    b1.
+
+def true_or_false :
+  b:(pts.El pts.var bool) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.Or
+       (matita_basics_logic.eq bool b true)
+       (matita_basics_logic.eq bool b false))
+  :=
+  b:(pts.El pts.var bool) =>
+  match_bool
+    pts.var
+    (__:(pts.El pts.var bool) =>
+     matita_basics_logic.Or
+       (matita_basics_logic.eq bool __ true)
+       (matita_basics_logic.eq bool __ false))
+    (matita_basics_logic.or_introl
+       (matita_basics_logic.eq bool true true)
+       (matita_basics_logic.eq bool true false)
+       (matita_basics_logic.refl bool true))
+    (matita_basics_relations.RC_reflexive
+       bool
+       (__:(pts.El pts.var bool) =>
+        _0:(pts.El pts.var bool) => matita_basics_logic.eq bool false true)
+       false)
+    b.
+

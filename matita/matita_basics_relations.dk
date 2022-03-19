@@ -1,0 +1,1163 @@
+def predicate :
+  __:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) => pts.Prod pts.var pts.var A (__:(pts.El pts.var A) => pts.u pts.var).
+
+def relation :
+  __:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) => pts.Prod pts.var pts.var A (__1:(pts.El pts.var A) => pts.u pts.var)).
+
+def relation2 :
+  __:(pts.U pts.var) -> __1:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) => pts.Prod pts.var pts.var B (__1:(pts.El pts.var B) => pts.u pts.var)).
+
+def relation3 :
+  __:(pts.U pts.var) -> __1:(pts.U pts.var) -> __2:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (__1:(pts.El pts.var B) =>
+        pts.Prod pts.var pts.var C (__2:(pts.El pts.var C) => pts.u pts.var))).
+
+def relation4 :
+  __:(pts.U pts.var) ->
+  __1:(pts.U pts.var) -> __2:(pts.U pts.var) -> __3:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  D:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (__1:(pts.El pts.var B) =>
+        pts.Prod
+          pts.var
+          pts.var
+          C
+          (__2:(pts.El pts.var C) =>
+           pts.Prod pts.var pts.var D (__3:(pts.El pts.var D) => pts.u pts.var)))).
+
+def reflexive :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) => pts.Prod pts.var pts.var A (x:(pts.El pts.var A) => R x x).
+
+def symmetric :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod pts.var pts.var (R x y) (__:(pts.El pts.var (R x y)) => R y x))).
+
+def transitive :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          A
+          (z:(pts.El pts.var A) =>
+           pts.Prod
+             pts.var
+             pts.var
+             (R x y)
+             (__:(pts.El pts.var (R x y)) =>
+              pts.Prod pts.var pts.var (R y z) (__1:(pts.El pts.var (R y z)) => R x z))))).
+
+def irreflexive :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod pts.var pts.var A (x:(pts.El pts.var A) => matita_basics_logic.Not (R x x)).
+
+def cotransitive :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (R x y)
+          (__:(pts.El pts.var (R x y)) =>
+           pts.Prod
+             pts.var
+             pts.var
+             A
+             (z:(pts.El pts.var A) => matita_basics_logic.Or (R x z) (R z y))))).
+
+def tight_apart :
+  A:(pts.U pts.var) ->
+  _eq:(pts.El pts.var (relation A)) -> _ap:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  eq:(pts.El pts.var (relation A)) =>
+  ap:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        matita_basics_logic.And
+          (pts.Prod
+             pts.var
+             pts.var
+             (matita_basics_logic.Not (ap x y))
+             (__:(pts.El pts.var (matita_basics_logic.Not (ap x y))) => eq x y))
+          (pts.Prod
+             pts.var
+             pts.var
+             (eq x y)
+             (__:(pts.El pts.var (eq x y)) => matita_basics_logic.Not (ap x y))))).
+
+def antisymmetric :
+  A:(pts.U pts.var) -> _R:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (R x y)
+          (__:(pts.El pts.var (R x y)) => matita_basics_logic.Not (R y x)))).
+
+def singlevalued :
+  A:(pts.U pts.var) -> B:(pts.U pts.var) -> pts.El pts.var (predicate (relation2 A B))
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation2 A B)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (b1:(pts.El pts.var B) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (R a b1)
+          (__:(pts.El pts.var (R a b1)) =>
+           pts.Prod
+             pts.var
+             pts.var
+             B
+             (b2:(pts.El pts.var B) =>
+              pts.Prod
+                pts.var
+                pts.var
+                (R a b2)
+                (__1:(pts.El pts.var (R a b2)) => matita_basics_logic.eq B b1 b2))))).
+
+def confluent1 :
+  A:(pts.U pts.var) -> __:(pts.El pts.var (relation A)) -> pts.El pts.var (predicate A)
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  a0:(pts.El pts.var A) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a1:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (R a0 a1)
+       (__:(pts.El pts.var (R a0 a1)) =>
+        pts.Prod
+          pts.var
+          pts.var
+          A
+          (a2:(pts.El pts.var A) =>
+           pts.Prod
+             pts.var
+             pts.var
+             (R a0 a2)
+             (__1:(pts.El pts.var (R a0 a2)) =>
+              matita_basics_logic.ex2
+                A
+                (a:(pts.El pts.var A) => R a1 a)
+                (a:(pts.El pts.var A) => R a2 a))))).
+
+def confluent :
+  A:(pts.U pts.var) -> pts.El pts.var (predicate (relation A))
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod pts.var pts.var A (a0:(pts.El pts.var A) => confluent1 A R a0).
+
+def Conf3 :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  __:(pts.El pts.var (relation2 A B)) -> __1:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  S:(pts.El pts.var (relation2 A B)) =>
+  R:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    B
+    (b:(pts.El pts.var B) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (a1:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (S a1 b)
+          (__:(pts.El pts.var (S a1 b)) =>
+           pts.Prod
+             pts.var
+             pts.var
+             A
+             (a2:(pts.El pts.var A) =>
+              pts.Prod pts.var pts.var (R a1 a2) (__1:(pts.El pts.var (R a1 a2)) => S a2 b))))).
+
+def RC :
+  A:(pts.U pts.var) -> __:(pts.El pts.var (relation A)) -> pts.El pts.var (relation A)
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  x:(pts.El pts.var A) =>
+  y:(pts.El pts.var A) => matita_basics_logic.Or (R x y) (matita_basics_logic.eq A x y).
+
+def RC_reflexive :
+  A:(pts.U pts.var) -> R:(pts.El pts.var (relation A)) -> pts.El pts.var (reflexive A (RC A R))
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  x:(pts.El pts.var A) =>
+  matita_basics_logic.or_intror (R x x) (matita_basics_logic.eq A x x) (matita_basics_logic.refl A x).
+
+def Rcomp :
+  A:(pts.U pts.var) ->
+  _R1:(pts.El pts.var (relation A)) ->
+  _R2:(pts.El pts.var (relation A)) ->
+  _a1:(pts.El pts.var A) -> _a2:(pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  a1:(pts.El pts.var A) =>
+  a2:(pts.El pts.var A) =>
+  matita_basics_logic.ex A (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a1 am) (R2 am a2)).
+
+def Runion :
+  A:(pts.U pts.var) ->
+  _R1:(pts.El pts.var (relation A)) ->
+  _R2:(pts.El pts.var (relation A)) -> _a:(pts.El pts.var A) -> _b:(pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  a:(pts.El pts.var A) => b:(pts.El pts.var A) => matita_basics_logic.Or (R1 a b) (R2 a b).
+
+def Rintersection :
+  A:(pts.U pts.var) ->
+  _R1:(pts.El pts.var (relation A)) ->
+  _R2:(pts.El pts.var (relation A)) -> _a:(pts.El pts.var A) -> _b:(pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  a:(pts.El pts.var A) => b:(pts.El pts.var A) => matita_basics_logic.And (R1 a b) (R2 a b).
+
+def inv :
+  A:(pts.U pts.var) ->
+  _R:(pts.El pts.var (relation A)) -> _a:(pts.El pts.var A) -> _b:(pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) => a:(pts.El pts.var A) => b:(pts.El pts.var A) => R b a.
+
+def subR :
+  A:(pts.U pts.var) ->
+  _R:(pts.El pts.var (relation A)) -> _S:(pts.El pts.var (relation A)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  S:(pts.El pts.var (relation A)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (b:(pts.El pts.var A) =>
+        pts.Prod pts.var pts.var (R a b) (__:(pts.El pts.var (R a b)) => S a b))).
+
+def sub_reflexive :
+  T:(pts.U pts.var) -> R:(pts.El pts.var (relation T)) -> pts.El pts.var (subR T R R)
+  :=
+  T:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation T)) =>
+  x:(pts.El pts.var T) => b:(pts.El pts.var T) => auto:(pts.El pts.var (R x b)) => auto.
+
+def sub_comp_l :
+  A:(pts.U pts.var) ->
+  R:(pts.El pts.var (relation A)) ->
+  R1:(pts.El pts.var (relation A)) ->
+  R2:(pts.El pts.var (relation A)) ->
+  __:(pts.El pts.var (subR A R1 R2)) -> pts.El pts.var (subR A (Rcomp A R1 R) (Rcomp A R2 R))
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  Hsub:(pts.El pts.var (subR A R1 R2)) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var A) =>
+  _clearme:(pts.El pts.var (Rcomp A R1 R a b)) =>
+  matita_basics_logic.match_ex
+    A
+    (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (R am b))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.ex
+              A
+              (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (R am b)))) =>
+     Rcomp A R2 R a b)
+    (c:(pts.El pts.var A) =>
+     _clearme0:(pts.El pts.var (matita_basics_logic.And (R1 a c) (R c b))) =>
+     matita_basics_logic.match_And
+       (R1 a c)
+       (R c b)
+       pts.var
+       (__:(pts.El pts.var (matita_basics_logic.And (R1 a c) (R c b))) => Rcomp A R2 R a b)
+       (auto:(pts.El pts.var (R1 a c)) =>
+        auto':(pts.El pts.var (R c b)) =>
+        matita_basics_logic.ex_intro
+          A
+          (am:(pts.El pts.var A) => matita_basics_logic.And (R2 a am) (R am b))
+          c
+          (matita_basics_logic.conj (R2 a c) (R c b) (Hsub a c auto) auto'))
+       _clearme0)
+    _clearme.
+
+def sub_comp_r :
+  A:(pts.U pts.var) ->
+  R:(pts.El pts.var (relation A)) ->
+  R1:(pts.El pts.var (relation A)) ->
+  R2:(pts.El pts.var (relation A)) ->
+  __:(pts.El pts.var (subR A R1 R2)) -> pts.El pts.var (subR A (Rcomp A R R1) (Rcomp A R R2))
+  :=
+  A:(pts.U pts.var) =>
+  R:(pts.El pts.var (relation A)) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  Hsub:(pts.El pts.var (subR A R1 R2)) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var A) =>
+  _clearme:(pts.El pts.var (Rcomp A R R1 a b)) =>
+  matita_basics_logic.match_ex
+    A
+    (am:(pts.El pts.var A) => matita_basics_logic.And (R a am) (R1 am b))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.ex
+              A
+              (am:(pts.El pts.var A) => matita_basics_logic.And (R a am) (R1 am b)))) =>
+     Rcomp A R R2 a b)
+    (c:(pts.El pts.var A) =>
+     _clearme0:(pts.El pts.var (matita_basics_logic.And (R a c) (R1 c b))) =>
+     matita_basics_logic.match_And
+       (R a c)
+       (R1 c b)
+       pts.var
+       (__:(pts.El pts.var (matita_basics_logic.And (R a c) (R1 c b))) => Rcomp A R R2 a b)
+       (auto:(pts.El pts.var (R a c)) =>
+        auto':(pts.El pts.var (R1 c b)) =>
+        matita_basics_logic.ex_intro
+          A
+          (am:(pts.El pts.var A) => matita_basics_logic.And (R a am) (R2 am b))
+          c
+          (matita_basics_logic.conj (R a c) (R2 c b) auto (Hsub c b auto')))
+       _clearme0)
+    _clearme.
+
+def sub_assoc_l :
+  A:(pts.U pts.var) ->
+  R1:(pts.El pts.var (relation A)) ->
+  R2:(pts.El pts.var (relation A)) ->
+  R3:(pts.El pts.var (relation A)) ->
+  pts.El pts.var (subR A (Rcomp A R1 (Rcomp A R2 R3)) (Rcomp A (Rcomp A R1 R2) R3))
+  :=
+  A:(pts.U pts.var) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  R3:(pts.El pts.var (relation A)) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var A) =>
+  _clearme:(pts.El pts.var (Rcomp A R1 (Rcomp A R2 R3) a b)) =>
+  matita_basics_logic.match_ex
+    A
+    (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (Rcomp A R2 R3 am b))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.ex
+              A
+              (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (Rcomp A R2 R3 am b)))) =>
+     Rcomp A (Rcomp A R1 R2) R3 a b)
+    (c:(pts.El pts.var A) =>
+     _clearme0:(pts.El pts.var (matita_basics_logic.And (R1 a c) (Rcomp A R2 R3 c b))) =>
+     matita_basics_logic.match_And
+       (R1 a c)
+       (Rcomp A R2 R3 c b)
+       pts.var
+       (__:(pts.El pts.var (matita_basics_logic.And (R1 a c) (Rcomp A R2 R3 c b))) =>
+        Rcomp A (Rcomp A R1 R2) R3 a b)
+       (Hac:(pts.El pts.var (R1 a c)) =>
+        _clearme1:(pts.El pts.var (Rcomp A R2 R3 c b)) =>
+        matita_basics_logic.match_ex
+          A
+          (am:(pts.El pts.var A) => matita_basics_logic.And (R2 c am) (R3 am b))
+          pts.var
+          (__:(pts.El
+                 pts.var
+                 (matita_basics_logic.ex
+                    A
+                    (am:(pts.El pts.var A) => matita_basics_logic.And (R2 c am) (R3 am b)))) =>
+           Rcomp A (Rcomp A R1 R2) R3 a b)
+          (d:(pts.El pts.var A) =>
+           _clearme2:(pts.El pts.var (matita_basics_logic.And (R2 c d) (R3 d b))) =>
+           matita_basics_logic.match_And
+             (R2 c d)
+             (R3 d b)
+             pts.var
+             (__:(pts.El pts.var (matita_basics_logic.And (R2 c d) (R3 d b))) =>
+              Rcomp A (Rcomp A R1 R2) R3 a b)
+             (auto:(pts.El pts.var (R2 c d)) =>
+              auto':(pts.El pts.var (R3 d b)) =>
+              matita_basics_logic.ex_intro
+                A
+                (am:(pts.El pts.var A) => matita_basics_logic.And (Rcomp A R1 R2 a am) (R3 am b))
+                d
+                (matita_basics_logic.conj
+                   (Rcomp A R1 R2 a d)
+                   (R3 d b)
+                   (matita_basics_logic.ex_intro
+                      A
+                      (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (R2 am d))
+                      c
+                      (matita_basics_logic.conj (R1 a c) (R2 c d) Hac auto))
+                   auto'))
+             _clearme2)
+          _clearme1)
+       _clearme0)
+    _clearme.
+
+def sub_assoc_r :
+  A:(pts.U pts.var) ->
+  R1:(pts.El pts.var (relation A)) ->
+  R2:(pts.El pts.var (relation A)) ->
+  R3:(pts.El pts.var (relation A)) ->
+  pts.El pts.var (subR A (Rcomp A (Rcomp A R1 R2) R3) (Rcomp A R1 (Rcomp A R2 R3)))
+  :=
+  A:(pts.U pts.var) =>
+  R1:(pts.El pts.var (relation A)) =>
+  R2:(pts.El pts.var (relation A)) =>
+  R3:(pts.El pts.var (relation A)) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var A) =>
+  _clearme:(pts.El pts.var (Rcomp A (Rcomp A R1 R2) R3 a b)) =>
+  matita_basics_logic.match_ex
+    A
+    (am:(pts.El pts.var A) => matita_basics_logic.And (Rcomp A R1 R2 a am) (R3 am b))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.ex
+              A
+              (am:(pts.El pts.var A) => matita_basics_logic.And (Rcomp A R1 R2 a am) (R3 am b)))) =>
+     Rcomp A R1 (Rcomp A R2 R3) a b)
+    (c:(pts.El pts.var A) =>
+     _clearme0:(pts.El pts.var (matita_basics_logic.And (Rcomp A R1 R2 a c) (R3 c b))) =>
+     matita_basics_logic.match_And
+       (Rcomp A R1 R2 a c)
+       (R3 c b)
+       pts.var
+       (__:(pts.El pts.var (matita_basics_logic.And (Rcomp A R1 R2 a c) (R3 c b))) =>
+        Rcomp A R1 (Rcomp A R2 R3) a b)
+       (_clearme1:(pts.El pts.var (Rcomp A R1 R2 a c)) =>
+        matita_basics_logic.match_ex
+          A
+          (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (R2 am c))
+          pts.var
+          (__:(pts.El
+                 pts.var
+                 (matita_basics_logic.ex
+                    A
+                    (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (R2 am c)))) =>
+           pts.Prod
+             pts.var
+             pts.var
+             (R3 c b)
+             (__1:(pts.El pts.var (R3 c b)) => Rcomp A R1 (Rcomp A R2 R3) a b))
+          (d:(pts.El pts.var A) =>
+           _clearme2:(pts.El pts.var (matita_basics_logic.And (R1 a d) (R2 d c))) =>
+           matita_basics_logic.match_And
+             (R1 a d)
+             (R2 d c)
+             pts.var
+             (__:(pts.El pts.var (matita_basics_logic.And (R1 a d) (R2 d c))) =>
+              pts.Prod
+                pts.var
+                pts.var
+                (R3 c b)
+                (__1:(pts.El pts.var (R3 c b)) => Rcomp A R1 (Rcomp A R2 R3) a b))
+             (auto:(pts.El pts.var (R1 a d)) =>
+              auto':(pts.El pts.var (R2 d c)) =>
+              auto'':(pts.El pts.var (R3 c b)) =>
+              matita_basics_logic.ex_intro
+                A
+                (am:(pts.El pts.var A) => matita_basics_logic.And (R1 a am) (Rcomp A R2 R3 am b))
+                d
+                (matita_basics_logic.conj
+                   (R1 a d)
+                   (Rcomp A R2 R3 d b)
+                   auto
+                   (matita_basics_logic.ex_intro
+                      A
+                      (am:(pts.El pts.var A) => matita_basics_logic.And (R2 d am) (R3 am b))
+                      c
+                      (matita_basics_logic.conj (R2 d c) (R3 c b) auto' auto''))))
+             _clearme2)
+          _clearme1)
+       _clearme0)
+    _clearme.
+
+def compose :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  C:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var B) -> pts.El pts.var C) ->
+  _g:(__:(pts.El pts.var A) -> pts.El pts.var B) -> _x:(pts.El pts.var A) -> pts.El pts.var C
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var B) -> pts.El pts.var C) =>
+  g:(__:(pts.El pts.var A) -> pts.El pts.var B) => x:(pts.El pts.var A) => f (g x).
+
+def {|injective|} :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> _f:(__:(pts.El pts.var A) -> pts.El pts.var B) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> pts.El pts.var B) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_basics_logic.eq B (f x) (f y))
+          (__:(pts.El pts.var (matita_basics_logic.eq B (f x) (f y))) =>
+           matita_basics_logic.eq A x y))).
+
+def surjective :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> _f:(__:(pts.El pts.var A) -> pts.El pts.var B) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> pts.El pts.var B) =>
+  pts.Prod
+    pts.var
+    pts.var
+    B
+    (z:(pts.El pts.var B) =>
+     matita_basics_logic.ex A (x:(pts.El pts.var A) => matita_basics_logic.eq B z (f x))).
+
+def commutative :
+  A:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod pts.var pts.var A (y:(pts.El pts.var A) => matita_basics_logic.eq A (f x y) (f y x))).
+
+def commutative2 :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var B) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var B) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod pts.var pts.var A (y:(pts.El pts.var A) => matita_basics_logic.eq B (f x y) (f y x))).
+
+def associative :
+  A:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          A
+          (z:(pts.El pts.var A) => matita_basics_logic.eq A (f (f x y) z) (f x (f y z))))).
+
+def monotonic :
+  A:(pts.U pts.var) ->
+  _R:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  R:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> pts.El pts.var A) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod pts.var pts.var (R x y) (__:(pts.El pts.var (R x y)) => R (f x) (f y)))).
+
+def distributive :
+  A:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) ->
+  _g:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) =>
+  g:(__:(pts.El pts.var A) -> __1:(pts.El pts.var A) -> pts.El pts.var A) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (y:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          A
+          (z:(pts.El pts.var A) => matita_basics_logic.eq A (f x (g y z)) (g (f x y) (f x z))))).
+
+def distributive2 :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.El pts.var B) ->
+  _g:(__:(pts.El pts.var B) -> __1:(pts.El pts.var B) -> pts.El pts.var B) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.El pts.var B) =>
+  g:(__:(pts.El pts.var B) -> __1:(pts.El pts.var B) -> pts.El pts.var B) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (x:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (y:(pts.El pts.var B) =>
+        pts.Prod
+          pts.var
+          pts.var
+          B
+          (z:(pts.El pts.var B) => matita_basics_logic.eq B (f x (g y z)) (g (f x y) (f x z))))).
+
+def injective_compose :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  C:(pts.U pts.var) ->
+  f:(__:(pts.El pts.var A) -> pts.El pts.var B) ->
+  g:(__:(pts.El pts.var B) -> pts.El pts.var C) ->
+  __:(pts.El pts.var ({|injective|} A B f)) ->
+  __1:(pts.El pts.var ({|injective|} B C g)) ->
+  pts.El pts.var ({|injective|} A C (x:(pts.El pts.var A) => g (f x)))
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> pts.El pts.var B) =>
+  g:(__:(pts.El pts.var B) -> pts.El pts.var C) =>
+  auto:(pts.El pts.var ({|injective|} A B f)) =>
+  auto':(pts.El pts.var ({|injective|} B C g)) =>
+  x:(pts.El pts.var A) =>
+  y:(pts.El pts.var A) =>
+  auto'':(pts.El pts.var (matita_basics_logic.eq C (g (f x)) (g (f y)))) =>
+  auto
+    x
+    y
+    (auto'
+       (f x)
+       (f y)
+       (matita_basics_logic.rewrite_l
+          C
+          (g (f x))
+          (__:(pts.El pts.var C) => matita_basics_logic.eq C (g (f x)) __)
+          (matita_basics_logic.refl C (g (f x)))
+          (g (f y))
+          auto'')).
+
+def exteqR :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  _R:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.U pts.var) ->
+  _S:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.U pts.var) =>
+  S:(__:(pts.El pts.var A) -> __1:(pts.El pts.var B) -> pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a:(pts.El pts.var A) =>
+     pts.Prod pts.var pts.var B (b:(pts.El pts.var B) => matita_basics_logic.iff (R a b) (S a b))).
+
+def exteqF :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  _f:(__:(pts.El pts.var A) -> pts.El pts.var B) ->
+  _g:(__:(pts.El pts.var A) -> pts.El pts.var B) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  f:(__:(pts.El pts.var A) -> pts.El pts.var B) =>
+  g:(__:(pts.El pts.var A) -> pts.El pts.var B) =>
+  pts.Prod pts.var pts.var A (a:(pts.El pts.var A) => matita_basics_logic.eq B (f a) (g a)).
+
+def bi_relation :
+  __:(pts.U pts.var) -> __1:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (__1:(pts.El pts.var B) =>
+        pts.Prod
+          pts.var
+          pts.var
+          A
+          (__2:(pts.El pts.var A) =>
+           pts.Prod pts.var pts.var B (__3:(pts.El pts.var B) => pts.u pts.var)))).
+
+def bi_reflexive :
+  A:(pts.U pts.var) -> B:(pts.U pts.var) -> _R:(pts.El pts.var (bi_relation A B)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (bi_relation A B)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a:(pts.El pts.var A) => pts.Prod pts.var pts.var B (b:(pts.El pts.var B) => R a b a b)).
+
+def bi_symmetric :
+  A:(pts.U pts.var) -> B:(pts.U pts.var) -> _R:(pts.El pts.var (bi_relation A B)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (bi_relation A B)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a1:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (a2:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          B
+          (b1:(pts.El pts.var B) =>
+           pts.Prod
+             pts.var
+             pts.var
+             B
+             (b2:(pts.El pts.var B) =>
+              pts.Prod
+                pts.var
+                pts.var
+                (R a2 b2 a1 b1)
+                (__:(pts.El pts.var (R a2 b2 a1 b1)) => R a1 b1 a2 b2))))).
+
+def bi_transitive :
+  A:(pts.U pts.var) -> B:(pts.U pts.var) -> _R:(pts.El pts.var (bi_relation A B)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (bi_relation A B)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a1:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (a:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          B
+          (b1:(pts.El pts.var B) =>
+           pts.Prod
+             pts.var
+             pts.var
+             B
+             (b:(pts.El pts.var B) =>
+              pts.Prod
+                pts.var
+                pts.var
+                (R a1 b1 a b)
+                (__:(pts.El pts.var (R a1 b1 a b)) =>
+                 pts.Prod
+                   pts.var
+                   pts.var
+                   A
+                   (a2:(pts.El pts.var A) =>
+                    pts.Prod
+                      pts.var
+                      pts.var
+                      B
+                      (b2:(pts.El pts.var B) =>
+                       pts.Prod
+                         pts.var
+                         pts.var
+                         (R a b a2 b2)
+                         (__1:(pts.El pts.var (R a b a2 b2)) => R a1 b1 a2 b2)))))))).
+
+def bi_RC :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> __:(pts.El pts.var (bi_relation A B)) -> pts.El pts.var (bi_relation A B)
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (bi_relation A B)) =>
+  a1:(pts.El pts.var A) =>
+  b1:(pts.El pts.var B) =>
+  a2:(pts.El pts.var A) =>
+  b2:(pts.El pts.var B) =>
+  matita_basics_logic.Or
+    (R a1 b1 a2 b2)
+    (matita_basics_logic.And (matita_basics_logic.eq A a1 a2) (matita_basics_logic.eq B b1 b2)).
+
+def bi_RC_reflexive :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) ->
+  R:(pts.El pts.var (bi_relation A B)) -> pts.El pts.var (bi_reflexive A B (bi_RC A B R))
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  R:(pts.El pts.var (bi_relation A B)) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var B) =>
+  matita_basics_logic.or_intror
+    (R a b a b)
+    (matita_basics_logic.And (matita_basics_logic.eq A a a) (matita_basics_logic.eq B b b))
+    (matita_basics_logic.conj
+       (matita_basics_logic.eq A a a)
+       (matita_basics_logic.eq B b b)
+       (matita_basics_logic.refl A a)
+       (matita_basics_logic.refl B b)).
+
+def tri_relation :
+  __:(pts.U pts.var) -> __1:(pts.U pts.var) -> __2:(pts.U pts.var) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (__:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (__1:(pts.El pts.var B) =>
+        pts.Prod
+          pts.var
+          pts.var
+          C
+          (__2:(pts.El pts.var C) =>
+           pts.Prod
+             pts.var
+             pts.var
+             A
+             (__3:(pts.El pts.var A) =>
+              pts.Prod
+                pts.var
+                pts.var
+                B
+                (__4:(pts.El pts.var B) =>
+                 pts.Prod pts.var pts.var C (__5:(pts.El pts.var C) => pts.u pts.var)))))).
+
+def tri_reflexive :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> C:(pts.U pts.var) -> _R:(pts.El pts.var (tri_relation A B C)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  R:(pts.El pts.var (tri_relation A B C)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       B
+       (b:(pts.El pts.var B) => pts.Prod pts.var pts.var C (c:(pts.El pts.var C) => R a b c a b c))).
+
+def tri_symmetric :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> C:(pts.U pts.var) -> _R:(pts.El pts.var (tri_relation A B C)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  R:(pts.El pts.var (tri_relation A B C)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a1:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (a2:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          B
+          (b1:(pts.El pts.var B) =>
+           pts.Prod
+             pts.var
+             pts.var
+             B
+             (b2:(pts.El pts.var B) =>
+              pts.Prod
+                pts.var
+                pts.var
+                C
+                (c1:(pts.El pts.var C) =>
+                 pts.Prod
+                   pts.var
+                   pts.var
+                   C
+                   (c2:(pts.El pts.var C) =>
+                    pts.Prod
+                      pts.var
+                      pts.var
+                      (R a2 b2 c2 a1 b1 c1)
+                      (__:(pts.El pts.var (R a2 b2 c2 a1 b1 c1)) => R a1 b1 c1 a2 b2 c2))))))).
+
+def tri_transitive :
+  A:(pts.U pts.var) ->
+  B:(pts.U pts.var) -> C:(pts.U pts.var) -> _R:(pts.El pts.var (tri_relation A B C)) -> pts.U pts.var
+  :=
+  A:(pts.U pts.var) =>
+  B:(pts.U pts.var) =>
+  C:(pts.U pts.var) =>
+  R:(pts.El pts.var (tri_relation A B C)) =>
+  pts.Prod
+    pts.var
+    pts.var
+    A
+    (a1:(pts.El pts.var A) =>
+     pts.Prod
+       pts.var
+       pts.var
+       A
+       (a:(pts.El pts.var A) =>
+        pts.Prod
+          pts.var
+          pts.var
+          B
+          (b1:(pts.El pts.var B) =>
+           pts.Prod
+             pts.var
+             pts.var
+             B
+             (b:(pts.El pts.var B) =>
+              pts.Prod
+                pts.var
+                pts.var
+                C
+                (c1:(pts.El pts.var C) =>
+                 pts.Prod
+                   pts.var
+                   pts.var
+                   C
+                   (c:(pts.El pts.var C) =>
+                    pts.Prod
+                      pts.var
+                      pts.var
+                      (R a1 b1 c1 a b c)
+                      (__:(pts.El pts.var (R a1 b1 c1 a b c)) =>
+                       pts.Prod
+                         pts.var
+                         pts.var
+                         A
+                         (a2:(pts.El pts.var A) =>
+                          pts.Prod
+                            pts.var
+                            pts.var
+                            B
+                            (b2:(pts.El pts.var B) =>
+                             pts.Prod
+                               pts.var
+                               pts.var
+                               C
+                               (c2:(pts.El pts.var C) =>
+                                pts.Prod
+                                  pts.var
+                                  pts.var
+                                  (R a b c a2 b2 c2)
+                                  (__1:(pts.El pts.var (R a b c a2 b2 c2)) =>
+                                   R a1 b1 c1 a2 b2 c2))))))))))).
+

@@ -31,6 +31,14 @@ let opt_list_to_list l =
       | Some e -> e :: acc)
     [] l
 
+let all_some_list_to_some_list l =
+  List.fold_left
+    (fun l x ->
+      match x, l with
+      | None, _ | _, None -> None
+      | Some x, Some l -> Some (x :: l))
+    (Some []) l
+  
 let dkcheck file =
   let open Api in
   let open Processor in
@@ -49,5 +57,7 @@ let sanitize s =
                                else if c = '{' || c = '}' then '|'
                                else if c = '.' then '-'
                                else if c = '(' || c = ')' then '-' else c) s in
+(*  let s = if int_of_string_opt @@ String.make 1 @@ String.get s ((String.length s) - 1) = None
+          then s else s ^ "|" in*)
   if String.get s 0 = '-' then "X" ^ s else s
 

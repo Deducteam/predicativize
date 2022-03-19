@@ -56,7 +56,7 @@ let rec extract_lvl_set t =
   | App(Const(_, s), n, [DB(_,var, _)]) when
          (B.string_of_ident (B.id s) = "S" && String.get (B.string_of_ident var) 0 = '?') ->
      let* n = extract_int n in
-     let ident = B.string_of_ident var in
+     let ident = sanitize @@ (B.string_of_ident var) ^ "v" in
      Some (n_succ (Lvar ident) n)
 
   (* sometimes we can have nested Ms, as in M 1 [S 0 x; S 2 (M 3 [])] *)
@@ -76,7 +76,7 @@ and dklvl_to_agda_lvl t =
   let open T in
   match t with
   | DB(_, var, _) ->
-     Some (Lvar (sanitize @@ B.string_of_ident var))
+     Some (Lvar (sanitize @@ (B.string_of_ident var) ^ "v"))
   | Const(_, lzero) when
          (B.string_of_mident (B.md lzero) = "pts" && B.string_of_ident (B.id lzero) = "lzero") ->
      Some Lzero
@@ -167,11 +167,12 @@ let rec dkterm_to_term n te =
          (B.string_of_mident (B.md pi) = "pts" && B.string_of_ident (B.id pi) = "Prod") ->
      let* ta = dkterm_to_term n ta in
      let* tb = dkterm_to_term (n + 1) body_b in
-     let ident = B.string_of_ident var in
-     if ident = "x_free"
+     let ident = sanitize @@ (B.string_of_ident var) ^ "v" in
+     if ident = "x-free"
      then Some (A_Arr (ta, tb))
      else
-       let ident = sanitize @@ ident ^ "-" ^ string_of_int n in
+       (*       let ident = sanitize @@ ident ^ "-" ^ string_of_int n in*)
+       let ident = ident in       
        Some (A_Pi (ta, ident, tb))
 
   (* te = pts.u lvl_exp *)
@@ -209,18 +210,20 @@ let rec dkterm_to_term n te =
           Some (Some A_Lty)
        | Some x ->
           Option.bind (dkty_to_ty n x) (fun res -> Some (Some res)) in
-     let ident = sanitize @@ B.string_of_ident ident in
+     let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in
      (* We need to annotate the non-level variables with the depth, because 
         they migth not be unique. However, this is not needed for level variables,
         as they are all unique. *)
-     let ident = if String.get ident 0 = '?' then ident else ident ^ "-" ^ string_of_int n in
+     (*     let ident = if String.get ident 0 = '?' then ident else ident ^ "-" ^ string_of_int n in*)
      Some (A_Lam(ident, ty_op, te))
 
-  | DB(_, ident, num) ->
+  | DB(_, ident, _) ->
      if String.get (B.string_of_ident ident) 0 = '?'
-     then Some (A_Lvl (Lvar (B.string_of_ident ident)))
-     else let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in 
-     Some (A_Var ident)
+     then Some (A_Lvl (Lvar (sanitize @@ (B.string_of_ident ident)  ^ "v")))
+     else
+       (*       let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in *)
+       let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in 
+       Some (A_Var ident)
 
   | Const(_, cst) when
          (B.string_of_mident (B.md cst) = "pts" && B.string_of_ident (B.id cst) = "Prod") ->
@@ -254,14 +257,15 @@ and dkty_to_ty n te =
   (* te = (ident : pts.Lvl) -> t2 *)
   | Pi(_, ident, Const(_,lvl), t2) when
          (B.string_of_mident (B.md lvl) = "pts" && B.string_of_ident (B.id lvl) = "Lvl") ->
-     let ident = sanitize @@ B.string_of_ident ident in
+     let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in
      let* t2 = dkty_to_ty (n + 1) t2 in
      Some (A_Pi (A_Lty, ident, t2))
 
   (* te = (ident : t1) -> t2 *)
   (* should not happen in the good cases *)
   | Pi(_, ident, t1, t2) ->
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in
+     (*     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in*)
+     let ident = sanitize @@ (B.string_of_ident ident)  ^ "v" in     
      let* t2 = dkty_to_ty (n + 1) t2 in
      let* t1 = dkty_to_ty n t1 in     
      Some (A_Pi (t1, ident, t2))
@@ -270,11 +274,41 @@ and dkty_to_ty n te =
          (B.string_of_mident (B.md u) = "pts" && B.string_of_ident (B.id u) = "U") ->
      let* l = dklvl_to_agda_lvl t in
      Some (A_Set l)
+  | Const(_, ty_lvl) when
+         (B.string_of_mident (B.md ty_lvl) = "pts" && B.string_of_ident (B.id ty_lvl) = "Lvl") ->
+     Some (A_Lty)
   | _ -> None
+
+       
+type agda_rew = {ctx : (string * agda_te) list; lhs : agda_te; rhs : agda_te}
+       
+let dkrew_to_rew (r : Kernel.Rule.partially_typed_rule) =
+  let* ctx =
+    all_some_list_to_some_list @@
+      List.map
+        (fun (_, id, ty_op) ->
+          let* ty = ty_op in
+          let* agda_ty = dkty_to_ty 0 ty in
+          Some (sanitize @@ (B.string_of_ident id) ^ "v", agda_ty))
+        r.ctx in
+  let* lhs = dkterm_to_term 0 @@ Kernel.Rule.pattern_to_term r.pat in
+  let* rhs = dkterm_to_term 0 r.rhs in
+  Some {ctx = ctx; lhs = lhs; rhs = rhs}
+
+let pp_rew_counter = ref 0
+  
+let pp_agda_rew fmt r =
+  Format.fprintf fmt "postulate rewrite-rule-%s : " (string_of_int !pp_rew_counter);
+
+  List.iter (fun (id, ty) -> Format.fprintf fmt "(%s : %a) -> " id pp_agda_te ty) r.ctx;
+  Format.fprintf fmt "%a ≡ %a@." pp_agda_te r.lhs pp_agda_te r.rhs;
+  Format.fprintf fmt "{-# REWRITE rewrite-rule-%s #-}" (string_of_int !pp_rew_counter);
+  pp_rew_counter := 1 + !pp_rew_counter
 
 type agda_entry =
   | A_Def  of string * agda_te * agda_te
   | A_Decl of string * agda_te
+  | A_Rew  of agda_rew
 
 let pp_entry fmt e =
   let open Format in
@@ -284,7 +318,8 @@ let pp_entry fmt e =
      fprintf fmt "%s = %a\n" n pp_agda_te te     
   | A_Decl (n, ty) ->
      fprintf fmt "postulate %s : %a\n" n pp_agda_te ty
-
+  | A_Rew r -> fprintf fmt "%a@." pp_agda_rew r
+  
 let dkentry_to_entry e =
   let open Parsers.Entry in
   match e with
@@ -297,8 +332,12 @@ let dkentry_to_entry e =
      let* ty = dkty_to_ty 0 ty in
      let id = sanitize @@ B.string_of_ident id in
      Some (A_Decl (id, ty))
+  | Rules(_, [r]) -> begin
+     match dkrew_to_rew r with
+     | Some x -> Some (A_Rew x)
+     | None -> Format.printf "Problem with rule %a@."
+                 Parsers.Entry.pp_entry (Parsers.Entry.Rules (B.dloc, [r])); None end
   | _ -> None
-
 
 type agda_file_element =
   | A_Entry  of agda_entry
@@ -306,12 +345,14 @@ type agda_file_element =
 
 let pp_file fmt agda_file =
   let open Format in
+  fprintf fmt "{-# OPTIONS --rewriting #-}@.";
+  fprintf fmt "open import Agda.Primitive@.";
+  fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
+  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";  
+  
   List.fold_left (fun () e ->
       match e with
-      | A_Import s ->
-         if s = "Agda.Primitive"
-         then fprintf fmt "open import %s@." s
-         else fprintf fmt "import %s@." s
+      | A_Import s -> fprintf fmt "import %s@." s
       | A_Entry e -> fprintf fmt "%a@." pp_entry e
     ) () agda_file
               
@@ -325,7 +366,7 @@ let dkfile_to_file md_name' list_entry =
         | Some new_e -> new_e :: acc_entries
         | None -> acc_entries
       ) [] list_entry in
-  let list_import = remove_duplicates @@ "Agda.Primitive" :: !import_list in
+  let list_import = remove_duplicates !import_list in
   (List.map (fun x -> A_Import x) list_import) @ (List.map (fun e -> A_Entry e) list_entry)
 
                                                    

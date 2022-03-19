@@ -1,0 +1,1560 @@
+def exp :
+  __:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __1:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat.
+
+def exp_body :
+  __:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __1:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat.
+
+[__1, __]
+  exp __ __1
+  -->
+  matita_arithmetics_nat.filter_nat
+    pts.var
+    (__1:(pts.El pts.var matita_arithmetics_nat.nat) => matita_arithmetics_nat.nat)
+    (exp_body __)
+    __1.
+
+[__1, __]
+  exp_body __ __1
+  -->
+  matita_arithmetics_nat.match_nat
+    pts.var
+    (__2:(pts.El pts.var matita_arithmetics_nat.nat) => matita_arithmetics_nat.nat)
+    (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+    (p:(pts.El pts.var matita_arithmetics_nat.nat) => matita_arithmetics_nat.times (exp __ p) __)
+    __1.
+
+def exp_plus_times :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  q:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (exp n (matita_arithmetics_nat.plus p q))
+       (matita_arithmetics_nat.times (exp n p) (exp n q)))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  q:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (exp n (matita_arithmetics_nat.plus _x_365 q))
+       (matita_arithmetics_nat.times (exp n _x_365) (exp n q)))
+    (matita_basics_logic.rewrite_r
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.plus matita_arithmetics_nat.O (exp n q))
+       (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        matita_basics_logic.eq matita_arithmetics_nat.nat (exp n q) __)
+       (matita_basics_logic.rewrite_l
+          matita_arithmetics_nat.nat
+          (exp n q)
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq matita_arithmetics_nat.nat (exp n q) __)
+          (matita_basics_logic.refl matita_arithmetics_nat.nat (exp n q))
+          (matita_arithmetics_nat.plus matita_arithmetics_nat.O (exp n q))
+          (matita_arithmetics_nat.plus_O_n (exp n q)))
+       (matita_arithmetics_nat.plus (exp n q) matita_arithmetics_nat.O)
+       (matita_arithmetics_nat.commutative_plus (exp n q) matita_arithmetics_nat.O))
+    (x_366:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_368:(pts.El
+               pts.var
+               (matita_basics_logic.eq
+                  matita_arithmetics_nat.nat
+                  (exp n (matita_arithmetics_nat.plus x_366 q))
+                  (matita_arithmetics_nat.times (exp n x_366) (exp n q)))) =>
+     matita_basics_logic.rewrite_r
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.plus q x_366)
+       (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times (exp n __) n)
+          (matita_arithmetics_nat.times (matita_arithmetics_nat.times (exp n x_366) n) (exp n q)))
+       (matita_basics_logic.rewrite_r
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times (exp n q) (exp n x_366))
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times __ n)
+             (matita_arithmetics_nat.times
+                (matita_arithmetics_nat.times (exp n x_366) n)
+                (exp n q)))
+          (matita_basics_logic.rewrite_r
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times
+                n
+                (matita_arithmetics_nat.times (exp n q) (exp n x_366)))
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                matita_arithmetics_nat.nat
+                __
+                (matita_arithmetics_nat.times
+                   (matita_arithmetics_nat.times (exp n x_366) n)
+                   (exp n q)))
+             (matita_basics_logic.rewrite_r
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.times n (exp n x_366))
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.times
+                      n
+                      (matita_arithmetics_nat.times (exp n q) (exp n x_366)))
+                   (matita_arithmetics_nat.times __ (exp n q)))
+                (matita_basics_logic.rewrite_r
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.times
+                      (exp n q)
+                      (matita_arithmetics_nat.times n (exp n x_366)))
+                   (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                    matita_basics_logic.eq
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times
+                         n
+                         (matita_arithmetics_nat.times (exp n q) (exp n x_366)))
+                      __)
+                   (matita_basics_logic.rewrite_r
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times
+                         n
+                         (matita_arithmetics_nat.times (exp n q) (exp n x_366)))
+                      (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                       matita_basics_logic.eq
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times
+                            n
+                            (matita_arithmetics_nat.times (exp n q) (exp n x_366)))
+                         __)
+                      (matita_basics_logic.refl
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times
+                            n
+                            (matita_arithmetics_nat.times (exp n q) (exp n x_366))))
+                      (matita_arithmetics_nat.times
+                         (exp n q)
+                         (matita_arithmetics_nat.times n (exp n x_366)))
+                      (matita_arithmetics_nat.times_times (exp n q) n (exp n x_366)))
+                   (matita_arithmetics_nat.times
+                      (matita_arithmetics_nat.times n (exp n x_366))
+                      (exp n q))
+                   (matita_arithmetics_nat.commutative_times
+                      (matita_arithmetics_nat.times n (exp n x_366))
+                      (exp n q)))
+                (matita_arithmetics_nat.times (exp n x_366) n)
+                (matita_arithmetics_nat.commutative_times (exp n x_366) n))
+             (matita_arithmetics_nat.times
+                (matita_arithmetics_nat.times (exp n q) (exp n x_366))
+                n)
+             (matita_arithmetics_nat.commutative_times
+                (matita_arithmetics_nat.times (exp n q) (exp n x_366))
+                n))
+          (exp n (matita_arithmetics_nat.plus q x_366))
+          (matita_basics_logic.rewrite_l
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (exp n x_366) (exp n q))
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                matita_arithmetics_nat.nat
+                (exp n (matita_arithmetics_nat.plus q x_366))
+                __)
+             (matita_basics_logic.rewrite_l
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.plus x_366 q)
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   matita_arithmetics_nat.nat
+                   (exp n __)
+                   (matita_arithmetics_nat.times (exp n x_366) (exp n q)))
+                _x_368
+                (matita_arithmetics_nat.plus q x_366)
+                (matita_arithmetics_nat.commutative_plus x_366 q))
+             (matita_arithmetics_nat.times (exp n q) (exp n x_366))
+             (matita_arithmetics_nat.commutative_times (exp n x_366) (exp n q))))
+       (matita_arithmetics_nat.plus x_366 q)
+       (matita_arithmetics_nat.commutative_plus x_366 q))
+    p.
+
+def exp_n_O :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       (exp n matita_arithmetics_nat.O))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_basics_logic.refl
+    matita_arithmetics_nat.nat
+    (matita_arithmetics_nat.S matita_arithmetics_nat.O).
+
+def exp_n_1 :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       n
+       (exp n (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_basics_logic.rewrite_l
+    matita_arithmetics_nat.nat
+    n
+    (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq matita_arithmetics_nat.nat n __)
+    (matita_basics_logic.refl matita_arithmetics_nat.nat n)
+    (matita_arithmetics_nat.plus n matita_arithmetics_nat.O)
+    (matita_arithmetics_nat.plus_n_O n).
+
+def exp_1_n :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       (exp (matita_arithmetics_nat.S matita_arithmetics_nat.O) n))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       (exp (matita_arithmetics_nat.S matita_arithmetics_nat.O) _x_365))
+    (matita_basics_logic.refl
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+    (x_366:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_368:(pts.El
+               pts.var
+               (matita_basics_logic.eq
+                  matita_arithmetics_nat.nat
+                  (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                  (exp (matita_arithmetics_nat.S matita_arithmetics_nat.O) x_366))) =>
+     matita_basics_logic.rewrite_l
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+          (matita_arithmetics_nat.times __ (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       (matita_basics_logic.rewrite_l
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             __)
+          (matita_basics_logic.refl
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (matita_arithmetics_nat.times
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (matita_arithmetics_nat.times_n_1 (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       (exp (matita_arithmetics_nat.S matita_arithmetics_nat.O) x_366)
+       _x_368)
+    n.
+
+def exp_2 :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (exp n (matita_arithmetics_nat.S (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       (matita_arithmetics_nat.times n n))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_basics_logic.rewrite_l
+    matita_arithmetics_nat.nat
+    n
+    (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times __ n)
+       (matita_arithmetics_nat.times n n))
+    (matita_basics_logic.refl matita_arithmetics_nat.nat (matita_arithmetics_nat.times n n))
+    (matita_arithmetics_nat.plus n matita_arithmetics_nat.O)
+    (matita_arithmetics_nat.plus_n_O n).
+
+def exp_exp_times :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  q:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (exp (exp n p) q)
+       (exp n (matita_arithmetics_nat.times p q)))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  q:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (exp (exp n p) _x_365)
+       (exp n (matita_arithmetics_nat.times p _x_365)))
+    (matita_basics_logic.eq_ind
+       matita_arithmetics_nat.nat
+       matita_arithmetics_nat.O
+       (x_1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        _x_2:(pts.El
+                pts.var
+                (matita_basics_logic.eq matita_arithmetics_nat.nat matita_arithmetics_nat.O x_1)) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+          (exp n x_1))
+       (matita_basics_logic.refl
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+       (matita_arithmetics_nat.times p matita_arithmetics_nat.O)
+       (matita_arithmetics_nat.times_n_O p))
+    (x_366:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_368:(pts.El
+               pts.var
+               (matita_basics_logic.eq
+                  matita_arithmetics_nat.nat
+                  (exp (exp n p) x_366)
+                  (exp n (matita_arithmetics_nat.times p x_366)))) =>
+     matita_basics_logic.rewrite_r
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times (exp n p) (exp (exp n p) x_366))
+       (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          __
+          (exp n (matita_arithmetics_nat.times p (matita_arithmetics_nat.S x_366))))
+       (matita_basics_logic.rewrite_l
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.plus p (matita_arithmetics_nat.times p x_366))
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (exp n p) (exp (exp n p) x_366))
+             (exp n __))
+          (matita_basics_logic.rewrite_r
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times
+                (exp n p)
+                (exp n (matita_arithmetics_nat.times p x_366)))
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.times (exp n p) (exp (exp n p) x_366))
+                __)
+             (matita_basics_logic.rewrite_l
+                matita_arithmetics_nat.nat
+                (exp (exp n p) x_366)
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.times (exp n p) (exp (exp n p) x_366))
+                   (matita_arithmetics_nat.times (exp n p) __))
+                (matita_basics_logic.refl
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.times (exp n p) (exp (exp n p) x_366)))
+                (exp n (matita_arithmetics_nat.times p x_366))
+                _x_368)
+             (exp n (matita_arithmetics_nat.plus p (matita_arithmetics_nat.times p x_366)))
+             (exp_plus_times n p (matita_arithmetics_nat.times p x_366)))
+          (matita_arithmetics_nat.times p (matita_arithmetics_nat.S x_366))
+          (matita_arithmetics_nat.times_n_Sm p x_366))
+       (matita_arithmetics_nat.times (exp (exp n p) x_366) (exp n p))
+       (matita_arithmetics_nat.commutative_times (exp (exp n p) x_366) (exp n p)))
+    q.
+
+def lt_O_exp :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O n)) ->
+  pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O (exp n m))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_arithmetics_nat.lt matita_arithmetics_nat.O n)
+       (__:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O n)) =>
+        matita_arithmetics_nat.lt matita_arithmetics_nat.O (exp n _x_365)))
+    (auto:(pts.El
+             pts.var
+             (matita_arithmetics_nat.le (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) =>
+     matita_arithmetics_nat.lt_O_S matita_arithmetics_nat.O)
+    (a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(__:(pts.El
+                 pts.var
+                 (matita_arithmetics_nat.le (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) ->
+           pts.El
+             pts.var
+             (matita_arithmetics_nat.le
+                (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                (exp n a))) =>
+     posn:(pts.El
+             pts.var
+             (matita_arithmetics_nat.le (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) =>
+     matita_arithmetics_nat.le_times
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       (exp n a)
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+       n
+       (Hind posn)
+       posn)
+    m.
+
+def lt_m_exp_nm :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) ->
+  pts.El pts.var (matita_arithmetics_nat.lt m (exp n m))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1n:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_arithmetics_nat.lt _x_365 (exp n _x_365))
+    (matita_arithmetics_nat.lt_O_S matita_arithmetics_nat.O)
+    (n0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(pts.El pts.var (matita_arithmetics_nat.le (matita_arithmetics_nat.S n0) (exp n n0))) =>
+     matita_arithmetics_nat.transitive_le
+       (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+       (matita_arithmetics_nat.times
+          (matita_arithmetics_nat.S n0)
+          (matita_arithmetics_nat.S (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       (matita_arithmetics_nat.times (exp n n0) n)
+       (matita_basics_logic.eq_coerc
+          (matita_arithmetics_nat.le
+             (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+             (matita_arithmetics_nat.plus
+                (matita_arithmetics_nat.plus
+                   (matita_arithmetics_nat.S n0)
+                   matita_arithmetics_nat.O)
+                (matita_arithmetics_nat.S n0)))
+          (matita_arithmetics_nat.le
+             (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+             (matita_arithmetics_nat.times
+                (matita_arithmetics_nat.S n0)
+                (matita_arithmetics_nat.S (matita_arithmetics_nat.S matita_arithmetics_nat.O))))
+          (matita_arithmetics_nat.lt_plus_Sn_r
+             (matita_arithmetics_nat.S n0)
+             matita_arithmetics_nat.O
+             n0)
+          (matita_basics_logic.rewrite_r
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.plus
+                (matita_arithmetics_nat.S n0)
+                (matita_arithmetics_nat.plus
+                   matita_arithmetics_nat.O
+                   (matita_arithmetics_nat.S n0)))
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                (pts.u pts.var)
+                (matita_arithmetics_nat.le
+                   (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                   __)
+                (matita_arithmetics_nat.le
+                   (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                   (matita_arithmetics_nat.times
+                      (matita_arithmetics_nat.S n0)
+                      (matita_arithmetics_nat.S
+                         (matita_arithmetics_nat.S matita_arithmetics_nat.O)))))
+             (matita_basics_logic.rewrite_l
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.plus
+                   (matita_arithmetics_nat.S n0)
+                   (matita_arithmetics_nat.times
+                      (matita_arithmetics_nat.S n0)
+                      (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   (pts.u pts.var)
+                   (matita_arithmetics_nat.le
+                      (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                      (matita_arithmetics_nat.plus
+                         (matita_arithmetics_nat.S n0)
+                         (matita_arithmetics_nat.plus
+                            matita_arithmetics_nat.O
+                            (matita_arithmetics_nat.S n0))))
+                   (matita_arithmetics_nat.le
+                      (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                      __))
+                (matita_basics_logic.rewrite_l
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.plus
+                      (matita_arithmetics_nat.S n0)
+                      (matita_arithmetics_nat.times
+                         (matita_arithmetics_nat.S n0)
+                         matita_arithmetics_nat.O))
+                   (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                    matita_basics_logic.eq
+                      (pts.u pts.var)
+                      (matita_arithmetics_nat.le
+                         (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                         (matita_arithmetics_nat.plus
+                            (matita_arithmetics_nat.S n0)
+                            (matita_arithmetics_nat.plus
+                               matita_arithmetics_nat.O
+                               (matita_arithmetics_nat.S n0))))
+                      (matita_arithmetics_nat.le
+                         (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                         (matita_arithmetics_nat.plus (matita_arithmetics_nat.S n0) __)))
+                   (matita_basics_logic.rewrite_r
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times
+                         matita_arithmetics_nat.O
+                         (matita_arithmetics_nat.S n0))
+                      (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                       matita_basics_logic.eq
+                         (pts.u pts.var)
+                         (matita_arithmetics_nat.le
+                            (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                            (matita_arithmetics_nat.plus
+                               (matita_arithmetics_nat.S n0)
+                               (matita_arithmetics_nat.plus
+                                  matita_arithmetics_nat.O
+                                  (matita_arithmetics_nat.S n0))))
+                         (matita_arithmetics_nat.le
+                            (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                            (matita_arithmetics_nat.plus
+                               (matita_arithmetics_nat.S n0)
+                               (matita_arithmetics_nat.plus (matita_arithmetics_nat.S n0) __))))
+                      (matita_basics_logic.rewrite_l
+                         matita_arithmetics_nat.nat
+                         matita_arithmetics_nat.O
+                         (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                          matita_basics_logic.eq
+                            (pts.u pts.var)
+                            (matita_arithmetics_nat.le
+                               (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                               (matita_arithmetics_nat.plus
+                                  (matita_arithmetics_nat.S n0)
+                                  (matita_arithmetics_nat.plus
+                                     matita_arithmetics_nat.O
+                                     (matita_arithmetics_nat.S n0))))
+                            (matita_arithmetics_nat.le
+                               (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                               (matita_arithmetics_nat.plus
+                                  (matita_arithmetics_nat.S n0)
+                                  (matita_arithmetics_nat.plus
+                                     (matita_arithmetics_nat.S n0)
+                                     __))))
+                         (matita_basics_logic.rewrite_r
+                            matita_arithmetics_nat.nat
+                            (matita_arithmetics_nat.plus
+                               matita_arithmetics_nat.O
+                               (matita_arithmetics_nat.S n0))
+                            (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                             matita_basics_logic.eq
+                               (pts.u pts.var)
+                               (matita_arithmetics_nat.le
+                                  (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                                  (matita_arithmetics_nat.plus
+                                     (matita_arithmetics_nat.S n0)
+                                     (matita_arithmetics_nat.plus
+                                        matita_arithmetics_nat.O
+                                        (matita_arithmetics_nat.S n0))))
+                               (matita_arithmetics_nat.le
+                                  (matita_arithmetics_nat.S (matita_arithmetics_nat.S n0))
+                                  (matita_arithmetics_nat.plus
+                                     (matita_arithmetics_nat.S n0)
+                                     __)))
+                            (matita_basics_logic.rewrite_l
+                               matita_arithmetics_nat.nat
+                               (matita_arithmetics_nat.S n0)
+                               (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                                matita_basics_logic.eq
+                                  (pts.u pts.var)
+                                  (matita_arithmetics_nat.le
+                                     (matita_arithmetics_nat.S
+                                        (matita_arithmetics_nat.S n0))
+                                     (matita_arithmetics_nat.plus
+                                        (matita_arithmetics_nat.S n0)
+                                        (matita_arithmetics_nat.plus
+                                           matita_arithmetics_nat.O
+                                           (matita_arithmetics_nat.S n0))))
+                                  (matita_arithmetics_nat.le
+                                     (matita_arithmetics_nat.S
+                                        (matita_arithmetics_nat.S n0))
+                                     (matita_arithmetics_nat.plus
+                                        (matita_arithmetics_nat.S n0)
+                                        __)))
+                               (matita_basics_logic.rewrite_l
+                                  matita_arithmetics_nat.nat
+                                  (matita_arithmetics_nat.S n0)
+                                  (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                                   matita_basics_logic.eq
+                                     (pts.u pts.var)
+                                     (matita_arithmetics_nat.le
+                                        (matita_arithmetics_nat.S
+                                           (matita_arithmetics_nat.S n0))
+                                        (matita_arithmetics_nat.plus
+                                           (matita_arithmetics_nat.S n0)
+                                           __))
+                                     (matita_arithmetics_nat.le
+                                        (matita_arithmetics_nat.S
+                                           (matita_arithmetics_nat.S n0))
+                                        (matita_arithmetics_nat.plus
+                                           (matita_arithmetics_nat.S n0)
+                                           (matita_arithmetics_nat.S n0))))
+                                  (matita_basics_logic.refl
+                                     (pts.u pts.var)
+                                     (matita_arithmetics_nat.le
+                                        (matita_arithmetics_nat.S
+                                           (matita_arithmetics_nat.S n0))
+                                        (matita_arithmetics_nat.plus
+                                           (matita_arithmetics_nat.S n0)
+                                           (matita_arithmetics_nat.S n0))))
+                                  (matita_arithmetics_nat.plus
+                                     matita_arithmetics_nat.O
+                                     (matita_arithmetics_nat.S n0))
+                                  (matita_arithmetics_nat.plus_O_n
+                                     (matita_arithmetics_nat.S n0)))
+                               (matita_arithmetics_nat.plus
+                                  matita_arithmetics_nat.O
+                                  (matita_arithmetics_nat.S n0))
+                               (matita_arithmetics_nat.plus_O_n
+                                  (matita_arithmetics_nat.S n0)))
+                            (matita_arithmetics_nat.plus
+                               (matita_arithmetics_nat.S n0)
+                               matita_arithmetics_nat.O)
+                            (matita_arithmetics_nat.commutative_plus
+                               (matita_arithmetics_nat.S n0)
+                               matita_arithmetics_nat.O))
+                         (matita_arithmetics_nat.times
+                            matita_arithmetics_nat.O
+                            (matita_arithmetics_nat.S n0))
+                         (matita_arithmetics_nat.times_O_n (matita_arithmetics_nat.S n0)))
+                      (matita_arithmetics_nat.times
+                         (matita_arithmetics_nat.S n0)
+                         matita_arithmetics_nat.O)
+                      (matita_arithmetics_nat.commutative_times
+                         (matita_arithmetics_nat.S n0)
+                         matita_arithmetics_nat.O))
+                   (matita_arithmetics_nat.times
+                      (matita_arithmetics_nat.S n0)
+                      (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+                   (matita_arithmetics_nat.times_n_Sm
+                      (matita_arithmetics_nat.S n0)
+                      matita_arithmetics_nat.O))
+                (matita_arithmetics_nat.times
+                   (matita_arithmetics_nat.S n0)
+                   (matita_arithmetics_nat.S (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+                (matita_arithmetics_nat.times_n_Sm
+                   (matita_arithmetics_nat.S n0)
+                   (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+             (matita_arithmetics_nat.plus
+                (matita_arithmetics_nat.plus
+                   (matita_arithmetics_nat.S n0)
+                   matita_arithmetics_nat.O)
+                (matita_arithmetics_nat.S n0))
+             (matita_arithmetics_nat.associative_plus
+                (matita_arithmetics_nat.S n0)
+                matita_arithmetics_nat.O
+                (matita_arithmetics_nat.S n0))))
+       (matita_arithmetics_nat.le_times
+          (matita_arithmetics_nat.S n0)
+          (exp n n0)
+          (matita_arithmetics_nat.S (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          n
+          Hind
+          lt1n))
+    m.
+
+def exp_to_eq_O :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) ->
+  __1:(pts.El
+         pts.var
+         (matita_basics_logic.eq
+            matita_arithmetics_nat.nat
+            (exp n m)
+            (matita_arithmetics_nat.S matita_arithmetics_nat.O))) ->
+  pts.El pts.var (matita_basics_logic.eq matita_arithmetics_nat.nat m matita_arithmetics_nat.O)
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  ltin:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) n)) =>
+  eq1:(pts.El
+         pts.var
+         (matita_basics_logic.eq
+            matita_arithmetics_nat.nat
+            (exp n m)
+            (matita_arithmetics_nat.S matita_arithmetics_nat.O))) =>
+  matita_arithmetics_nat.le_to_le_to_eq
+    m
+    matita_arithmetics_nat.O
+    (matita_arithmetics_nat.le_S_S_to_le
+       m
+       matita_arithmetics_nat.O
+       (matita_basics_logic.eq_ind
+          matita_arithmetics_nat.nat
+          (exp n m)
+          (x_1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           _x_2:(pts.El
+                   pts.var
+                   (matita_basics_logic.eq matita_arithmetics_nat.nat (exp n m) x_1)) =>
+           matita_arithmetics_nat.le (matita_arithmetics_nat.S m) x_1)
+          (lt_m_exp_nm n m ltin)
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+          eq1))
+    (matita_arithmetics_nat.le_O_n m).
+
+def let_clause_1258 :
+  b:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  lt1b:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) ->
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  H:(pts.El
+       pts.var
+       (matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times (exp b n) b)
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O))) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times b (exp b n))
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+  :=
+  b:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1b:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) =>
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  H:(pts.El
+       pts.var
+       (matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times (exp b n) b)
+          (matita_arithmetics_nat.S matita_arithmetics_nat.O))) =>
+  matita_basics_logic.rewrite_l
+    matita_arithmetics_nat.nat
+    (matita_arithmetics_nat.times (exp b n) b)
+    (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       __
+       (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+    H
+    (matita_arithmetics_nat.times b (exp b n))
+    (matita_arithmetics_nat.commutative_times (exp b n) b).
+
+def injective_exp_r :
+  b:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) ->
+  pts.El
+    pts.var
+    (matita_basics_relations.{|injective|}
+       matita_arithmetics_nat.nat
+       matita_arithmetics_nat.nat
+       (i:(pts.El pts.var matita_arithmetics_nat.nat) => exp b i))
+  :=
+  b:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1b:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) =>
+  matita_arithmetics_nat.nat_elim2
+    (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     pts.Prod
+       pts.var
+       pts.var
+       (matita_basics_logic.eq matita_arithmetics_nat.nat (exp b __) (exp b _0))
+       (__1:(pts.El
+               pts.var
+               (matita_basics_logic.eq matita_arithmetics_nat.nat (exp b __) (exp b _0))) =>
+        matita_basics_logic.eq matita_arithmetics_nat.nat __ _0))
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     H:(pts.El
+          pts.var
+          (matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             (exp b n))) =>
+     matita_basics_logic.sym_eq
+       matita_arithmetics_nat.nat
+       n
+       matita_arithmetics_nat.O
+       (exp_to_eq_O
+          b
+          n
+          lt1b
+          (matita_basics_logic.rewrite_r
+             matita_arithmetics_nat.nat
+             (exp b n)
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq matita_arithmetics_nat.nat (exp b n) __)
+             (matita_basics_logic.refl matita_arithmetics_nat.nat (exp b n))
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             H)))
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     H:(pts.El
+          pts.var
+          (matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (exp b n) b)
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O))) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.S n)
+          matita_arithmetics_nat.O)
+       (matita_basics_logic.absurd
+          (matita_arithmetics_nat.lt
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (matita_basics_logic.eq_ind
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (exp b n) b)
+             (x_1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              _x_2:(pts.El
+                      pts.var
+                      (matita_basics_logic.eq
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times (exp b n) b)
+                         x_1)) =>
+              matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) x_1)
+             (matita_arithmetics_nat.lt_to_le_to_lt
+                (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                (matita_arithmetics_nat.times
+                   (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                   b)
+                (matita_arithmetics_nat.times (exp b n) b)
+                (matita_basics_logic.eq_coerc
+                   (matita_arithmetics_nat.lt
+                      (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                      b)
+                   (matita_arithmetics_nat.lt
+                      (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                      (matita_arithmetics_nat.times
+                         (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                         b))
+                   lt1b
+                   (matita_basics_logic.rewrite_l
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times b (exp b n))
+                      (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                       matita_basics_logic.eq
+                         (pts.u pts.var)
+                         (matita_arithmetics_nat.lt __ b)
+                         (matita_arithmetics_nat.lt
+                            (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                            (matita_arithmetics_nat.times
+                               (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                               b)))
+                      (matita_basics_logic.rewrite_l
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times b (exp b n))
+                         (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                          matita_basics_logic.eq
+                            (pts.u pts.var)
+                            (matita_arithmetics_nat.lt
+                               (matita_arithmetics_nat.times b (exp b n))
+                               b)
+                            (matita_arithmetics_nat.lt
+                               __
+                               (matita_arithmetics_nat.times
+                                  (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                                  b)))
+                         (matita_basics_logic.rewrite_l
+                            matita_arithmetics_nat.nat
+                            (matita_arithmetics_nat.times b (exp b n))
+                            (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                             matita_basics_logic.eq
+                               (pts.u pts.var)
+                               (matita_arithmetics_nat.lt
+                                  (matita_arithmetics_nat.times b (exp b n))
+                                  b)
+                               (matita_arithmetics_nat.lt
+                                  (matita_arithmetics_nat.times b (exp b n))
+                                  (matita_arithmetics_nat.times __ b)))
+                            (matita_basics_logic.rewrite_r
+                               matita_arithmetics_nat.nat
+                               (matita_arithmetics_nat.times
+                                  b
+                                  (matita_arithmetics_nat.times b (exp b n)))
+                               (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                                matita_basics_logic.eq
+                                  (pts.u pts.var)
+                                  (matita_arithmetics_nat.lt
+                                     (matita_arithmetics_nat.times b (exp b n))
+                                     b)
+                                  (matita_arithmetics_nat.lt
+                                     (matita_arithmetics_nat.times b (exp b n))
+                                     __))
+                               (matita_basics_logic.rewrite_l
+                                  matita_arithmetics_nat.nat
+                                  b
+                                  (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                                   matita_basics_logic.eq
+                                     (pts.u pts.var)
+                                     (matita_arithmetics_nat.lt
+                                        (matita_arithmetics_nat.times b (exp b n))
+                                        b)
+                                     (matita_arithmetics_nat.lt
+                                        (matita_arithmetics_nat.times b (exp b n))
+                                        __))
+                                  (matita_basics_logic.refl
+                                     (pts.u pts.var)
+                                     (matita_arithmetics_nat.lt
+                                        (matita_arithmetics_nat.times b (exp b n))
+                                        b))
+                                  (matita_arithmetics_nat.times
+                                     b
+                                     (matita_arithmetics_nat.times b (exp b n)))
+                                  (matita_basics_logic.rewrite_r
+                                     matita_arithmetics_nat.nat
+                                     (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                                     (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                                      matita_basics_logic.eq
+                                        matita_arithmetics_nat.nat
+                                        b
+                                        (matita_arithmetics_nat.times b __))
+                                     (matita_arithmetics_nat.times_n_1 b)
+                                     (matita_arithmetics_nat.times b (exp b n))
+                                     (let_clause_1258 b lt1b n H)))
+                               (matita_arithmetics_nat.times
+                                  (matita_arithmetics_nat.times b (exp b n))
+                                  b)
+                               (matita_arithmetics_nat.commutative_times
+                                  (matita_arithmetics_nat.times b (exp b n))
+                                  b))
+                            (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                            (let_clause_1258 b lt1b n H))
+                         (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                         (let_clause_1258 b lt1b n H))
+                      (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                      (let_clause_1258 b lt1b n H)))
+                (matita_arithmetics_nat.le_times
+                   (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                   (exp b n)
+                   b
+                   b
+                   (lt_O_exp
+                      b
+                      n
+                      (matita_arithmetics_nat.lt_S_to_lt matita_arithmetics_nat.O b lt1b))
+                   (matita_arithmetics_nat.le_n b)))
+             (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+             H)
+          (matita_arithmetics_nat.not_le_Sn_n (matita_arithmetics_nat.S matita_arithmetics_nat.O))))
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(__:(pts.El
+                 pts.var
+                 (matita_basics_logic.eq matita_arithmetics_nat.nat (exp b n) (exp b m))) ->
+           pts.El pts.var (matita_basics_logic.eq matita_arithmetics_nat.nat n m)) =>
+     H:(pts.El
+          pts.var
+          (matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (exp b n) b)
+             (matita_arithmetics_nat.times (exp b m) b))) =>
+     matita_basics_logic.eq_f
+       matita_arithmetics_nat.nat
+       matita_arithmetics_nat.nat
+       matita_arithmetics_nat.S
+       n
+       m
+       (Hind
+          (matita_arithmetics_div_and_mod.injective_times_l
+             b
+             (matita_arithmetics_nat.lt_S_to_lt matita_arithmetics_nat.O b lt1b)
+             (exp b n)
+             (exp b m)
+             H))).
+
+def le_exp :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le n m)) ->
+  pts.El pts.var (matita_arithmetics_nat.le (exp p n) (exp p m))
+  :=
+  matita_arithmetics_nat.nat_elim2
+    (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     pts.Prod
+       pts.var
+       pts.var
+       matita_arithmetics_nat.nat
+       (p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        pts.Prod
+          pts.var
+          pts.var
+          (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)
+          (__1:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) =>
+           pts.Prod
+             pts.var
+             pts.var
+             (matita_arithmetics_nat.le __ _0)
+             (__2:(pts.El pts.var (matita_arithmetics_nat.le __ _0)) =>
+              matita_arithmetics_nat.le (exp p __) (exp p _0)))))
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     ltm:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O m)) =>
+     len:(pts.El pts.var (matita_arithmetics_nat.le matita_arithmetics_nat.O n)) => lt_O_exp m n ltm)
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O m)) =>
+     len:(pts.El
+            pts.var
+            (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) matita_arithmetics_nat.O)) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) =>
+        matita_arithmetics_nat.le
+          (exp m (matita_arithmetics_nat.S n))
+          (exp m matita_arithmetics_nat.O))
+       (matita_basics_logic.absurd
+          (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) matita_arithmetics_nat.O)
+          len
+          (matita_arithmetics_nat.not_le_Sn_O n)))
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+           __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) ->
+           __1:(pts.El pts.var (matita_arithmetics_nat.le n m)) ->
+           pts.El pts.var (matita_arithmetics_nat.le (exp p n) (exp p m))) =>
+     p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     posp:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) =>
+     lenm:(pts.El
+             pts.var
+             (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) (matita_arithmetics_nat.S m))) =>
+     matita_arithmetics_nat.le_times
+       (exp p n)
+       (exp p m)
+       p
+       p
+       (Hind
+          p
+          posp
+          (matita_basics_logic.eq_coerc
+             (matita_arithmetics_nat.le
+                (matita_arithmetics_nat.pred (matita_arithmetics_nat.S n))
+                (matita_arithmetics_nat.pred (matita_arithmetics_nat.S m)))
+             (matita_arithmetics_nat.le n m)
+             (matita_arithmetics_nat.monotonic_pred
+                (matita_arithmetics_nat.S n)
+                (matita_arithmetics_nat.S m)
+                lenm)
+             (matita_basics_logic.rewrite_l
+                matita_arithmetics_nat.nat
+                n
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   (pts.u pts.var)
+                   (matita_arithmetics_nat.le
+                      __
+                      (matita_arithmetics_nat.pred (matita_arithmetics_nat.S m)))
+                   (matita_arithmetics_nat.le n m))
+                (matita_basics_logic.rewrite_l
+                   matita_arithmetics_nat.nat
+                   m
+                   (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                    matita_basics_logic.eq
+                      (pts.u pts.var)
+                      (matita_arithmetics_nat.le n __)
+                      (matita_arithmetics_nat.le n m))
+                   (matita_basics_logic.refl (pts.u pts.var) (matita_arithmetics_nat.le n m))
+                   (matita_arithmetics_nat.pred (matita_arithmetics_nat.S m))
+                   (matita_arithmetics_nat.pred_Sn m))
+                (matita_arithmetics_nat.pred (matita_arithmetics_nat.S n))
+                (matita_arithmetics_nat.pred_Sn n))))
+       (matita_arithmetics_nat.le_n p)).
+
+def le_exp1 :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le n m)) ->
+  pts.El pts.var (matita_arithmetics_nat.le (exp n a) (exp m a))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  posa:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) =>
+  lenm:(pts.El pts.var (matita_arithmetics_nat.le n m)) =>
+  matita_arithmetics_nat.le_ind
+    (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+    (x_417:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_418:(pts.El
+               pts.var
+               (matita_arithmetics_nat.le
+                  (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                  x_417)) =>
+     matita_arithmetics_nat.le (exp n x_417) (exp m x_417))
+    (matita_basics_logic.eq_coerc
+       (matita_arithmetics_nat.le n m)
+       (matita_arithmetics_nat.le
+          (exp n (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       lenm
+       (matita_basics_logic.rewrite_l
+          matita_arithmetics_nat.nat
+          n
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             (pts.u pts.var)
+             (matita_arithmetics_nat.le n m)
+             (matita_arithmetics_nat.le
+                __
+                (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O))))
+          (matita_basics_logic.rewrite_l
+             matita_arithmetics_nat.nat
+             m
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                (pts.u pts.var)
+                (matita_arithmetics_nat.le n m)
+                (matita_arithmetics_nat.le n __))
+             (matita_basics_logic.refl (pts.u pts.var) (matita_arithmetics_nat.le n m))
+             (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+             (exp_n_1 m))
+          (exp n (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (exp_n_1 n)))
+    (a0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     posa0:(pts.El
+              pts.var
+              (matita_arithmetics_nat.le (matita_arithmetics_nat.S matita_arithmetics_nat.O) a0)) =>
+     Hind:(pts.El pts.var (matita_arithmetics_nat.le (exp n a0) (exp m a0))) =>
+     matita_arithmetics_nat.le_times (exp n a0) (exp m a0) n m Hind lenm)
+    a
+    posa.
+
+def lt_exp :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) p)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.lt n m)) ->
+  pts.El pts.var (matita_arithmetics_nat.lt (exp p n) (exp p m))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1p:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) p)) =>
+  ltnm:(pts.El pts.var (matita_arithmetics_nat.lt n m)) =>
+  matita_basics_logic.match_Or
+    (matita_arithmetics_nat.lt (exp p n) (exp p m))
+    (matita_basics_logic.eq matita_arithmetics_nat.nat (exp p n) (exp p m))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.Or
+              (matita_arithmetics_nat.lt (exp p n) (exp p m))
+              (matita_basics_logic.eq matita_arithmetics_nat.nat (exp p n) (exp p m)))) =>
+     matita_arithmetics_nat.lt (exp p n) (exp p m))
+    (auto:(pts.El pts.var (matita_arithmetics_nat.lt (exp p n) (exp p m))) => auto)
+    (eqexp:(pts.El pts.var (matita_basics_logic.eq matita_arithmetics_nat.nat (exp p n) (exp p m))) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) =>
+        matita_arithmetics_nat.lt (exp p n) (exp p m))
+       (matita_basics_logic.absurd
+          (matita_basics_logic.eq matita_arithmetics_nat.nat n m)
+          (injective_exp_r
+             p
+             lt1p
+             n
+             m
+             (matita_basics_logic.rewrite_r
+                matita_arithmetics_nat.nat
+                (exp p m)
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq matita_arithmetics_nat.nat __ (exp p m))
+                (matita_basics_logic.refl matita_arithmetics_nat.nat (exp p m))
+                (exp p n)
+                eqexp))
+          (matita_arithmetics_nat.lt_to_not_eq n m ltnm)))
+    (matita_arithmetics_nat.le_to_or_lt_eq
+       (exp p n)
+       (exp p m)
+       (le_exp
+          n
+          m
+          p
+          (matita_arithmetics_nat.lt_S_to_lt matita_arithmetics_nat.O p lt1p)
+          (matita_arithmetics_nat.lt_to_le n m ltnm))).
+
+def lt_exp1 :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.lt n m)) ->
+  pts.El pts.var (matita_arithmetics_nat.lt (exp n p) (exp m p))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  posp:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) =>
+  ltnm:(pts.El pts.var (matita_arithmetics_nat.lt n m)) =>
+  matita_arithmetics_nat.le_ind
+    (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+    (x_417:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_418:(pts.El
+               pts.var
+               (matita_arithmetics_nat.le
+                  (matita_arithmetics_nat.S matita_arithmetics_nat.O)
+                  x_417)) =>
+     matita_arithmetics_nat.lt (exp n x_417) (exp m x_417))
+    (matita_basics_logic.eq_coerc
+       (matita_arithmetics_nat.lt n m)
+       (matita_arithmetics_nat.lt
+          (exp n (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O)))
+       ltnm
+       (matita_basics_logic.rewrite_l
+          matita_arithmetics_nat.nat
+          n
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             (pts.u pts.var)
+             (matita_arithmetics_nat.lt n m)
+             (matita_arithmetics_nat.lt
+                __
+                (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O))))
+          (matita_basics_logic.rewrite_l
+             matita_arithmetics_nat.nat
+             m
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                (pts.u pts.var)
+                (matita_arithmetics_nat.lt n m)
+                (matita_arithmetics_nat.lt n __))
+             (matita_basics_logic.refl (pts.u pts.var) (matita_arithmetics_nat.lt n m))
+             (exp m (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+             (exp_n_1 m))
+          (exp n (matita_arithmetics_nat.S matita_arithmetics_nat.O))
+          (exp_n_1 n)))
+    (p0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     posp0:(pts.El
+              pts.var
+              (matita_arithmetics_nat.le (matita_arithmetics_nat.S matita_arithmetics_nat.O) p0)) =>
+     Hind:(pts.El pts.var (matita_arithmetics_nat.lt (exp n p0) (exp m p0))) =>
+     matita_arithmetics_nat.lt_times (exp n p0) (exp m p0) n m Hind ltnm)
+    p
+    posp.
+
+def le_exp_to_le :
+  b:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le (exp b n) (exp b m))) ->
+  pts.El pts.var (matita_arithmetics_nat.le n m)
+  :=
+  b:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1b:(pts.El
+          pts.var
+          (matita_arithmetics_nat.lt (matita_arithmetics_nat.S matita_arithmetics_nat.O) b)) =>
+  leexp:(pts.El pts.var (matita_arithmetics_nat.le (exp b n) (exp b m))) =>
+  matita_basics_logic.match_Or
+    (matita_arithmetics_nat.le n m)
+    (matita_basics_logic.Not (matita_arithmetics_nat.le n m))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.Or
+              (matita_arithmetics_nat.le n m)
+              (matita_basics_logic.Not (matita_arithmetics_nat.le n m)))) =>
+     matita_arithmetics_nat.le n m)
+    (auto:(pts.El pts.var (matita_arithmetics_nat.le n m)) => auto)
+    (notle:(pts.El pts.var (matita_basics_logic.Not (matita_arithmetics_nat.le n m))) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) => matita_arithmetics_nat.le n m)
+       (matita_basics_logic.absurd
+          (matita_arithmetics_nat.le (exp b n) (exp b m))
+          leexp
+          (matita_arithmetics_nat.lt_to_not_le
+             (exp b m)
+             (exp b n)
+             (lt_exp m n b lt1b (matita_arithmetics_nat.not_le_to_lt n m notle)))))
+    (matita_arithmetics_nat.decidable_le n m).
+
+def le_exp_to_le1 :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le (exp n p) (exp m p))) ->
+  pts.El pts.var (matita_arithmetics_nat.le n m)
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  posp:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O p)) =>
+  leexp:(pts.El pts.var (matita_arithmetics_nat.le (exp n p) (exp m p))) =>
+  matita_arithmetics_nat.not_lt_to_le
+    m
+    n
+    (matita_basics_logic.not_to_not
+       (matita_arithmetics_nat.lt m n)
+       (matita_arithmetics_nat.lt (exp m p) (exp n p))
+       (lt_exp1 m n p posp)
+       (matita_arithmetics_nat.le_to_not_lt (exp n p) (exp m p) leexp)).
+
+def lt_exp_to_lt :
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.lt (exp a n) (exp a m))) ->
+  pts.El pts.var (matita_arithmetics_nat.lt n m)
+  :=
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  lt1a:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) =>
+  ltexp:(pts.El pts.var (matita_arithmetics_nat.lt (exp a n) (exp a m))) =>
+  matita_basics_logic.match_Or
+    (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)
+    (matita_basics_logic.Not (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.Or
+              (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)
+              (matita_basics_logic.Not
+                 (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)))) =>
+     matita_arithmetics_nat.lt n m)
+    (auto:(pts.El pts.var (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)) => auto)
+    (H:(pts.El
+          pts.var
+          (matita_basics_logic.Not (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m))) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) => matita_arithmetics_nat.lt n m)
+       (matita_basics_logic.absurd
+          (matita_arithmetics_nat.lt (exp a n) (exp a m))
+          ltexp
+          (matita_arithmetics_nat.le_to_not_lt
+             (exp a m)
+             (exp a n)
+             (le_exp m n a lt1a (matita_arithmetics_nat.not_lt_to_le n m H)))))
+    (matita_arithmetics_nat.decidable_le (matita_arithmetics_nat.S n) m).
+
+def lt_exp_to_lt1 :
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.lt (exp n a) (exp m a))) ->
+  pts.El pts.var (matita_arithmetics_nat.lt n m)
+  :=
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  posa:(pts.El pts.var (matita_arithmetics_nat.lt matita_arithmetics_nat.O a)) =>
+  ltexp:(pts.El pts.var (matita_arithmetics_nat.lt (exp n a) (exp m a))) =>
+  matita_basics_logic.match_Or
+    (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)
+    (matita_basics_logic.Not (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m))
+    pts.var
+    (__:(pts.El
+           pts.var
+           (matita_basics_logic.Or
+              (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)
+              (matita_basics_logic.Not
+                 (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)))) =>
+     matita_arithmetics_nat.lt n m)
+    (auto:(pts.El pts.var (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m)) => auto)
+    (H:(pts.El
+          pts.var
+          (matita_basics_logic.Not (matita_arithmetics_nat.le (matita_arithmetics_nat.S n) m))) =>
+     matita_basics_logic.False_ind
+       (_x_66:(pts.El pts.var matita_basics_logic.False) => matita_arithmetics_nat.lt n m)
+       (matita_basics_logic.absurd
+          (matita_arithmetics_nat.lt (exp n a) (exp m a))
+          ltexp
+          (matita_arithmetics_nat.le_to_not_lt
+             (exp m a)
+             (exp n a)
+             (le_exp1 m n a posa (matita_arithmetics_nat.not_lt_to_le n m H)))))
+    (matita_arithmetics_nat.decidable_le (matita_arithmetics_nat.S n) m).
+
+def times_exp :
+  n:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  m:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  p:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times (exp n p) (exp m p))
+       (exp (matita_arithmetics_nat.times n m) p))
+  :=
+  n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  p:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times (exp n _x_365) (exp m _x_365))
+       (exp (matita_arithmetics_nat.times n m) _x_365))
+    (matita_basics_logic.refl
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times
+          (exp n matita_arithmetics_nat.O)
+          (exp m matita_arithmetics_nat.O)))
+    (p0:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(pts.El
+             pts.var
+             (matita_basics_logic.eq
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.times (exp n p0) (exp m p0))
+                (exp (matita_arithmetics_nat.times n m) p0))) =>
+     matita_basics_logic.rewrite_r
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.times n (exp n p0))
+       (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        matita_basics_logic.eq
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times __ (matita_arithmetics_nat.times (exp m p0) m))
+          (matita_arithmetics_nat.times
+             (exp (matita_arithmetics_nat.times n m) p0)
+             (matita_arithmetics_nat.times n m)))
+       (matita_basics_logic.rewrite_r
+          matita_arithmetics_nat.nat
+          (matita_arithmetics_nat.times m (exp m p0))
+          (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+           matita_basics_logic.eq
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times (matita_arithmetics_nat.times n (exp n p0)) __)
+             (matita_arithmetics_nat.times
+                (exp (matita_arithmetics_nat.times n m) p0)
+                (matita_arithmetics_nat.times n m)))
+          (matita_basics_logic.rewrite_r
+             matita_arithmetics_nat.nat
+             (matita_arithmetics_nat.times
+                n
+                (matita_arithmetics_nat.times
+                   (exp n p0)
+                   (matita_arithmetics_nat.times m (exp m p0))))
+             (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+              matita_basics_logic.eq
+                matita_arithmetics_nat.nat
+                __
+                (matita_arithmetics_nat.times
+                   (exp (matita_arithmetics_nat.times n m) p0)
+                   (matita_arithmetics_nat.times n m)))
+             (matita_basics_logic.rewrite_r
+                matita_arithmetics_nat.nat
+                (matita_arithmetics_nat.times
+                   m
+                   (matita_arithmetics_nat.times (exp n p0) (exp m p0)))
+                (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                 matita_basics_logic.eq
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.times n __)
+                   (matita_arithmetics_nat.times
+                      (exp (matita_arithmetics_nat.times n m) p0)
+                      (matita_arithmetics_nat.times n m)))
+                (matita_basics_logic.rewrite_r
+                   matita_arithmetics_nat.nat
+                   (exp (matita_arithmetics_nat.times n m) p0)
+                   (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                    matita_basics_logic.eq
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times n (matita_arithmetics_nat.times m __))
+                      (matita_arithmetics_nat.times
+                         (exp (matita_arithmetics_nat.times n m) p0)
+                         (matita_arithmetics_nat.times n m)))
+                   (matita_basics_logic.rewrite_r
+                      matita_arithmetics_nat.nat
+                      (matita_arithmetics_nat.times
+                         (matita_arithmetics_nat.times n m)
+                         (exp (matita_arithmetics_nat.times n m) p0))
+                      (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                       matita_basics_logic.eq
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times
+                            n
+                            (matita_arithmetics_nat.times
+                               m
+                               (exp (matita_arithmetics_nat.times n m) p0)))
+                         __)
+                      (matita_basics_logic.rewrite_r
+                         matita_arithmetics_nat.nat
+                         (matita_arithmetics_nat.times
+                            n
+                            (matita_arithmetics_nat.times
+                               m
+                               (exp (matita_arithmetics_nat.times n m) p0)))
+                         (__:(pts.El pts.var matita_arithmetics_nat.nat) =>
+                          matita_basics_logic.eq
+                            matita_arithmetics_nat.nat
+                            (matita_arithmetics_nat.times
+                               n
+                               (matita_arithmetics_nat.times
+                                  m
+                                  (exp (matita_arithmetics_nat.times n m) p0)))
+                            __)
+                         (matita_basics_logic.refl
+                            matita_arithmetics_nat.nat
+                            (matita_arithmetics_nat.times
+                               n
+                               (matita_arithmetics_nat.times
+                                  m
+                                  (exp (matita_arithmetics_nat.times n m) p0))))
+                         (matita_arithmetics_nat.times
+                            (matita_arithmetics_nat.times n m)
+                            (exp (matita_arithmetics_nat.times n m) p0))
+                         (matita_arithmetics_nat.associative_times
+                            n
+                            m
+                            (exp (matita_arithmetics_nat.times n m) p0)))
+                      (matita_arithmetics_nat.times
+                         (exp (matita_arithmetics_nat.times n m) p0)
+                         (matita_arithmetics_nat.times n m))
+                      (matita_arithmetics_nat.commutative_times
+                         (exp (matita_arithmetics_nat.times n m) p0)
+                         (matita_arithmetics_nat.times n m)))
+                   (matita_arithmetics_nat.times (exp n p0) (exp m p0))
+                   Hind)
+                (matita_arithmetics_nat.times
+                   (exp n p0)
+                   (matita_arithmetics_nat.times m (exp m p0)))
+                (matita_arithmetics_nat.times_times (exp n p0) m (exp m p0)))
+             (matita_arithmetics_nat.times
+                (matita_arithmetics_nat.times n (exp n p0))
+                (matita_arithmetics_nat.times m (exp m p0)))
+             (matita_arithmetics_nat.associative_times
+                n
+                (exp n p0)
+                (matita_arithmetics_nat.times m (exp m p0))))
+          (matita_arithmetics_nat.times (exp m p0) m)
+          (matita_arithmetics_nat.commutative_times (exp m p0) m))
+       (matita_arithmetics_nat.times (exp n p0) n)
+       (matita_arithmetics_nat.commutative_times (exp n p0) n))
+    p.
+

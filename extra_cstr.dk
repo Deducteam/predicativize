@@ -30,7 +30,7 @@ ex2 : Type.
 
 [] ?0 --> M 0_N (Union (Union (S 0_N ?1) (S 0_N ?3)) (S 0_N ?4)).
 
-def matita_arithmetics_bool : Type.
+def matita_basics_bool : Type.
 
 [] ?0 --> M 0_N Empty.
 

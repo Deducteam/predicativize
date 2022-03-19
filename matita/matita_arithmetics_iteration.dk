@@ -1,0 +1,209 @@
+def iter :
+  H:(pts.U pts.var) ->
+  __:(__:(pts.El pts.var H) -> pts.El pts.var H) ->
+  __1:(pts.El pts.var matita_arithmetics_nat.nat) -> __2:(pts.El pts.var H) -> pts.El pts.var H.
+
+def iter_body :
+  H:(pts.U pts.var) ->
+  __:(__:(pts.El pts.var H) -> pts.El pts.var H) ->
+  __1:(pts.El pts.var matita_arithmetics_nat.nat) -> __2:(pts.El pts.var H) -> pts.El pts.var H.
+
+[__1, __, H]
+  iter H __ __1
+  -->
+  matita_arithmetics_nat.filter_nat
+    pts.var
+    (__1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     pts.Prod pts.var pts.var H (__2:(pts.El pts.var H) => H))
+    (iter_body H __)
+    __1.
+
+[__1, __, H]
+  iter_body H __ __1
+  -->
+  a:(pts.El pts.var H) =>
+  matita_arithmetics_nat.match_nat
+    pts.var
+    (__2:(pts.El pts.var matita_arithmetics_nat.nat) => H)
+    a
+    (m:(pts.El pts.var matita_arithmetics_nat.nat) => __ (iter H __ m a))
+    __1.
+
+def le_iter :
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) ->
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(x:(pts.El pts.var matita_arithmetics_nat.nat) ->
+      pts.El pts.var (matita_arithmetics_nat.le x (g x))) ->
+  i:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El pts.var (matita_arithmetics_nat.le a (iter matita_arithmetics_nat.nat g i a))
+  :=
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) =>
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  leg:(x:(pts.El pts.var matita_arithmetics_nat.nat) ->
+       pts.El pts.var (matita_arithmetics_nat.le x (g x))) =>
+  i:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_arithmetics_nat.le a (iter matita_arithmetics_nat.nat g _x_365 a))
+    (matita_arithmetics_nat.le_n a)
+    (n:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(pts.El pts.var (matita_arithmetics_nat.le a (iter matita_arithmetics_nat.nat g n a))) =>
+     matita_arithmetics_nat.transitive_le
+       a
+       (iter matita_arithmetics_nat.nat g n a)
+       (iter matita_arithmetics_nat.nat g (matita_arithmetics_nat.S n) a)
+       Hind
+       (leg (iter matita_arithmetics_nat.nat g n a)))
+    i.
+
+def iter_iter :
+  A:(pts.U pts.var) ->
+  g:(__:(pts.El pts.var A) -> pts.El pts.var A) ->
+  a:(pts.El pts.var A) ->
+  b:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  c:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  pts.El
+    pts.var
+    (matita_basics_logic.eq
+       A
+       (iter A g c (iter A g b a))
+       (iter A g (matita_arithmetics_nat.plus b c) a))
+  :=
+  A:(pts.U pts.var) =>
+  g:(__:(pts.El pts.var A) -> pts.El pts.var A) =>
+  a:(pts.El pts.var A) =>
+  b:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  c:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_basics_logic.eq
+       A
+       (iter A g _x_365 (iter A g b a))
+       (iter A g (matita_arithmetics_nat.plus b _x_365) a))
+    (matita_basics_logic.eq_ind
+       matita_arithmetics_nat.nat
+       b
+       (x_1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        _x_2:(pts.El pts.var (matita_basics_logic.eq matita_arithmetics_nat.nat b x_1)) =>
+        matita_basics_logic.eq A (iter A g matita_arithmetics_nat.O (iter A g b a)) (iter A g x_1 a))
+       (matita_basics_logic.refl A (iter A g b a))
+       (matita_arithmetics_nat.plus b matita_arithmetics_nat.O)
+       (matita_arithmetics_nat.plus_n_O b))
+    (m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(pts.El
+             pts.var
+             (matita_basics_logic.eq
+                A
+                (iter A g m (iter A g b a))
+                (iter A g (matita_arithmetics_nat.plus b m) a))) =>
+     matita_basics_logic.eq_ind
+       matita_arithmetics_nat.nat
+       (matita_arithmetics_nat.S (matita_arithmetics_nat.plus b m))
+       (x_1:(pts.El pts.var matita_arithmetics_nat.nat) =>
+        _x_2:(pts.El
+                pts.var
+                (matita_basics_logic.eq
+                   matita_arithmetics_nat.nat
+                   (matita_arithmetics_nat.S (matita_arithmetics_nat.plus b m))
+                   x_1)) =>
+        matita_basics_logic.eq
+          A
+          (iter A g (matita_arithmetics_nat.S m) (iter A g b a))
+          (iter A g x_1 a))
+       (matita_basics_logic.eq_f
+          A
+          A
+          g
+          (iter A g m (iter A g b a))
+          (iter A g (matita_arithmetics_nat.plus b m) a)
+          Hind)
+       (matita_arithmetics_nat.plus b (matita_arithmetics_nat.S m))
+       (matita_arithmetics_nat.plus_n_Sm b m))
+    c.
+
+def monotonic_iter :
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) ->
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  b:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  i:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(pts.El
+        pts.var
+        (matita_basics_relations.monotonic matita_arithmetics_nat.nat matita_arithmetics_nat.le g)) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le a b)) ->
+  pts.El
+    pts.var
+    (matita_arithmetics_nat.le
+       (iter matita_arithmetics_nat.nat g i a)
+       (iter matita_arithmetics_nat.nat g i b))
+  :=
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) =>
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  b:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  i:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  Hmono:(pts.El
+           pts.var
+           (matita_basics_relations.monotonic
+              matita_arithmetics_nat.nat
+              matita_arithmetics_nat.le
+              g)) =>
+  leab:(pts.El pts.var (matita_arithmetics_nat.le a b)) =>
+  matita_arithmetics_nat.nat_ind
+    (_x_365:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     matita_arithmetics_nat.le
+       (iter matita_arithmetics_nat.nat g _x_365 a)
+       (iter matita_arithmetics_nat.nat g _x_365 b))
+    leab
+    (m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     Hind:(pts.El
+             pts.var
+             (matita_arithmetics_nat.le
+                (iter matita_arithmetics_nat.nat g m a)
+                (iter matita_arithmetics_nat.nat g m b))) =>
+     Hmono (iter matita_arithmetics_nat.nat g m a) (iter matita_arithmetics_nat.nat g m b) Hind)
+    i.
+
+def monotonic_iter2 :
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) ->
+  a:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  i:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  j:(pts.El pts.var matita_arithmetics_nat.nat) ->
+  __:(x:(pts.El pts.var matita_arithmetics_nat.nat) ->
+      pts.El pts.var (matita_arithmetics_nat.le x (g x))) ->
+  __1:(pts.El pts.var (matita_arithmetics_nat.le i j)) ->
+  pts.El
+    pts.var
+    (matita_arithmetics_nat.le
+       (iter matita_arithmetics_nat.nat g i a)
+       (iter matita_arithmetics_nat.nat g j a))
+  :=
+  g:(__:(pts.El pts.var matita_arithmetics_nat.nat) -> pts.El pts.var matita_arithmetics_nat.nat) =>
+  a:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  i:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  j:(pts.El pts.var matita_arithmetics_nat.nat) =>
+  leg:(x:(pts.El pts.var matita_arithmetics_nat.nat) ->
+       pts.El pts.var (matita_arithmetics_nat.le x (g x))) =>
+  leij:(pts.El pts.var (matita_arithmetics_nat.le i j)) =>
+  matita_arithmetics_nat.le_ind
+    i
+    (x_417:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     _x_418:(pts.El pts.var (matita_arithmetics_nat.le i x_417)) =>
+     matita_arithmetics_nat.le
+       (iter matita_arithmetics_nat.nat g i a)
+       (iter matita_arithmetics_nat.nat g x_417 a))
+    (matita_arithmetics_nat.le_n (iter matita_arithmetics_nat.nat g i a))
+    (m:(pts.El pts.var matita_arithmetics_nat.nat) =>
+     leim:(pts.El pts.var (matita_arithmetics_nat.le i m)) =>
+     Hind:(pts.El
+             pts.var
+             (matita_arithmetics_nat.le
+                (iter matita_arithmetics_nat.nat g i a)
+                (iter matita_arithmetics_nat.nat g m a))) =>
+     matita_arithmetics_nat.transitive_le
+       (iter matita_arithmetics_nat.nat g i a)
+       (iter matita_arithmetics_nat.nat g m a)
+       (g (iter matita_arithmetics_nat.nat g m a))
+       Hind
+       (leg (iter matita_arithmetics_nat.nat g m a)))
+    j
+    leij.
+
