@@ -1,4 +1,3 @@
-
 type alevel = S of int * string
 type level = M of int * alevel list 
 (* a level in cannonical form is of the form
@@ -79,3 +78,21 @@ let get_min (M(n,at_l)) =
 (* [get_fv t] returns the free variables of [t]. *)
 let get_fv (M(_,at_l)) =
   List.fold_left (fun acc (S(_,var)) -> var :: acc) [] at_l  
+
+(* [list_to_max l] returns the lvl given by the max of all levels in [l] *)
+let list_to_max l =
+  let substitue =
+    M(0, List.fold_left
+           (fun acc _ ->
+             let id = string_of_int @@ List.length acc in
+             let t = S(0, id) in
+             t :: acc)
+           [] l) in
+  let subst var =
+    match int_of_string_opt var with
+    | None -> None
+    | Some n -> List.nth_opt l n in
+  apply_subst subst substitue
+
+                            
+      

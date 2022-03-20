@@ -21,3 +21,174 @@
 [] univs.Type3 --> pts.var.
 [] univs.Type4 --> pts.var.
 [] univs.Type5 --> pts.var.
+
+(; to remove rec_Typk and rec_Typk_body for k > 0 ;)
+
+(;
+
+[] matita_arithmetics_nat.nat_rect_Type4 --> matita_arithmetics_nat.nat_rect_Type0.
+[] matita_arithmetics_nat.nat_rect_Type3 --> matita_arithmetics_nat.nat_rect_Type0.
+[] matita_arithmetics_nat.nat_rect_Type2 --> matita_arithmetics_nat.nat_rect_Type0.
+[] matita_arithmetics_nat.nat_rect_Type1 --> matita_arithmetics_nat.nat_rect_Type0.
+
+[] matita_arithmetics_nat.nat_rect_Type4_body --> matita_arithmetics_nat.nat_rect_Type0_body.
+[] matita_arithmetics_nat.nat_rect_Type3_body --> matita_arithmetics_nat.nat_rect_Type0_body.
+[] matita_arithmetics_nat.nat_rect_Type2_body --> matita_arithmetics_nat.nat_rect_Type0_body.
+[] matita_arithmetics_nat.nat_rect_Type1_body --> matita_arithmetics_nat.nat_rect_Type0_body.
+
+
+
+[] matita_basics_logic.eq_rect_Type4 --> matita_basics_logic.eq_rect_Type0.
+[] matita_basics_logic.eq_rect_Type3 --> matita_basics_logic.eq_rect_Type0.
+[] matita_basics_logic.eq_rect_Type2 --> matita_basics_logic.eq_rect_Type0.
+[] matita_basics_logic.eq_rect_Type1 --> matita_basics_logic.eq_rect_Type0.
+
+[] matita_basics_logic.eq_rect_Type4_body --> matita_basics_logic.eq_rect_Type0_body.
+[] matita_basics_logic.eq_rect_Type3_body --> matita_basics_logic.eq_rect_Type0_body.
+[] matita_basics_logic.eq_rect_Type2_body --> matita_basics_logic.eq_rect_Type0_body.
+[] matita_basics_logic.eq_rect_Type1_body --> matita_basics_logic.eq_rect_Type0_body.
+
+
+
+[] matita_basics_logic.True_rect_Type4 --> matita_basics_logic.True_rect_Type0.
+[] matita_basics_logic.True_rect_Type3 --> matita_basics_logic.True_rect_Type0.
+[] matita_basics_logic.True_rect_Type2 --> matita_basics_logic.True_rect_Type0.
+[] matita_basics_logic.True_rect_Type1 --> matita_basics_logic.True_rect_Type0.
+
+[] matita_basics_logic.True_rect_Type4_body --> matita_basics_logic.True_rect_Type0_body.
+[] matita_basics_logic.True_rect_Type3_body --> matita_basics_logic.True_rect_Type0_body.
+[] matita_basics_logic.True_rect_Type2_body --> matita_basics_logic.True_rect_Type0_body.
+[] matita_basics_logic.True_rect_Type1_body --> matita_basics_logic.True_rect_Type0_body.
+
+
+
+[] matita_basics_logic.False_rect_Type4 --> matita_basics_logic.False_rect_Type0.
+[] matita_basics_logic.False_rect_Type3 --> matita_basics_logic.False_rect_Type0.
+[] matita_basics_logic.False_rect_Type2 --> matita_basics_logic.False_rect_Type0.
+[] matita_basics_logic.False_rect_Type1 --> matita_basics_logic.False_rect_Type0.
+
+[] matita_basics_logic.False_rect_Type4_body --> matita_basics_logic.False_rect_Type0_body.
+[] matita_basics_logic.False_rect_Type3_body --> matita_basics_logic.False_rect_Type0_body.
+[] matita_basics_logic.False_rect_Type2_body --> matita_basics_logic.False_rect_Type0_body.
+[] matita_basics_logic.False_rect_Type1_body --> matita_basics_logic.False_rect_Type0_body.
+
+
+
+[] matita_basics_logic.Not_rect_Type4 --> matita_basics_logic.Not_rect_Type0.
+[] matita_basics_logic.Not_rect_Type3 --> matita_basics_logic.Not_rect_Type0.
+[] matita_basics_logic.Not_rect_Type2 --> matita_basics_logic.Not_rect_Type0.
+[] matita_basics_logic.Not_rect_Type1 --> matita_basics_logic.Not_rect_Type0.
+
+[] matita_basics_logic.Not_rect_Type4_body --> matita_basics_logic.Not_rect_Type0_body.
+[] matita_basics_logic.Not_rect_Type3_body --> matita_basics_logic.Not_rect_Type0_body.
+[] matita_basics_logic.Not_rect_Type2_body --> matita_basics_logic.Not_rect_Type0_body.
+[] matita_basics_logic.Not_rect_Type1_body --> matita_basics_logic.Not_rect_Type0_body.
+
+
+
+[] matita_basics_logic.And_rect_Type4 --> matita_basics_logic.And_rect_Type0.
+[] matita_basics_logic.And_rect_Type3 --> matita_basics_logic.And_rect_Type0.
+[] matita_basics_logic.And_rect_Type2 --> matita_basics_logic.And_rect_Type0.
+[] matita_basics_logic.And_rect_Type1 --> matita_basics_logic.And_rect_Type0.
+
+[] matita_basics_logic.And_rect_Type4_body --> matita_basics_logic.And_rect_Type0_body.
+[] matita_basics_logic.And_rect_Type3_body --> matita_basics_logic.And_rect_Type0_body.
+[] matita_basics_logic.And_rect_Type2_body --> matita_basics_logic.And_rect_Type0_body.
+[] matita_basics_logic.And_rect_Type1_body --> matita_basics_logic.And_rect_Type0_body.
+
+
+
+[] matita_basics_bool.bool_rect_Type4 --> matita_basics_bool.bool_rect_Type0.
+[] matita_basics_bool.bool_rect_Type3 --> matita_basics_bool.bool_rect_Type0.
+[] matita_basics_bool.bool_rect_Type2 --> matita_basics_bool.bool_rect_Type0.
+[] matita_basics_bool.bool_rect_Type1 --> matita_basics_bool.bool_rect_Type0.
+
+[] matita_basics_bool.bool_rect_Type4_body --> matita_basics_bool.bool_rect_Type0_body.
+[] matita_basics_bool.bool_rect_Type3_body --> matita_basics_bool.bool_rect_Type0_body.
+[] matita_basics_bool.bool_rect_Type2_body --> matita_basics_bool.bool_rect_Type0_body.
+[] matita_basics_bool.bool_rect_Type1_body --> matita_basics_bool.bool_rect_Type0_body.
+
+
+
+[] matita_basics_lists_list.list_rect_Type4 --> matita_basics_lists_list.list_rect_Type0.
+[] matita_basics_lists_list.list_rect_Type3 --> matita_basics_lists_list.list_rect_Type0.
+[] matita_basics_lists_list.list_rect_Type2 --> matita_basics_lists_list.list_rect_Type0.
+[] matita_basics_lists_list.list_rect_Type1 --> matita_basics_lists_list.list_rect_Type0.
+
+[] matita_basics_lists_list.list_rect_Type4_body --> matita_basics_lists_list.list_rect_Type0_body.
+[] matita_basics_lists_list.list_rect_Type3_body --> matita_basics_lists_list.list_rect_Type0_body.
+[] matita_basics_lists_list.list_rect_Type2_body --> matita_basics_lists_list.list_rect_Type0_body.
+[] matita_basics_lists_list.list_rect_Type1_body --> matita_basics_lists_list.list_rect_Type0_body.
+
+
+
+[] matita_basics_lists_list.Aop_rect_Type4 --> matita_basics_lists_list.Aop_rect_Type0.
+[] matita_basics_lists_list.Aop_rect_Type3 --> matita_basics_lists_list.Aop_rect_Type0.
+[] matita_basics_lists_list.Aop_rect_Type2 --> matita_basics_lists_list.Aop_rect_Type0.
+[] matita_basics_lists_list.Aop_rect_Type1 --> matita_basics_lists_list.Aop_rect_Type0.
+
+[] matita_basics_lists_list.Aop_rect_Type4_body --> matita_basics_lists_list.Aop_rect_Type0_body.
+[] matita_basics_lists_list.Aop_rect_Type3_body --> matita_basics_lists_list.Aop_rect_Type0_body.
+[] matita_basics_lists_list.Aop_rect_Type2_body --> matita_basics_lists_list.Aop_rect_Type0_body.
+[] matita_basics_lists_list.Aop_rect_Type1_body --> matita_basics_lists_list.Aop_rect_Type0_body.
+
+
+
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type4 --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type3 --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type2 --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type1 --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0.
+
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type4_body --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0_body.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type3_body --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0_body.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type2_body --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0_body.
+[] matita_arithmetics_div_and_mod.div_mod_spec_rect_Type1_body --> matita_arithmetics_div_and_mod.div_mod_spec_rect_Type0_body.
+
+
+
+[] matita_arithmetics_bigops.Aop_rect_Type4 --> matita_arithmetics_bigops.Aop_rect_Type0.
+[] matita_arithmetics_bigops.Aop_rect_Type3 --> matita_arithmetics_bigops.Aop_rect_Type0.
+[] matita_arithmetics_bigops.Aop_rect_Type2 --> matita_arithmetics_bigops.Aop_rect_Type0.
+[] matita_arithmetics_bigops.Aop_rect_Type1 --> matita_arithmetics_bigops.Aop_rect_Type0.
+
+[] matita_arithmetics_bigops.Aop_rect_Type4_body --> matita_arithmetics_bigops.Aop_rect_Type0_body.
+[] matita_arithmetics_bigops.Aop_rect_Type3_body --> matita_arithmetics_bigops.Aop_rect_Type0_body.
+[] matita_arithmetics_bigops.Aop_rect_Type2_body --> matita_arithmetics_bigops.Aop_rect_Type0_body.
+[] matita_arithmetics_bigops.Aop_rect_Type1_body --> matita_arithmetics_bigops.Aop_rect_Type0_body.
+
+
+
+[] matita_arithmetics_bigops.ACop_rect_Type4 --> matita_arithmetics_bigops.ACop_rect_Type0.
+[] matita_arithmetics_bigops.ACop_rect_Type3 --> matita_arithmetics_bigops.ACop_rect_Type0.
+[] matita_arithmetics_bigops.ACop_rect_Type2 --> matita_arithmetics_bigops.ACop_rect_Type0.
+[] matita_arithmetics_bigops.ACop_rect_Type1 --> matita_arithmetics_bigops.ACop_rect_Type0.
+
+[] matita_arithmetics_bigops.ACop_rect_Type4_body --> matita_arithmetics_bigops.ACop_rect_Type0_body.
+[] matita_arithmetics_bigops.ACop_rect_Type3_body --> matita_arithmetics_bigops.ACop_rect_Type0_body.
+[] matita_arithmetics_bigops.ACop_rect_Type2_body --> matita_arithmetics_bigops.ACop_rect_Type0_body.
+[] matita_arithmetics_bigops.ACop_rect_Type1_body --> matita_arithmetics_bigops.ACop_rect_Type0_body.
+
+
+
+[] matita_arithmetics_bigops.range_rect_Type4 --> matita_arithmetics_bigops.range_rect_Type0.
+[] matita_arithmetics_bigops.range_rect_Type3 --> matita_arithmetics_bigops.range_rect_Type0.
+[] matita_arithmetics_bigops.range_rect_Type2 --> matita_arithmetics_bigops.range_rect_Type0.
+[] matita_arithmetics_bigops.range_rect_Type1 --> matita_arithmetics_bigops.range_rect_Type0.
+
+[] matita_arithmetics_bigops.range_rect_Type4_body --> matita_arithmetics_bigops.range_rect_Type0_body.
+[] matita_arithmetics_bigops.range_rect_Type3_body --> matita_arithmetics_bigops.range_rect_Type0_body.
+[] matita_arithmetics_bigops.range_rect_Type2_body --> matita_arithmetics_bigops.range_rect_Type0_body.
+[] matita_arithmetics_bigops.range_rect_Type1_body --> matita_arithmetics_bigops.range_rect_Type0_body.
+
+
+
+[] matita_arithmetics_bigops.Dop_rect_Type4 --> matita_arithmetics_bigops.Dop_rect_Type0.
+[] matita_arithmetics_bigops.Dop_rect_Type3 --> matita_arithmetics_bigops.Dop_rect_Type0.
+[] matita_arithmetics_bigops.Dop_rect_Type2 --> matita_arithmetics_bigops.Dop_rect_Type0.
+[] matita_arithmetics_bigops.Dop_rect_Type1 --> matita_arithmetics_bigops.Dop_rect_Type0.
+
+[] matita_arithmetics_bigops.Dop_rect_Type4_body --> matita_arithmetics_bigops.Dop_rect_Type0_body.
+[] matita_arithmetics_bigops.Dop_rect_Type3_body --> matita_arithmetics_bigops.Dop_rect_Type0_body.
+[] matita_arithmetics_bigops.Dop_rect_Type2_body --> matita_arithmetics_bigops.Dop_rect_Type0_body.
+[] matita_arithmetics_bigops.Dop_rect_Type1_body --> matita_arithmetics_bigops.Dop_rect_Type0_body.
+;)

@@ -59,5 +59,6 @@ let sanitize s =
                                else if c = '(' || c = ')' then '-' else c) s in
 (*  let s = if int_of_string_opt @@ String.make 1 @@ String.get s ((String.length s) - 1) = None
           then s else s ^ "|" in*)
+  let s = String.map (fun c -> if c = '?' then 'l' else c) s in
   if String.get s 0 = '-' then "X" ^ s else s
 

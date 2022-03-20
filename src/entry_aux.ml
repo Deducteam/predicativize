@@ -2,6 +2,7 @@ module Env = Api.Env
 module T = Kernel.Term
 module B = Kernel.Basic
 module D = Lvldk
+module L = Lvl
 open Common
 
 let pts_empty_set = T.mk_App D.pts_m D.pts_0_n [D.pts_empty]
@@ -79,4 +80,96 @@ let rec replace_arity te =
      T.mk_Pi l id (replace_arity a) (replace_arity b)
   | _ -> te
 
+(* [get_univs_in_u te] returns a list of the levels appearing in the arguments of pts.u in [te]. 
+   If some lvl appears somewhere else (eg Nat lzero), then returns None. *)
+let rec get_univs_in_u te : Lvl.level list option =
+  if D.extract_lvl te != None then None
+  else
+    let open T in
+    match te with
+    | App (Const (_, name_u), univ, []) when
+           ((B.string_of_ident @@ B.id name_u = "u" || B.string_of_ident @@ B.id name_u = "U")
+            && B.string_of_mident @@ B.md name_u = "pts") ->
+       let* lvl = D.extract_lvl univ in
+       Some [lvl]
+    | App (Const (_, prod), _, [_; t1; t2]) when
+           (B.string_of_ident @@ B.id prod = "Prod" && B.string_of_mident @@ B.md prod = "pts") ->
+       let* u1 = get_univs_in_u t1 in
+       let* u2 = get_univs_in_u t2 in
+       Some (remove_duplicates @@ u1 @ u2)
+    | App (Const (_, el), _, [t]) when
+           (B.string_of_ident @@ B.id el = "El" && B.string_of_mident @@ B.md el = "pts") ->
+       get_univs_in_u t
+    | App (t1, t2, tl) ->
+       let* u1 = get_univs_in_u t1 in
+       let* u2 = get_univs_in_u t2 in
+       let* ul = List.fold_left
+                   (fun acc x ->
+                     match x, acc with
+                     | None, _ | _, None -> None
+                     | Some x, Some l -> Some (x @ l))
+                   (Some [])
+                   @@ List.map get_univs_in_u tl in
+       Some (remove_duplicates @@ u1 @ u2 @ ul)
+    | Lam (_, _, ty_op, body) ->
+       let* uty = match ty_op with
+         | None -> Some []
+         | Some ty -> get_univs_in_u ty in
+       let* ubody = get_univs_in_u body in
+       Some (remove_duplicates @@ uty @ ubody)
+    | Pi (_, _, t1, t2) ->
+       let* u1 = get_univs_in_u t1 in
+       let* u2 = get_univs_in_u t2 in
+       Some (remove_duplicates @@ u1 @ u2)
+    | _ -> Some []
 
+let get_type_former_predicativity_cstrs te =
+  let rec aux other_univs te =
+    let open T in
+    match te with
+    | App (Const (_, name_u), Const(_, metavar), []) when
+           ((B.string_of_ident @@ B.id name_u = "u" || B.string_of_ident @@ B.id name_u = "U" )
+            && B.string_of_mident @@ B.md name_u = "pts"
+            && String.get (B.string_of_ident @@ B.id metavar) 0 = '?') ->
+       let t1 = L.list_to_max @@ remove_duplicates @@ other_univs in
+       let t2 = L.M(0, [L.S(0, B.string_of_ident @@ B.id metavar)]) in
+       Some (t1, t2)
+    | App (Const (_, prod), _, [_; t1; t2]) when
+           (B.string_of_ident @@ B.id prod = "Prod" && B.string_of_mident @@ B.md prod = "pts") ->
+       let* u1 = get_univs_in_u t1 in
+       aux (other_univs @ u1) t2
+    | App (Const (_, el), _, [t]) when
+           (B.string_of_ident @@ B.id el = "El" && B.string_of_mident @@ B.md el = "pts") ->
+       aux other_univs t
+    | App (t1, t2, []) ->
+       let* u1 = get_univs_in_u t1 in
+       aux (other_univs @ u1) t2
+    | App (t1, t2, tl) ->
+       let* u1 = get_univs_in_u t1 in
+       let* u2 = get_univs_in_u t2 in
+       let* ul = List.fold_left (fun acc x ->
+                     match x, acc with
+                     | None, _ | _, None -> None
+                     | Some x, Some l -> Some (x @ l))
+                   (Some [])
+                 @@ List.map get_univs_in_u @@ List.tl tl in
+       aux (other_univs @ u1 @ u2 @ ul) (List.hd tl)
+    | Lam (_, _, ty_op, body) ->
+       let* uty = match ty_op with
+         | None -> Some []
+         | Some ty -> get_univs_in_u ty in
+       aux (other_univs @ uty) body
+    | Pi (_, _, t1, t2) ->
+       let* u1 = get_univs_in_u t1 in
+       aux (other_univs @ u1) t2
+    | _ -> None in
+  aux [] te
+
+
+
+
+
+
+
+
+           

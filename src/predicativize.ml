@@ -7,6 +7,8 @@ module Files = Api.Files
 module M = Api.Meta
 module A = Agda
 open Common
+
+exception Error   
          
 let sttfa_to_pts inputfile entries =
   let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
@@ -16,18 +18,21 @@ let sttfa_to_pts inputfile entries =
   List.map (M.mk_entry cfg env) entries
 
 let apply_meta meta inputfile entries =
-  let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
-  let cfg = M.default_config () in
-  let meta_rules = M.parse_meta_files [meta] in
-  M.add_rules cfg meta_rules;
-  List.map (M.mk_entry cfg env) entries
-
+  try
+    let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
+    let cfg = M.default_config () in
+    let meta_rules = M.parse_meta_files [meta] in
+    M.add_rules cfg meta_rules;
+    List.map (M.mk_entry cfg env) entries
+  with e -> begin
+      let _, _, s = Api.Errors.string_of_exception ~red:(fun x -> x) (B.dloc) e in
+      Format.printf "%s%s@." (red "ERROR : ")  s;
+      raise Error end
   
 exception Exit_p
         
 let predicativize meta optim _ agda_mode inputfile =
-  Files.add_path "theory";
-  Files.add_path "out";  
+  Files.add_path "out";
 
   let entries = P.(parse (input_from_file inputfile)) in
 
@@ -116,8 +121,10 @@ let _ =
           " A file containing extra constraints to be taken into account") ;
         ( "--meta", Arg.String (fun s -> meta_file := Some s),
           " A file containing metarules to be applied to the files") ; 
-        ( "--path", Arg.String (fun s -> add_to_path := Some s),
-          " Adds to path") ;        
+        ( "--path", Arg.String (fun s -> add_to_path := match !add_to_path with
+                                                        | None -> Some [s]
+                                                        | Some l -> Some (s :: l)),
+          " Paths to look for .dko files") ;        
       ]
   in
   let usage = "A tool for making definitions predicative\nUsage: " ^ Sys.argv.(0) ^ " [OPTION]... [FILE]...\nAvailable options:" in
@@ -126,7 +133,7 @@ let _ =
   (if !eta_mode = true then Kernel.Reduction.eta := true);
   begin match !add_to_path with
   | None -> ()
-  | Some path -> Files.add_path path end;
+  | Some l -> List.iter Files.add_path l end;
   
   let files_with_problems = ref 0 in
 

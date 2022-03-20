@@ -32,6 +32,8 @@ ex2 : Type.
 
 def matita_basics_bool : Type.
 
+bool : Type.
+
 [] ?0 --> M 0_N Empty.
 
 def matita_arithmetics_nat : Type.

@@ -56,7 +56,7 @@ let rec extract_lvl_set t =
   | App(Const(_, s), n, [DB(_,var, _)]) when
          (B.string_of_ident (B.id s) = "S" && String.get (B.string_of_ident var) 0 = '?') ->
      let* n = extract_int n in
-     let ident = sanitize @@ (B.string_of_ident var) ^ "v" in
+     let ident = sanitize @@ (B.string_of_ident var) ^ "_v" in
      Some (n_succ (Lvar ident) n)
 
   (* sometimes we can have nested Ms, as in M 1 [S 0 x; S 2 (M 3 [])] *)
@@ -76,7 +76,7 @@ and dklvl_to_agda_lvl t =
   let open T in
   match t with
   | DB(_, var, _) ->
-     Some (Lvar (sanitize @@ (B.string_of_ident var) ^ "v"))
+     Some (Lvar (sanitize @@ (B.string_of_ident var) ^ "_v"))
   | Const(_, lzero) when
          (B.string_of_mident (B.md lzero) = "pts" && B.string_of_ident (B.id lzero) = "lzero") ->
      Some Lzero
@@ -167,7 +167,7 @@ let rec dkterm_to_term n te =
          (B.string_of_mident (B.md pi) = "pts" && B.string_of_ident (B.id pi) = "Prod") ->
      let* ta = dkterm_to_term n ta in
      let* tb = dkterm_to_term (n + 1) body_b in
-     let ident = sanitize @@ (B.string_of_ident var) ^ "v" in
+     let ident = sanitize @@ (B.string_of_ident var) ^ "_v" in
      if ident = "x-free"
      then Some (A_Arr (ta, tb))
      else
@@ -210,7 +210,7 @@ let rec dkterm_to_term n te =
           Some (Some A_Lty)
        | Some x ->
           Option.bind (dkty_to_ty n x) (fun res -> Some (Some res)) in
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in
+     let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in
      (* We need to annotate the non-level variables with the depth, because 
         they migth not be unique. However, this is not needed for level variables,
         as they are all unique. *)
@@ -219,10 +219,10 @@ let rec dkterm_to_term n te =
 
   | DB(_, ident, _) ->
      if String.get (B.string_of_ident ident) 0 = '?'
-     then Some (A_Lvl (Lvar (sanitize @@ (B.string_of_ident ident)  ^ "v")))
+     then Some (A_Lvl (Lvar (sanitize @@ (B.string_of_ident ident)  ^ "_v")))
      else
        (*       let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in *)
-       let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in 
+       let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in 
        Some (A_Var ident)
 
   | Const(_, cst) when
@@ -257,7 +257,7 @@ and dkty_to_ty n te =
   (* te = (ident : pts.Lvl) -> t2 *)
   | Pi(_, ident, Const(_,lvl), t2) when
          (B.string_of_mident (B.md lvl) = "pts" && B.string_of_ident (B.id lvl) = "Lvl") ->
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "v" in
+     let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in
      let* t2 = dkty_to_ty (n + 1) t2 in
      Some (A_Pi (A_Lty, ident, t2))
 
@@ -265,7 +265,7 @@ and dkty_to_ty n te =
   (* should not happen in the good cases *)
   | Pi(_, ident, t1, t2) ->
      (*     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in*)
-     let ident = sanitize @@ (B.string_of_ident ident)  ^ "v" in     
+     let ident = sanitize @@ (B.string_of_ident ident)  ^ "_v" in     
      let* t2 = dkty_to_ty (n + 1) t2 in
      let* t1 = dkty_to_ty n t1 in     
      Some (A_Pi (t1, ident, t2))
@@ -289,7 +289,7 @@ let dkrew_to_rew (r : Kernel.Rule.partially_typed_rule) =
         (fun (_, id, ty_op) ->
           let* ty = ty_op in
           let* agda_ty = dkty_to_ty 0 ty in
-          Some (sanitize @@ (B.string_of_ident id) ^ "v", agda_ty))
+          Some (sanitize @@ (B.string_of_ident id) ^ "_v", agda_ty))
         r.ctx in
   let* lhs = dkterm_to_term 0 @@ Kernel.Rule.pattern_to_term r.pat in
   let* rhs = dkterm_to_term 0 r.rhs in
@@ -298,11 +298,11 @@ let dkrew_to_rew (r : Kernel.Rule.partially_typed_rule) =
 let pp_rew_counter = ref 0
   
 let pp_agda_rew fmt r =
-  Format.fprintf fmt "postulate rewrite-rule-%s : " (string_of_int !pp_rew_counter);
+  Format.fprintf fmt "-- postulate rewrite-rule-%s : " (string_of_int !pp_rew_counter);
 
   List.iter (fun (id, ty) -> Format.fprintf fmt "(%s : %a) -> " id pp_agda_te ty) r.ctx;
   Format.fprintf fmt "%a ≡ %a@." pp_agda_te r.lhs pp_agda_te r.rhs;
-  Format.fprintf fmt "{-# REWRITE rewrite-rule-%s #-}" (string_of_int !pp_rew_counter);
+  (*  Format.fprintf fmt "{-# REWRITE rewrite-rule-%s #-}" (string_of_int !pp_rew_counter);*)
   pp_rew_counter := 1 + !pp_rew_counter
 
 type agda_entry =
@@ -345,10 +345,10 @@ type agda_file_element =
 
 let pp_file fmt agda_file =
   let open Format in
-  fprintf fmt "{-# OPTIONS --rewriting #-}@.";
+  (*  fprintf fmt "{-# OPTIONS --rewriting #-}@.";*)
   fprintf fmt "open import Agda.Primitive@.";
-  fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
-  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";  
+(*  fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
+  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";  *)
   
   List.fold_left (fun () e ->
       match e with
