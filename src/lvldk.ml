@@ -20,11 +20,14 @@ exception Nested_apps
 
 (* [extract_int t] returns Some n when [t] represents the natural
    number n, else None. *)        
-let rec extract_int t =
+let rec extract_int whnf_opt t =
+  let t = match whnf_opt with
+    | Some get_whnf -> get_whnf t
+    | None -> t in    
   let open T in
   match t with
   | App(Const(_, n1), t1, []) when (B.string_of_ident (B.id n1) = "S_N") ->
-     let* m = extract_int t1 in
+     let* m = extract_int whnf_opt t1 in
      Some (1 + m)
   | Const(_, n) when (B.string_of_ident (B.id n) = "0_N") -> Some 0
   | App(App(_,_,_),_,_) -> raise Nested_apps                                                           
@@ -32,30 +35,36 @@ let rec extract_int t =
 
 (* [extract_lvl_set t] returns Some l when [t] represents the list
    of atomic levels l, else None. *)
-let rec extract_lvl_set t =
+let rec extract_lvl_set whnf_opt t =
+  let t = match whnf_opt with
+    | Some get_whnf -> get_whnf t
+    | None -> t in  
   let open T in
   match t with
   | Const(_, n) when (B.string_of_ident (B.id n) = "Empty") -> Some []
   | App(Const(_, n1), t1, [Const(_,n2)]) when
          (B.string_of_ident (B.id n1) = "S" && String.get (B.string_of_ident (B.id n2)) 0 = '?') ->
-     let* m = extract_int t1 in
+     let* m = extract_int whnf_opt t1 in
      let var = B.string_of_ident (B.id n2) in
      Some [L.S(m, var)]
   | App(Const(_, n), t1, [t2]) when (B.string_of_ident (B.id n) = "Union") ->
-     let* m1 = extract_lvl_set t1 in
-     let* m2 = extract_lvl_set t2 in
+     let* m1 = extract_lvl_set whnf_opt t1 in
+     let* m2 = extract_lvl_set whnf_opt t2 in
      Some (m1 @ m2)
   | App(App(_,_,_),_,_) -> raise Nested_apps
   | _ -> None
 
 (* [extract_lvl_set t] returns Some l when [t] represents the level l,
    else None. *)       
-let extract_lvl t =
+let extract_lvl whnf_opt t =
   let open T in
+  let t = match whnf_opt with
+    | Some get_whnf -> get_whnf t
+    | None -> t in
   match t with
   | App(Const(_, n1), t1, [t2]) when (B.string_of_ident (B.id n1) = "M") ->
-     let* m = extract_int t1 in
-     let* s = extract_lvl_set t2 in
+     let* m = extract_int whnf_opt t1 in
+     let* s = extract_lvl_set whnf_opt t2 in
      Some (L.M(m, s))
   | Const(_, n) when (String.get (B.string_of_ident (B.id n)) 0 = '?') ->
      let n = B.string_of_ident (B.id n) in

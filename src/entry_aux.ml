@@ -83,14 +83,14 @@ let rec replace_arity te =
 (* [get_univs_in_u te] returns a list of the levels appearing in the arguments of pts.u in [te]. 
    If some lvl appears somewhere else (eg Nat lzero), then returns None. *)
 let rec get_univs_in_u te : Lvl.level list option =
-  if D.extract_lvl te != None then None
+  if D.extract_lvl None te != None then None
   else
     let open T in
     match te with
     | App (Const (_, name_u), univ, []) when
            ((B.string_of_ident @@ B.id name_u = "u" || B.string_of_ident @@ B.id name_u = "U")
             && B.string_of_mident @@ B.md name_u = "pts") ->
-       let* lvl = D.extract_lvl univ in
+       let* lvl = D.extract_lvl None univ in
        Some [lvl]
     | App (Const (_, prod), _, [_; t1; t2]) when
            (B.string_of_ident @@ B.id prod = "Prod" && B.string_of_mident @@ B.md prod = "pts") ->

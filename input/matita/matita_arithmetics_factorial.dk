@@ -30811,8 +30811,8 @@ def le_fact_10 :
                        (matita_arithmetics_nat.S
                           (matita_arithmetics_nat.S
                              (matita_arithmetics_nat.S
-                                matita_arithmetics_nat.O)))))))).
-(;      :=
+                                matita_arithmetics_nat.O))))))))
+      :=
       matita_basics_logic.eq_ind_r
         (cic.lift univs.Type0 univs.Type2 matita_arithmetics_nat.nat)
         (matita_arithmetics_nat.times
@@ -33250,7 +33250,7 @@ def le_fact_10 :
                           (matita_arithmetics_nat.S
                              (matita_arithmetics_nat.S
                                 matita_arithmetics_nat.O)))))))).
-;)
+
 def ab_times_cd :
       a : cic.Term univs.Type0 matita_arithmetics_nat.nat ->
       b : cic.Term univs.Type0 matita_arithmetics_nat.nat ->
@@ -33361,8 +33361,8 @@ def lt_4_to_fact :
                        (matita_arithmetics_nat.S
                           (matita_arithmetics_nat.S matita_arithmetics_nat.O))))
                  (matita_arithmetics_factorial.fact n))
-              (matita_arithmetics_factorial.fact n))).
-(;      :=
+              (matita_arithmetics_factorial.fact n)))
+      :=
       n : cic.Term univs.Type0 matita_arithmetics_nat.nat =>
       ltn :
         cic.Term cic.prop
@@ -39044,4 +39044,3 @@ def lt_4_to_fact :
         n ltn.
 
 
-;)

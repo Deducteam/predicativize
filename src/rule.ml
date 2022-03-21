@@ -165,7 +165,7 @@ let rec remove_non_atomic_lvls_in_lhs t =
   match t with
   | App(Const(_, n1), _, [t2]) when (B.string_of_ident (B.id n1) = "M") ->
      begin
-       match D.extract_lvl_set t2 with
+       match D.extract_lvl_set None t2 with
        | None -> raise Impossible
        | Some [] -> []
        | Some lvl_set ->

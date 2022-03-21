@@ -11,10 +11,10 @@ struct
   module Rule = Kernel.Rule
   include R
 
-  let univ_conversion l r =
+  let univ_conversion sg l r =
     if T.term_eq l r then 
       true
-    else match (D.extract_lvl l, D.extract_lvl r) with
+    else match (D.extract_lvl (Some (whnf sg)) l, D.extract_lvl (Some (whnf sg)) r) with
          | Some l', Some r' -> U.cstr_eq := (l',r') :: !U.cstr_eq; true
          | _ -> false
 
@@ -22,10 +22,12 @@ struct
   | [] -> true
   | (l, r) :: lst ->
     if T.term_eq l r then are_convertible_lst sg lst
-    else
-      let l', r' = (snf sg l, snf sg r) in
-      if univ_conversion l' r' then are_convertible_lst sg lst
-      else are_convertible_lst sg (R.conversion_step sg (l', r') lst)
+    else begin
+        (*    Format.printf "%a = %a -->" T.pp_term l T.pp_term r;      *)
+        let l', r' = (whnf sg l, whnf sg r) in
+    (*        Format.printf " %a = %a@." T.pp_term l' T.pp_term r';*)
+      if univ_conversion sg l' r' then are_convertible_lst sg lst
+      else are_convertible_lst sg (R.conversion_step sg (l', r') lst) end
 
   let are_convertible sg t1 t2 =
     try are_convertible_lst sg [(t1, t2)]

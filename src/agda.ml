@@ -168,7 +168,7 @@ let rec dkterm_to_term n te =
      let* ta = dkterm_to_term n ta in
      let* tb = dkterm_to_term (n + 1) body_b in
      let ident = sanitize @@ (B.string_of_ident var) ^ "_v" in
-     if ident = "x-free"
+     if ident = "x-free-v"
      then Some (A_Arr (ta, tb))
      else
        (*       let ident = sanitize @@ ident ^ "-" ^ string_of_int n in*)
@@ -277,6 +277,12 @@ and dkty_to_ty n te =
   | Const(_, ty_lvl) when
          (B.string_of_mident (B.md ty_lvl) = "pts" && B.string_of_ident (B.id ty_lvl) = "Lvl") ->
      Some (A_Lty)
+  | Const(_, cst) ->
+     let name = sanitize @@ B.string_of_ident (B.id cst) in
+     let modu = sanitize @@ B.string_of_mident (B.md cst) in
+     let modu = if modu = !md_name then None
+                else (import_list := modu :: !import_list; Some modu) in
+     Some (A_Cst (modu, name))     
   | _ -> None
 
        
@@ -345,10 +351,10 @@ type agda_file_element =
 
 let pp_file fmt agda_file =
   let open Format in
-  (*  fprintf fmt "{-# OPTIONS --rewriting #-}@.";*)
+  fprintf fmt "{-# OPTIONS --rewriting #-}@.";
   fprintf fmt "open import Agda.Primitive@.";
-(*  fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
-  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";  *)
+  fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
+  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";
   
   List.fold_left (fun () e ->
       match e with
