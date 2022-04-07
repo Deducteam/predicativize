@@ -22,6 +22,11 @@ test_agda:
 	dkcheck -e -I theory theory/sttfa.dk
 	time dune exec -- predicativize -a --meta metas/sttfa_to_pts.dk --path theory input/arith_fermat/connectives.dk input/arith_fermat/leibniz.dk input/arith_fermat/logic.dk input/arith_fermat/relations.dk input/arith_fermat/bool.dk input/arith_fermat/nat.dk input/arith_fermat/fact.dk input/arith_fermat/div_mod.dk input/arith_fermat/bigops.dk input/arith_fermat/primes.dk input/arith_fermat/cong.dk input/arith_fermat/exp.dk input/arith_fermat/gcd.dk input/arith_fermat/permutation.dk input/arith_fermat/sigma_pi.dk input/arith_fermat/fermat.dk
 
+running_example:
+	dkcheck -e -I theory theory/sttfa.dk
+	time dune exec -- predicativize -a --meta metas/sttfa_to_pts.dk --path theory input/running_example.dk
+
+
 test_agda_with_typecheck:
 	dkcheck -e -I theory theory/sttfa.dk
 	time dune exec -- predicativize -at --meta metas/sttfa_to_pts.dk --path theory input/arith_fermat/connectives.dk input/arith_fermat/leibniz.dk input/arith_fermat/logic.dk input/arith_fermat/relations.dk input/arith_fermat/bool.dk input/arith_fermat/nat.dk input/arith_fermat/fact.dk input/arith_fermat/div_mod.dk input/arith_fermat/bigops.dk input/arith_fermat/primes.dk input/arith_fermat/cong.dk input/arith_fermat/exp.dk input/arith_fermat/gcd.dk input/arith_fermat/permutation.dk input/arith_fermat/sigma_pi.dk input/arith_fermat/fermat.dk

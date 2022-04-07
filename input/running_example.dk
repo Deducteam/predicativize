@@ -1,0 +1,5 @@
+def thm1 : sttfa.eps (sttfa.forall sttfa.bool (P => sttfa.impl P P)) :=
+    P => p => p.
+
+def thm2 : sttfa.eps (sttfa.forall sttfa.bool (P => sttfa.impl P P)) :=
+    thm1 (sttfa.forall sttfa.bool (P => sttfa.impl P P)) thm1.
