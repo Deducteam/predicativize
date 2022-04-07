@@ -9,7 +9,8 @@ First start by installing Dedukti (https://github.com/Deducteam/Dedukti hash `c6
 
 By running `dune exec -- predicativize --help` we can see that the following modes are available.
 ```
-  -a      Automatically translates the output to agda files and typechecks them
+  -a      Automatically translates the output to agda files
+  -at     Automatically translates the output to agda files and typechecks them
   --eta   Uses eta equality
   --cstr  A file containing extra constraints to be taken into account
   --meta  A file containing metarules to be applied to the files
