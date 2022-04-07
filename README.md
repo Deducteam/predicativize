@@ -9,7 +9,14 @@ First start by installing Dedukti (https://github.com/Deducteam/Dedukti hash `c6
 
 By running `dune exec -- predicativize --help` we can see that the following modes are available.
 ```
-  -s      Handles files in the sttfa syntax, else it expects files in the pts syntax (see theory/pts.dk)
-  -o      Enables optmizations to make the result depend on less universe variables (might render the level constraints unsolvable)
   -a      Automatically translates the output to agda files and typechecks them
+  --eta   Uses eta equality
+  --cstr  A file containing extra constraints to be taken into account
+  --meta  A file containing metarules to be applied to the files
+  --path  Paths to look for .dko files
 ```
+## Times
+
+- matita - with `lt_4_to_fact` and `le_fact_10` : ~37 min
+- matita - without `lt_4_to_fact` and `le_fact_10` : ~7 min
+- test (fermat's little theorem proof in hol) : ~2 min

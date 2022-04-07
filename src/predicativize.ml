@@ -10,12 +10,12 @@ open Common
 
 exception Error   
          
-let sttfa_to_pts inputfile entries =
+(*let sttfa_to_pts inputfile entries =
   let env = Env.init (Parsers.Parser.input_from_file inputfile) in  
   let cfg = M.default_config () in
   let meta_rules = M.parse_meta_files ["metas/sttfa_to_pts.dk"] in
   M.add_rules cfg meta_rules;
-  List.map (M.mk_entry cfg env) entries
+  List.map (M.mk_entry cfg env) entries*)
 
 let apply_meta meta inputfile entries =
   try
@@ -31,7 +31,7 @@ let apply_meta meta inputfile entries =
   
 exception Exit_p
         
-let predicativize meta optim _ agda_mode inputfile =
+let predicativize meta agda_mode agda_with_typecheck_mode inputfile =
   Files.add_path "out";
 
   let entries = P.(parse (input_from_file inputfile)) in
@@ -59,7 +59,7 @@ let predicativize meta optim _ agda_mode inputfile =
     List.map
       (fun e ->
         try
-          match E.predicativize_entry env optim out_fmt e with
+          match E.predicativize_entry env false out_fmt e with
           | None -> None
           | Some x -> ok_entries := 1 + !ok_entries; Some x
         with e -> begin
@@ -75,29 +75,30 @@ let predicativize meta optim _ agda_mode inputfile =
     (string_of_int !ok_entries)
     (string_of_int !ko_entries);
 
-  if agda_mode then
-    let name = sanitize name in
-    let agda_output_file = open_out ("agda_out/" ^ name ^ ".agda") in
-    let agda_out_fmt = Format.formatter_of_out_channel agda_output_file in
-    A.pp_file agda_out_fmt @@ Agda.dkfile_to_file name new_entries;
-    close_out agda_output_file;
-    Format.printf "%s@." (violet "Typechecking with Agda");
-
-    (if Sys.file_exists @@ "agda_out/" ^ name ^ ".agdai" then
-      let _ = Sys.command @@ "rm agda_out/" ^ name ^ ".agdai" in ());
-    let status = Sys.command @@ "agda -i agda_out/ " ^ "agda_out/" ^ name ^ ".agda" in
-    if status = 0
-    then Format.printf "%s@." (green "Typecheck successful")
-    else Format.printf "%s : return code %d@." (red "ERROR") status
-  else close_out output_file;
+  if agda_mode || agda_with_typecheck_mode then
+    begin
+      let name = sanitize name in
+      let agda_output_file = open_out ("agda_out/" ^ name ^ ".agda") in
+      let agda_out_fmt = Format.formatter_of_out_channel agda_output_file in
+      A.pp_file agda_out_fmt @@ Agda.dkfile_to_file name new_entries;
+      close_out agda_output_file;
+      if agda_with_typecheck_mode then begin
+          Format.printf "%s@." (violet "Typechecking with Agda");
+          (if Sys.file_exists @@ "agda_out/" ^ name ^ ".agdai" then
+             let _ = Sys.command @@ "rm agda_out/" ^ name ^ ".agdai" in ());
+          let status = Sys.command @@ "agda -i agda_out/ " ^ "agda_out/" ^ name ^ ".agda" in
+          if status = 0
+          then Format.printf "%s@." (green "Typecheck successful")
+          else Format.printf "%s : return code %d@." (red "ERROR") status end
+    end;
+  close_out output_file;
   !no_errors
   
 let input_files = ref []  
   
 let _ =
-  let optim_enabled = ref false in
-  let sttfa_to_pts_mode = ref false in
   let agda_mode = ref false in
+  let agda_with_typecheck_mode = ref false in  
   let eta_mode = ref false in
   let extra_cstrs_file = ref None in
   let add_to_path = ref None in
@@ -109,12 +110,14 @@ let _ =
   let options =
     Arg.align
       [
-        ( "-s", Arg.Unit (fun () -> sttfa_to_pts_mode := true),
+(*        ( "-s", Arg.Unit (fun () -> sttfa_to_pts_mode := true),
           " Handles files in the sttfa syntax, else it expects files in the pts syntax (see theory/pts.dk)") ;
         ( "-o", Arg.Unit (fun () -> optim_enabled := true),
-          " Enables optmizations to make the result depend on less universe variables (might render the level constraints unsolvable)") ;
+          " Enables optmizations to make the result depend on less universe variables (might render the level constraints unsolvable)") ;*)
         ( "-a", Arg.Unit (fun () -> agda_mode := true),
-          " Automatically translates the output to agda files and typechecks them") ;
+          " Automatically translates the output to agda files") ;
+        ( "-at", Arg.Unit (fun () -> agda_with_typecheck_mode := true),
+          " Automatically translates the output to agda files and typechecks them") ;        
         ( "--eta", Arg.Unit (fun () -> eta_mode := true),
           " Uses eta equality") ;        
         ( "--cstr", Arg.String (fun s -> extra_cstrs_file := Some s),
@@ -143,7 +146,7 @@ let _ =
   
   List.iter
     (fun s ->
-      let error_in_file = predicativize !meta_file !optim_enabled !sttfa_to_pts_mode !agda_mode s in
+      let error_in_file = predicativize !meta_file !agda_mode !agda_with_typecheck_mode s in
       if not error_in_file then files_with_problems := 1 + !files_with_problems else ();
       dkcheck @@ "out/" ^ (Filename.basename s))
     (List.rev !input_files);

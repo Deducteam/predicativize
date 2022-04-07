@@ -41,7 +41,7 @@ def max : Sort -> Sort -> Sort.
 (; Types and terms ;)
 
 Univ : s : Sort -> Type.
-def Term : s : Sort -> a : Univ s -> Type.
+injective Term : s : Sort -> a : Univ s -> Type.
 
 univ : s : Sort -> Univ (succ s).
 def lift : s1 : Sort -> s2 : Sort -> a : Univ s1 -> Univ (max s1 s2).

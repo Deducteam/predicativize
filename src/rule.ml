@@ -85,7 +85,7 @@ let linearize lhs rhs =
   (lhs, rhs, !ctx)
  *)
 (* [transform_rule func lhs rhs] *)
-let traverse_and_transform_rule func lhs rhs =
+let traverse_and_transform_rule b func lhs rhs =
   let open T in
   let ctx = ref [] in
   let rec mk_lhs depth t =
@@ -99,7 +99,7 @@ let traverse_and_transform_rule func lhs rhs =
          | DB(loc, id, n) -> func ctx depth loc id n 
          | Const(_, name) when (B.string_of_ident (B.id name) = "M" &&
                                   B.string_of_mident (B.md name) = "pts") ->
-            raise Non_atomic_lvl_in_lhs
+            if b then raise Non_atomic_lvl_in_lhs else head
          | _ -> head in
        mk_App head t1 tl
     | DB(loc, id, n) -> func ctx depth loc id n
@@ -141,7 +141,7 @@ let linearize lhs rhs =
       then let new_s_id = s_id ^ "_" ^ (string_of_int k) in
            ctx := new_s_id :: !ctx; T.mk_DB loc (B.mk_ident new_s_id) (k + depth)
       else begin ctx := s_id :: !ctx; T.mk_DB loc id (k + depth) end in
-  traverse_and_transform_rule linearize' lhs rhs
+  traverse_and_transform_rule true linearize' lhs rhs
 
 let get_rule_ctx lhs rhs =
   let get_rule_ctx' ctx depth loc id n =
@@ -152,7 +152,7 @@ let get_rule_ctx lhs rhs =
       | Some x -> x
       | None -> raise Impossible in
     T.mk_DB loc id (n + depth) in
-  traverse_and_transform_rule get_rule_ctx' lhs rhs  
+  traverse_and_transform_rule false get_rule_ctx' lhs rhs  
 
 let rec apply_subst_k_times subst k t =
   if k = 0 then t
@@ -254,7 +254,6 @@ let predicativize_rule env out_fmt loc (r : Kernel.Rule.partially_typed_rule) =
 
   (* linearizes the rule and generates the appropriate new context *)
   let lhs, rhs, ctx = linearize lhs rhs in
-
   let lhspt = term_to_pattern lhs in
   let ctx = List.map (fun s -> B.dloc, B.mk_ident s, None) (List.rev ctx) in
 
@@ -274,7 +273,6 @@ let predicativize_rule env out_fmt loc (r : Kernel.Rule.partially_typed_rule) =
   let typable_lhs = apply_subst_k_times subst (List.length ctx) @@
                     Kernel.Rule.pattern_to_term typed_rule.pat in
   let typable_rhs = apply_subst_k_times subst (List.length ctx) @@ typed_rule.rhs in
-  
   let typable_lhs, typable_rhs, ctx = get_rule_ctx typable_lhs typable_rhs in
 
   (* removed unused variables from the ctx with types. this messes up db indices

@@ -304,10 +304,9 @@ let dkrew_to_rew (r : Kernel.Rule.partially_typed_rule) =
 let pp_rew_counter = ref 0
   
 let pp_agda_rew fmt r =
-  Format.fprintf fmt "-- postulate rewrite-rule-%s : " (string_of_int !pp_rew_counter);
-
-  List.iter (fun (id, ty) -> Format.fprintf fmt "(%s : %a) -> " id pp_agda_te ty) r.ctx;
-  Format.fprintf fmt "%a ≡ %a@." pp_agda_te r.lhs pp_agda_te r.rhs;
+(*  Format.fprintf fmt "postulate rewrite-rule-%s : " (string_of_int !pp_rew_counter);
+  List.iter (fun (id, ty) -> Format.fprintf fmt "(%s : %a) -> " id pp_agda_te ty) r.ctx;*)
+  Format.fprintf fmt "-- %a --> %a@." pp_agda_te r.lhs pp_agda_te r.rhs;
   (*  Format.fprintf fmt "{-# REWRITE rewrite-rule-%s #-}" (string_of_int !pp_rew_counter);*)
   pp_rew_counter := 1 + !pp_rew_counter
 
@@ -351,10 +350,10 @@ type agda_file_element =
 
 let pp_file fmt agda_file =
   let open Format in
-  fprintf fmt "{-# OPTIONS --rewriting #-}@.";
-  fprintf fmt "open import Agda.Primitive@.";
+  (*  fprintf fmt "{-# OPTIONS --rewriting #-}@.";
   fprintf fmt "open import Agda.Builtin.Equality using (_≡_)@.";
-  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";
+  fprintf fmt "open import Agda.Builtin.Equality.Rewrite@.";*)
+  fprintf fmt "open import Agda.Primitive@.";  
   
   List.fold_left (fun () e ->
       match e with
