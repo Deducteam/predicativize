@@ -5,6 +5,8 @@ Predicativize: a tool for making proofs predicative
 
 First start by installing Dedukti (https://github.com/Deducteam/Dedukti hash `c65e7e`) and then simply run `make`. In order to test the tool, run `make test_agda` which will predicativize the Fermat's little theorem library. If Agda is installed, then you can also run `make test_agda_with_typecheck`, which also translates the results to Agda files and typechecks them.
 
+You can also test the tool with Matita's arithmetic library, by running `make matita_agda`, and with a fragment of Isabelle's library, by running `make isabelle_agda`. However, be advised that these take a lot of time.
+
 ## Modes
 
 By running `dune exec -- predicativize --help` we can see that the following modes are available.
