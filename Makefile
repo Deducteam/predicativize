@@ -14,7 +14,7 @@ test_with_optim_agda:
 
 isabelle_agda:
 	dkcheck -e -I theory theory/sttfa.dk
-	time dune exec -- predicativize --meta metas/sttfa_to_pts.dk --path theory --eta input/isabelle_sttfa.dk
+	time dune exec -- predicativize -a --meta metas/sttfa_to_pts.dk --path theory --eta input/isabelle_sttfa.dk
 
 test:
 	dkcheck -e -I theory theory/sttfa.dk
