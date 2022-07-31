@@ -1,3 +1,14 @@
+isabelle_sttfa.dk
+matita_old/
+theory/end.dk
+theory/matita/end.dk
+theory/matita/meta/end.dk
+theory2/
+input/Isabelle*
+input/matita/Makefile
+input/matita_end/
+input/matita/matita_arithmetics_factorial.dk_old
+extra_cstr*
 test_file
 agda_out
 opentheory_stdlib
