@@ -2,7 +2,11 @@ module T = Kernel.Term
 module B = Kernel.Basic
 module Env = Api.Env
 open Common
-   
+
+let qname_to_name = ref @@ fun (_, _) -> None
+let const_names = ref []
+
+                                       
 type agda_lvl =
   | Lzero
   | Lsucc of agda_lvl
@@ -56,7 +60,8 @@ let rec extract_lvl_set t =
   | App(Const(_, s), n, [DB(_,var, _)]) when
          (B.string_of_ident (B.id s) = "S" && String.get (B.string_of_ident var) 0 = '?') ->
      let* n = extract_int n in
-     let ident = sanitize @@ (B.string_of_ident var) ^ "_v" in
+     let ident = sanitize @@ (B.string_of_ident var) in
+     let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
      Some (n_succ (Lvar ident) n)
 
   (* sometimes we can have nested Ms, as in M 1 [S 0 x; S 2 (M 3 [])] *)
@@ -76,7 +81,9 @@ and dklvl_to_agda_lvl t =
   let open T in
   match t with
   | DB(_, var, _) ->
-     Some (Lvar (sanitize @@ (B.string_of_ident var) ^ "_v"))
+     let ident = sanitize @@ B.string_of_ident var in
+     let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
+     Some (Lvar ident)
   | Const(_, lzero) when
          (B.string_of_mident (B.md lzero) = "pts" && B.string_of_ident (B.id lzero) = "lzero") ->
      Some Lzero
@@ -167,13 +174,13 @@ let rec dkterm_to_term n te =
          (B.string_of_mident (B.md pi) = "pts" && B.string_of_ident (B.id pi) = "Prod") ->
      let* ta = dkterm_to_term n ta in
      let* tb = dkterm_to_term (n + 1) body_b in
-     let ident = sanitize @@ (B.string_of_ident var) ^ "_v" in
-     if ident = "x-free-v"
+     let ident = sanitize @@ (B.string_of_ident var) in
+     let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
+     (*     Format.printf "%s@." ident;*)
+     (*     List.iter (fun x -> Format.printf "%s " x) !const_names; Format.printf "@.";*)
+     if ident = "x-free"
      then Some (A_Arr (ta, tb))
-     else
-       (*       let ident = sanitize @@ ident ^ "-" ^ string_of_int n in*)
-       let ident = ident in       
-       Some (A_Pi (ta, ident, tb))
+     else Some (A_Pi (ta, ident, tb))
 
   (* te = pts.u lvl_exp *)
   | App(Const(_,u), lvl_exp, []) when
@@ -210,20 +217,17 @@ let rec dkterm_to_term n te =
           Some (Some A_Lty)
        | Some x ->
           Option.bind (dkty_to_ty n x) (fun res -> Some (Some res)) in
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in
-     (* We need to annotate the non-level variables with the depth, because 
-        they migth not be unique. However, this is not needed for level variables,
-        as they are all unique. *)
-     (*     let ident = if String.get ident 0 = '?' then ident else ident ^ "-" ^ string_of_int n in*)
+     let ident = sanitize @@ (B.string_of_ident ident) in
+     let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
      Some (A_Lam(ident, ty_op, te))
 
   | DB(_, ident, _) ->
-     if String.get (B.string_of_ident ident) 0 = '?'
-     then Some (A_Lvl (Lvar (sanitize @@ (B.string_of_ident ident)  ^ "_v")))
-     else
-       (*       let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int (n - num - 1) in *)
-       let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in 
-       Some (A_Var ident)
+     let is_lvl_var = String.get (B.string_of_ident ident) 0 = '?' in
+     let ident = sanitize @@ (B.string_of_ident ident) in
+     let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
+     if is_lvl_var
+     then Some (A_Lvl (Lvar ident))
+     else Some (A_Var ident)
 
   | Const(_, cst) when
          (B.string_of_mident (B.md cst) = "pts" && B.string_of_ident (B.id cst) = "Prod") ->
@@ -236,13 +240,18 @@ let rec dkterm_to_term n te =
                                   A_Pi(A_Var "A", "VAR" ^ n,
                                        A_App(A_Var "B", A_Var ("VAR" ^ n), [])))))))
      
+
   | Const(_, cst) ->
-     let name = sanitize @@ B.string_of_ident (B.id cst) in
-     let modu = sanitize @@ B.string_of_mident (B.md cst) in
-     let modu = if modu = !md_name then None
-                else (import_list := modu :: !import_list; Some modu) in
-     Some (A_Cst (modu, name))     
-     
+     let md, id = (sanitize @@ B.string_of_mident @@ B.md cst,
+                   B.string_of_ident  @@ B.id cst) in
+     (*    Format.printf "%s.@.%s.@." md !md_name;*)
+     if not (md = !md_name) then  import_list := md :: !import_list;
+     Format.printf "%s - %s@." md id;
+     List.iter (fun x -> Format.printf "%s " x) !const_names; Format.printf "@.";
+     begin match !qname_to_name (md, id) with
+       | Some x -> Some (A_Cst (None, x))
+       | None   -> assert false
+     end
   | _ -> None
 
 and dkty_to_ty n te =
@@ -257,7 +266,7 @@ and dkty_to_ty n te =
   (* te = (ident : pts.Lvl) -> t2 *)
   | Pi(_, ident, Const(_,lvl), t2) when
          (B.string_of_mident (B.md lvl) = "pts" && B.string_of_ident (B.id lvl) = "Lvl") ->
-     let ident = sanitize @@ (B.string_of_ident ident) ^ "_v" in
+     let ident = sanitize @@ (B.string_of_ident ident) in
      let* t2 = dkty_to_ty (n + 1) t2 in
      Some (A_Pi (A_Lty, ident, t2))
 
@@ -265,7 +274,7 @@ and dkty_to_ty n te =
   (* should not happen in the good cases *)
   | Pi(_, ident, t1, t2) ->
      (*     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in*)
-     let ident = sanitize @@ (B.string_of_ident ident)  ^ "_v" in     
+     let ident = sanitize @@ (B.string_of_ident ident)  in     
      let* t2 = dkty_to_ty (n + 1) t2 in
      let* t1 = dkty_to_ty n t1 in     
      Some (A_Pi (t1, ident, t2))
@@ -278,11 +287,14 @@ and dkty_to_ty n te =
          (B.string_of_mident (B.md ty_lvl) = "pts" && B.string_of_ident (B.id ty_lvl) = "Lvl") ->
      Some (A_Lty)
   | Const(_, cst) ->
-     let name = sanitize @@ B.string_of_ident (B.id cst) in
-     let modu = sanitize @@ B.string_of_mident (B.md cst) in
-     let modu = if modu = !md_name then None
-                else (import_list := modu :: !import_list; Some modu) in
-     Some (A_Cst (modu, name))     
+     let md, id = (sanitize @@ B.string_of_mident @@ B.md cst,
+                   B.string_of_ident  @@ B.id cst) in
+     (*    Format.printf "%s.@.%s.@." md !md_name;*)
+     if not (md = !md_name) then  import_list := md :: !import_list;
+     begin match !qname_to_name (md, id) with
+       | Some x -> Some (A_Cst (None, x))
+       | None   -> assert false
+     end
   | _ -> None
 
        
@@ -295,7 +307,7 @@ let dkrew_to_rew (r : Kernel.Rule.partially_typed_rule) =
         (fun (_, id, ty_op) ->
           let* ty = ty_op in
           let* agda_ty = dkty_to_ty 0 ty in
-          Some (sanitize @@ (B.string_of_ident id) ^ "_v", agda_ty))
+          Some (sanitize @@ (B.string_of_ident id), agda_ty))
         r.ctx in
   let* lhs = dkterm_to_term 0 @@ Kernel.Rule.pattern_to_term r.pat in
   let* rhs = dkterm_to_term 0 r.rhs in
@@ -324,18 +336,38 @@ let pp_entry fmt e =
   | A_Decl (n, ty) ->
      fprintf fmt "postulate %s : %a\n" n pp_agda_te ty
   | A_Rew r -> fprintf fmt "%a@." pp_agda_rew r
-  
+
+let gen_unique_name old_id =
+  (*  Format.printf "%s@." old_id;*)
+  let id = ref (sanitize old_id) in
+  (* we add as many ' as necessary so the name becomes unique *)
+  while List.mem !id !const_names do
+    id := !id ^ "'"
+  done;
+  let old_qname_to_name = !qname_to_name in
+  let id = !id in
+  let md_name = !md_name in
+  (qname_to_name :=
+     fun (s_md,s_id) ->
+     if s_md = md_name && s_id = old_id
+     then Some id else old_qname_to_name (s_md, s_id));
+  const_names := id :: !const_names;
+    Format.printf "registered %s - %s@." md_name old_id;
+  id
+             
 let dkentry_to_entry e =
   let open Parsers.Entry in
   match e with
   | Def(_, id, _, _, Some ty, te) ->
      let* ty = dkty_to_ty 0 ty in
      let* te = dkterm_to_term 0 te in
-     let id = sanitize @@ B.string_of_ident id in
+     (*     Format.printf "oi@.";*)
+     let id = gen_unique_name @@ B.string_of_ident id in
      Some (A_Def (id, ty, te))
   | Decl(_, id, _, _, ty) ->
      let* ty = dkty_to_ty 0 ty in
-     let id = sanitize @@ B.string_of_ident id in
+     (*     Format.printf "oi@.";     *)
+     let id = gen_unique_name @@ B.string_of_ident id in     
      Some (A_Decl (id, ty))
   | Rules(_, [r]) -> begin
      match dkrew_to_rew r with
@@ -357,14 +389,15 @@ let pp_file fmt agda_file =
   
   List.fold_left (fun () e ->
       match e with
-      | A_Import s -> fprintf fmt "import %s@." s
+      | A_Import s -> fprintf fmt "open import %s@." s
       | A_Entry e -> fprintf fmt "%a@." pp_entry e
     ) () agda_file
               
 let dkfile_to_file md_name' list_entry =
-  md_name := sanitize @@ md_name';
+  md_name := md_name';
   import_list := [];
   let list_entry =
+    List.rev @@
     List.fold_left
       (fun acc_entries e ->
         match dkentry_to_entry e with

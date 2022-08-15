@@ -68,7 +68,7 @@ let predicativize meta agda_mode agda_with_typecheck_mode inputfile =
             ko_entries := 1 + !ko_entries; no_errors := false; None end)
       entries in
 
-  let new_entries = opt_list_to_list new_entries in
+  let new_entries = List.rev @@ opt_list_to_list new_entries in
 
   Format.printf "%s : %s OK / %s KO@."
     (violet @@ "Finished processing " ^ name)
