@@ -244,10 +244,7 @@ let rec dkterm_to_term n te =
   | Const(_, cst) ->
      let md, id = (sanitize @@ B.string_of_mident @@ B.md cst,
                    B.string_of_ident  @@ B.id cst) in
-     (*    Format.printf "%s.@.%s.@." md !md_name;*)
      if not (md = !md_name) then  import_list := md :: !import_list;
-     Format.printf "%s - %s@." md id;
-     List.iter (fun x -> Format.printf "%s " x) !const_names; Format.printf "@.";
      begin match !qname_to_name (md, id) with
        | Some x -> Some (A_Cst (None, x))
        | None   -> assert false
@@ -352,7 +349,6 @@ let gen_unique_name old_id =
      if s_md = md_name && s_id = old_id
      then Some id else old_qname_to_name (s_md, s_id));
   const_names := id :: !const_names;
-    Format.printf "registered %s - %s@." md_name old_id;
   id
              
 let dkentry_to_entry e =

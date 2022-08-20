@@ -3,15 +3,6 @@
 all:
 	dune build
 
-test_with_optim:
-	dkcheck -e -I theory theory/sttfa.dk
-	time dune exec -- predicativize --path theory --meta metas/sttfa_to_pts.dk -o input/arith_fermat_noleibniz/connectives.dk input/arith_fermat_noleibniz/leibniz.dk input/arith_fermat_noleibniz/logic.dk input/arith_fermat_noleibniz/relations.dk input/arith_fermat_noleibniz/bool.dk input/arith_fermat_noleibniz/nat.dk input/arith_fermat_noleibniz/fact.dk input/arith_fermat_noleibniz/div_mod.dk input/arith_fermat_noleibniz/bigops.dk input/arith_fermat_noleibniz/primes.dk input/arith_fermat_noleibniz/cong.dk input/arith_fermat_noleibniz/exp.dk input/arith_fermat_noleibniz/gcd.dk input/arith_fermat_noleibniz/permutation.dk input/arith_fermat_noleibniz/sigma_pi.dk input/arith_fermat_noleibniz/fermat.dk
-
-
-test_with_optim_agda:
-	dkcheck -e -I theory theory/sttfa.dk
-	time dune exec -- predicativize -a --path theory --meta metas/sttfa_to_pts.dk -o input/arith_fermat_noleibniz/connectives.dk input/arith_fermat_noleibniz/leibniz.dk input/arith_fermat_noleibniz/logic.dk input/arith_fermat_noleibniz/relations.dk input/arith_fermat_noleibniz/bool.dk input/arith_fermat_noleibniz/nat.dk input/arith_fermat_noleibniz/fact.dk input/arith_fermat_noleibniz/div_mod.dk input/arith_fermat_noleibniz/bigops.dk input/arith_fermat_noleibniz/primes.dk input/arith_fermat_noleibniz/cong.dk input/arith_fermat_noleibniz/exp.dk input/arith_fermat_noleibniz/gcd.dk input/arith_fermat_noleibniz/permutation.dk input/arith_fermat_noleibniz/sigma_pi.dk input/arith_fermat_noleibniz/fermat.dk
-
 isabelle_agda:
 	dkcheck -e -I theory theory/sttfa.dk
 	time dune exec -- predicativize -a --meta metas/sttfa_to_pts.dk --path theory --eta input/isabelle_sttfa.dk
