@@ -3,6 +3,8 @@ Predicativize: A tool for sharing proofs with predicative system
 
 We refer to the paper [Translating proofs from an impredicative type system to a predicative one](https://github.com/thiagofelicissimo/my-files/blob/master/predicativize.pdf?raw=true) for an introduction to the tool.
 
+Predicativize was used to translate Matita's arithmetic library to Agda, the translated proofs can be found [here](https://github.com/thiagofelicissimo/matita_lib_in_agda).
+
 ## Installation
 
 First start by installing Dedukti (https://github.com/Deducteam/Dedukti hash `c65e7e`) and then simply run `make`. In order to test the tool, run `make test_agda` which will predicativize the Fermat's little theorem library. If Agda is installed, then you can also run `make test_agda_with_typecheck`, which also translates the results to Agda files and typechecks them.
