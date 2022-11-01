@@ -1,5 +1,7 @@
-Predicativize: a tool for making proofs predicative
+Predicativize: A tool for sharing proofs with predicative system
 =============================================
+
+We refer to the paper [Translating proofs from an impredicative type system to a predicative one](https://github.com/thiagofelicissimo/my-files/blob/master/predicativize.pdf?raw=true) for an introduction to the tool.
 
 ## Installation
 
