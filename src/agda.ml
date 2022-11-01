@@ -263,18 +263,20 @@ and dkty_to_ty n te =
   (* te = (ident : pts.Lvl) -> t2 *)
   | Pi(_, ident, Const(_,lvl), t2) when
          (B.string_of_mident (B.md lvl) = "pts" && B.string_of_ident (B.id lvl) = "Lvl") ->
-     let ident = sanitize @@ (B.string_of_ident ident) in
-     let* t2 = dkty_to_ty (n + 1) t2 in
-     Some (A_Pi (A_Lty, ident, t2))
+    let ident = sanitize @@ (B.string_of_ident ident) in
+    let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
+    let* t2 = dkty_to_ty (n + 1) t2 in
+    Some (A_Pi (A_Lty, ident, t2))
 
   (* te = (ident : t1) -> t2 *)
   (* should not happen in the good cases *)
   | Pi(_, ident, t1, t2) ->
      (*     let ident = sanitize @@ (B.string_of_ident ident) ^ "-" ^ string_of_int n in*)
-     let ident = sanitize @@ (B.string_of_ident ident)  in     
-     let* t2 = dkty_to_ty (n + 1) t2 in
-     let* t1 = dkty_to_ty n t1 in     
-     Some (A_Pi (t1, ident, t2))
+    let ident = sanitize @@ (B.string_of_ident ident)  in
+    let ident = if List.mem ident !const_names then ident ^ "-v" else ident in
+    let* t2 = dkty_to_ty (n + 1) t2 in
+    let* t1 = dkty_to_ty n t1 in
+    Some (A_Pi (t1, ident, t2))
 
   | App(Const(_,u), t, []) when
          (B.string_of_mident (B.md u) = "pts" && B.string_of_ident (B.id u) = "U") ->
